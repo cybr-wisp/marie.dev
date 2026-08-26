@@ -70,18 +70,19 @@ export default function AboutPage() {
         <ArchiveRail current="about" />
 
         <section className="archive-content archive-content--about">
-          <header className="archive-header about-header">
+          <header className="archive-header">
             <div>
               <span className="archive-kicker">
                 <span className="copy-en">
                   04 · ABOUT
                 </span>
+
                 <span className="copy-fr">
                   04 · À PROPOS
                 </span>
               </span>
 
-              <h1 className="archive-title about-title">
+              <h1 className="archive-title">
                 <span className="copy-en">
                   about
                 </span>
@@ -250,6 +251,7 @@ export default function AboutPage() {
           <span className="copy-en">
             ACCESS FIELD NOTES →
           </span>
+
           <span className="copy-fr">
             ACCÉDER AUX NOTES DE TERRAIN →
           </span>
