@@ -12,7 +12,10 @@ export type ProjectCategory =
   | "RESEARCH"
   | "AI / ML"
   | "DISTRIBUTED SYSTEMS"
-  | "DEVELOPER TOOLS";
+  | "DEVELOPER TOOLS"
+  | "STATIC ANALYSIS"
+  | "AI SAFETY"
+  | "ENERGY SYSTEMS";
 
 export type ProjectSection = Readonly<{
   label: LocalizedText;
@@ -24,15 +27,11 @@ export type Project = Readonly<{
   slug: string;
   title: string;
   year: string;
-
   summary: LocalizedText;
   intro: LocalizedText;
-
   categories: readonly ProjectCategory[];
   tags: readonly string[];
-
   sections: readonly ProjectSection[];
-
   repository?: string;
 }>;
 
@@ -40,9 +39,7 @@ export type Note = Readonly<{
   slug: string;
   date: string;
   displayDate: string;
-
   title: LocalizedText;
   excerpt: LocalizedText;
-
   body: LocalizedParagraphs;
 }>;
