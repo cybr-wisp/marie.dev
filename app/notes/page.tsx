@@ -22,13 +22,13 @@ export default function NotesPage() {
         <ArchiveRail current="notes" />
 
         <section className="archive-content archive-content--notes">
-          <header className="archive-header notes-header">
+          <header className="archive-header">
             <div>
               <span className="archive-kicker">
                 03 · NOTES
               </span>
 
-              <h1 className="archive-title notes-title">
+              <h1 className="archive-title">
                 <span className="copy-en">
                   notes
                 </span>
@@ -38,10 +38,6 @@ export default function NotesPage() {
                 </span>
               </h1>
             </div>
-
-            <span className="archive-count">
-              {String(visibleNotes.length).padStart(2, "0")}
-            </span>
           </header>
 
           <div className="notes-map">
@@ -82,10 +78,12 @@ export default function NotesPage() {
                 className="notes-map__path notes-map__path--fragment"
                 d="M95 248 C205 250 330 276 449 288"
               />
+
               <path
                 className="notes-map__path notes-map__path--fragment"
                 d="M138 414 C255 404 350 350 449 300"
               />
+
               <path
                 className="notes-map__path notes-map__path--fragment"
                 d="M186 333 C285 316 365 305 449 294"
@@ -100,14 +98,17 @@ export default function NotesPage() {
                 className="notes-map__path notes-map__path--primary"
                 d="M474 285 C500 218 520 135 539 80"
               />
+
               <path
                 className="notes-map__path notes-map__path--primary"
                 d="M478 296 C565 282 648 270 731 266"
               />
+
               <path
                 className="notes-map__path notes-map__path--primary"
                 d="M474 284 C625 184 787 92 959 75"
               />
+
               <path
                 className="notes-map__path notes-map__path--primary"
                 d="M469 306 C500 384 542 452 587 492"
@@ -117,6 +118,7 @@ export default function NotesPage() {
                 className="notes-map__path notes-map__path--secondary"
                 d="M545 80 C682 34 824 35 959 75"
               />
+
               <path
                 className="notes-map__path notes-map__path--secondary"
                 d="M737 266 C705 356 655 438 590 492"
@@ -128,12 +130,14 @@ export default function NotesPage() {
                 cy="294"
                 r="4"
               />
+
               <circle
                 className="notes-map__bridge"
                 cx="356"
                 cy="293"
                 r="3"
               />
+
               <circle
                 className="notes-map__bridge"
                 cx="410"
@@ -177,6 +181,7 @@ export default function NotesPage() {
           <span className="copy-en">
             ACCESS FIELD NOTES →
           </span>
+
           <span className="copy-fr">
             ACCÉDER AUX NOTES DE TERRAIN →
           </span>
