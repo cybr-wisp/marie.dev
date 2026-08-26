@@ -20,33 +20,27 @@ export default function ProjectsPage() {
         <ArchiveRail current="work" />
 
         <section className="archive-content archive-content--work">
-          <header className="work-masthead">
-            <div className="work-masthead__copy">
+          <header className="archive-header">
+            <div>
               <span className="archive-kicker">
                 <span className="copy-en">
                   02 · PROJECTS
                 </span>
+
                 <span className="copy-fr">
                   02 · PROJETS
                 </span>
               </span>
 
-              <h1>
+              <h1 className="archive-title">
                 <span className="copy-en">
                   projects
                 </span>
+
                 <span className="copy-fr">
                   projets
                 </span>
               </h1>
-            </div>
-
-            <div className="work-masthead__meta">
-              <span>
-                SELECTED ·{" "}
-                {String(projects.length).padStart(2, "0")}
-              </span>
-              <span>2026</span>
             </div>
           </header>
 
@@ -63,6 +57,7 @@ export default function ProjectsPage() {
           <span className="copy-en">
             ACCESS FIELD NOTES →
           </span>
+
           <span className="copy-fr">
             ACCÉDER AUX NOTES DE TERRAIN →
           </span>
