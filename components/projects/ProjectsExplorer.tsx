@@ -70,58 +70,65 @@ export function ProjectsExplorer({
           >
             <Link
               href={`/projects/${project.slug}`}
-              className="work-card__link"
+              className="work-card__project-link"
               aria-label={`Open ${project.title}`}
             >
-              <div className="work-card__top">
-                <span>{project.number}</span>
-              </div>
+              <div className="work-card__link">
+                <div className="work-card__top">
+                  <span>{project.number}</span>
+                </div>
 
-              <div className="work-card__center">
-                <span
-                  className="work-card__bracket"
-                  aria-hidden="true"
-                >
-                  [
+                <div className="work-card__center">
+                  <span
+                    className="work-card__bracket"
+                    aria-hidden="true"
+                  >
+                    [
+                  </span>
+
+                  <h2>{project.title}</h2>
+
+                  <span
+                    className="work-card__bracket"
+                    aria-hidden="true"
+                  >
+                    ]
+                  </span>
+                </div>
+
+                <span className="work-card__view">
+                  VIEW PROJECT
+                  <span aria-hidden="true">
+                    ↗
+                  </span>
                 </span>
 
-                <h2>{project.title}</h2>
+                <div className="work-card__bottom">
+                  <span>
+                    PROJECT {project.number}
+                  </span>
 
-                <span
-                  className="work-card__bracket"
-                  aria-hidden="true"
-                >
-                  ]
-                </span>
+                  <span>{project.year}</span>
+                </div>
               </div>
 
-              <span className="work-card__view">
-                VIEW PROJECT
-                <span aria-hidden="true">↗</span>
-              </span>
+              <div className="work-card__meta">
+                <h3>{project.title}</h3>
 
-              <div className="work-card__bottom">
-                <span>PROJECT {project.number}</span>
-                <span>{project.year}</span>
+                <div className="work-card__tech">
+                  {project.tags
+                    .slice(0, 4)
+                    .map((tag) => (
+                      <span
+                        key={tag}
+                        className="tech-badge"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                </div>
               </div>
             </Link>
-
-            <div className="work-card__meta">
-              <h3>{project.title}</h3>
-
-              <div className="work-card__tech">
-                {project.tags
-                  .slice(0, 4)
-                  .map((tag) => (
-                    <span
-                      key={tag}
-                      className="tech-badge"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-              </div>
-            </div>
           </article>
         ))}
       </div>
