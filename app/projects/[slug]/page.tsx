@@ -3,6 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ArchiveRail } from "@/components/chrome/ArchiveRail";
+import { CanaryCaseStudy } from "@/components/projects/CanaryCaseStudy";
+import { MicrogridCaseStudy } from "@/components/projects/MicrogridCaseStudy";
+import { ParaTraceCaseStudy } from "@/components/projects/ParaTraceCaseStudy";
 import { projects } from "@/content/projects";
 
 type ProjectPageProps = Readonly<{
@@ -47,6 +50,30 @@ export default async function ProjectPage({
 
   if (!project) {
     notFound();
+  }
+
+  if (project.slug === "canary") {
+    return (
+      <CanaryCaseStudy
+        project={project}
+      />
+    );
+  }
+
+  if (project.slug === "paratrace") {
+    return (
+      <ParaTraceCaseStudy
+        project={project}
+      />
+    );
+  }
+
+  if (project.slug === "microgrid-ml") {
+    return (
+      <MicrogridCaseStudy
+        project={project}
+      />
+    );
   }
 
   return (
