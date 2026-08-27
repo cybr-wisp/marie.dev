@@ -1,6 +1,7 @@
 ﻿import Link from "next/link";
 
 import { projects } from "@/content/projects";
+import { TypingHero } from "@/components/home/TypingHero";
 
 export function ProjectIndex() {
   const featuredProjects = projects.slice(0, 2);
@@ -11,27 +12,9 @@ export function ProjectIndex() {
       id="work"
       aria-label="Featured projects"
     >
-      <header className="index-masthead">
+      <header className="index-masthead fade-up" style={{ animationDelay: "0.05s" }}>
         <div className="index-masthead__copy">
-          <p className="copy-en">
-            <strong>hi, i&apos;m marie.</strong>
-            <span>
-              i build things at the intersection of mathematics,{" "}
-              <span className="keep-together">
-                machine learning
-              </span>
-              , and systems.
-            </span>
-          </p>
-
-          <p className="copy-fr">
-            <strong>salut, moi c&apos;est marie.</strong>
-            <span>
-              je construis des choses à l&apos;intersection
-              des mathématiques, de l&apos;apprentissage automatique
-              et des systèmes.
-            </span>
-          </p>
+          <TypingHero />
         </div>
 
         <div className="index-masthead__meta">
@@ -40,7 +23,7 @@ export function ProjectIndex() {
         </div>
       </header>
 
-      <div className="index-exhibits">
+      <div className="index-exhibits fade-up" style={{ animationDelay: "0.3s" }}>
         {featuredProjects.map((project) => (
           <article
             className="index-exhibit"
@@ -145,7 +128,7 @@ export function ProjectIndex() {
         ))}
       </div>
 
-      <div className="field-notes-footer">
+      <div className="field-notes-footer fade-up" style={{ animationDelay: "0.5s" }}>
         <a
           href="https://github.com/cybr-wisp/marie.dev"
           target="_blank"
@@ -160,7 +143,7 @@ export function ProjectIndex() {
         </a>
       </div>
 
-      <div className="index-projects-footer">
+      <div className="index-projects-footer fade-up" style={{ animationDelay: "0.5s" }}>
         <Link href="/projects">
           <span className="copy-en">
             ALL PROJECTS →
