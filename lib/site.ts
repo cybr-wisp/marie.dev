@@ -1,7 +1,7 @@
 export const siteConfig = {
-  name: "Marie Sindhu",
-  shortName: "Marie",
-  title: "Marie Sindhu — Software, Systems & Machine Learning",
+  name: "marie.dev",
+  shortName: "marie.dev",
+  title: "marie.dev",
   description:
     "Software engineering, distributed systems, machine learning, research, and technical notes by Marie Sindhu.",
   github: "https://github.com/cybr-wisp",

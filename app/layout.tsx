@@ -17,8 +17,8 @@ const garamond = EB_Garamond({
 
 export const metadata: Metadata = {
   title: {
-    default: siteConfig.title,
-    template: `%s — ${siteConfig.name}`,
+  default: "marie.dev",
+  template: "%s — marie.dev",
   },
   description: siteConfig.description,
   applicationName: "marie.dev",
