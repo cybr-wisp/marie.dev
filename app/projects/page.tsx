@@ -20,7 +20,7 @@ export default function ProjectsPage() {
         <ArchiveRail current="work" />
 
         <section className="archive-content archive-content--work">
-          <header className="archive-header">
+          <header className="archive-header fade-up" style={{ animationDelay: "0.1s" }}>
             <div>
               <span className="archive-kicker">
                 <span className="copy-en">
@@ -48,7 +48,7 @@ export default function ProjectsPage() {
         </section>
       </div>
 
-      <div className="field-notes-footer">
+      <div className="field-notes-footer fade-up" style={{ animationDelay: "0.6s" }}>
         <a
           href="https://github.com/cybr-wisp/marie.dev"
           target="_blank"

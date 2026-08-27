@@ -38,7 +38,7 @@ export function ProjectsExplorer({
 
   return (
     <div className="work-browser">
-      <div className="work-tools">
+      <div className="work-tools fade-up" style={{ animationDelay: "0.2s" }}>
         <div
           className="work-filters"
           aria-label="Project filters"
@@ -62,7 +62,7 @@ export function ProjectsExplorer({
         </div>
       </div>
 
-      <div className="work-card-grid">
+      <div className="work-card-grid fade-up" style={{ animationDelay: "0.35s" }}>
         {filteredProjects.map((project) => (
           <article
             className="work-card"
