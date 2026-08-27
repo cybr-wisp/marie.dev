@@ -70,7 +70,7 @@ export default function AboutPage() {
         <ArchiveRail current="about" />
 
         <section className="archive-content archive-content--about">
-          <header className="archive-header">
+          <header className="archive-header fade-up" style={{ animationDelay: "0.1s" }}>
             <div>
               <span className="archive-kicker">
                 <span className="copy-en">
@@ -95,7 +95,7 @@ export default function AboutPage() {
           </header>
 
           <div className="about-grid">
-            <div className="about-lead">
+            <div className="about-lead fade-up" style={{ animationDelay: "0.25s" }}>
               <p className="copy-en">
                 i&apos;m an honours computer science undergrad at
                 uottawa with a mathematics minor, currently building
@@ -117,7 +117,7 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="about-details">
+            <div className="about-details fade-up" style={{ animationDelay: "0.4s" }}>
               <section>
                 <span className="about-label">
                   STACK
@@ -190,7 +190,8 @@ export default function AboutPage() {
           </div>
 
           <section
-            className="about-experience"
+            className="about-experience fade-up"
+            style={{ animationDelay: "0.55s" }}
             aria-labelledby="experience-heading"
           >
             <div className="about-experience__heading">
@@ -204,9 +205,10 @@ export default function AboutPage() {
             </div>
 
             <div className="about-timeline">
-              {experience.map((item) => (
+              {experience.map((item, idx) => (
                 <article
-                  className="about-timeline__item"
+                  className="about-timeline__item fade-up"
+                  style={{ animationDelay: `${0.65 + idx * 0.12}s` }}
                   key={`${item.period}-${item.role}`}
                 >
                   <span
@@ -242,7 +244,7 @@ export default function AboutPage() {
         </section>
       </div>
 
-      <div className="field-notes-footer">
+      <div className="field-notes-footer fade-up" style={{ animationDelay: "1s" }}>
         <a
           href="https://github.com/cybr-wisp/marie.dev"
           target="_blank"
