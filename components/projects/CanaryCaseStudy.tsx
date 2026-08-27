@@ -414,9 +414,9 @@ export function CanaryCaseStudy({
             Syntax can remain valid while the
             repository becomes semantically
             incompatible. The useful question
-            is not just “did the signature
-            change?” but “which current callers
-            can no longer satisfy it?”
+            is not just &ldquo;did the signature
+            change?&rdquo; but &ldquo;which current callers
+            can no longer satisfy it?&rdquo;
           </p>
 
           <p className="canary3-lead copy-fr">
@@ -669,12 +669,136 @@ export function CanaryCaseStudy({
           <p className="canary3-thesis">
             <span>CORE IDEA</span>
             <strong>
-              Don&apos;t stop at “the API
-              changed.” Trace the blast radius
+              Don&apos;t stop at &ldquo;the API
+              changed.&rdquo; Trace the blast radius
               and prove whether current callers
               still satisfy the contract.
             </strong>
           </p>
+        </div>
+      </section>
+
+      <section
+        className="canary3-section"
+        data-reveal
+      >
+        <header className="canary3-section__label">
+          <span>04</span>
+          <h2>Validation</h2>
+        </header>
+
+        <div className="canary3-section__body">
+          <p className="canary3-lead copy-en">
+            Canary is tested as a semantic analysis
+            engine, not just as a UI surface. The
+            suite exercises compatibility rules,
+            call binding, webhook boundaries,
+            Checks API behavior, CLI output, and
+            end-to-end integration paths.
+          </p>
+
+          <p className="canary3-lead copy-fr">
+            Canary est testé comme moteur
+            d&apos;analyse sémantique, et pas
+            seulement comme interface. La suite
+            couvre les règles de compatibilité,
+            la liaison des appels, les webhooks,
+            l&apos;API Checks, la CLI et les chemins
+            d&apos;intégration.
+          </p>
+
+          <div className="canary3-validation__summary">
+            <article>
+              <span>FULL SUITE</span>
+              <strong>88 TESTS</strong>
+              <p>
+                Passing coverage across analysis,
+                presentation, CLI, GitHub Checks,
+                webhook authentication, and
+                integration behavior.
+              </p>
+            </article>
+
+            <article>
+              <span>RUNNER</span>
+              <strong>PYTEST</strong>
+              <p>
+                Regression-focused tests exercise
+                both breaking and safe compatibility
+                paths against deterministic fixtures.
+              </p>
+            </article>
+
+            <article>
+              <span>CONTINUOUS VALIDATION</span>
+              <strong>GITHUB ACTIONS</strong>
+              <p>
+                CI reruns the suite so changes to
+                analysis or integration boundaries
+                are checked before merge.
+              </p>
+            </article>
+          </div>
+
+          <div
+            className="canary3-validation__matrix"
+            aria-label="Representative Canary regression cases"
+          >
+            <div className="canary3-validation__matrix-head">
+              <span>REGRESSION CASE</span>
+              <span>EXPECTED</span>
+              <span>WHY</span>
+            </div>
+
+            <div className="canary3-validation__case">
+              <code>required parameter added</code>
+              <strong>BREAKS</strong>
+              <p>
+                An existing call can no longer bind
+                without supplying the new argument.
+              </p>
+            </div>
+
+            <div className="canary3-validation__case">
+              <code>removed keyword parameter</code>
+              <strong>BREAKS</strong>
+              <p>
+                A repository caller still supplies a
+                keyword the new contract rejects.
+              </p>
+            </div>
+
+            <div className="canary3-validation__case">
+              <code>sync → async</code>
+              <strong>BREAKS</strong>
+              <p>
+                A previously synchronous caller now
+                invokes an awaitable without the
+                required await semantics.
+              </p>
+            </div>
+
+            <div className="canary3-validation__case">
+              <code>return type changed</code>
+              <strong className="is-unknown">
+                UNKNOWN
+              </strong>
+              <p>
+                When static evidence cannot prove
+                downstream incompatibility, Canary
+                preserves uncertainty.
+              </p>
+            </div>
+          </div>
+
+          <div className="canary3-validation__foot">
+            <span>TEST PHILOSOPHY</span>
+            <strong>
+              Confirm what static evidence can
+              prove. Preserve UNKNOWN where it
+              cannot.
+            </strong>
+          </div>
         </div>
       </section>
 
@@ -1303,6 +1427,118 @@ export function CanaryCaseStudy({
           line-height: 1.35;
         }
 
+        .canary3 .canary3-validation__summary {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          margin-top: 1.2rem;
+          border-top: 1px solid var(--rule-strong);
+          border-bottom: 1px solid var(--rule);
+        }
+
+        .canary3 .canary3-validation__summary article {
+          min-width: 0;
+          padding: 0.9rem 0.9rem 0.9rem 0;
+        }
+
+        .canary3 .canary3-validation__summary article + article {
+          padding-left: 0.9rem;
+          border-left: 1px solid var(--rule);
+        }
+
+        .canary3 .canary3-validation__summary span,
+        .canary3 .canary3-validation__matrix span,
+        .canary3 .canary3-validation__foot span {
+          display: block;
+          color: var(--klein-blue);
+          font-family: var(--font-display);
+          font-size: 0.29rem;
+          font-weight: 700;
+          letter-spacing: 0.065em;
+        }
+
+        .canary3 .canary3-validation__summary strong {
+          display: block;
+          margin-top: 0.45rem;
+          font-family: var(--font-display);
+          font-size: 0.58rem;
+          line-height: 1.08;
+        }
+
+        .canary3 .canary3-validation__summary p {
+          margin-top: 0.4rem;
+          color: var(--muted);
+          font-size: 0.76rem;
+          line-height: 1.3;
+        }
+
+        .canary3 .canary3-validation__matrix {
+          margin-top: 1rem;
+          border: 1px solid var(--rule-strong);
+          background: var(--surface);
+        }
+
+        .canary3 .canary3-validation__matrix-head,
+        .canary3 .canary3-validation__case {
+          display: grid;
+          grid-template-columns:
+            minmax(190px, 0.8fr)
+            95px
+            minmax(0, 1.4fr);
+          gap: 1rem;
+          align-items: center;
+          padding: 0.72rem 0.8rem;
+        }
+
+        .canary3 .canary3-validation__matrix-head {
+          border-bottom: 1px solid var(--rule-strong);
+        }
+
+        .canary3 .canary3-validation__matrix-head span {
+          color: var(--muted);
+          font-size: 0.27rem;
+        }
+
+        .canary3 .canary3-validation__case + .canary3-validation__case {
+          border-top: 1px solid var(--rule);
+        }
+
+        .canary3 .canary3-validation__case code {
+          color: var(--text);
+          font-size: 0.68rem;
+        }
+
+        .canary3 .canary3-validation__case strong {
+          color: var(--canary-danger);
+          font-family: var(--font-display);
+          font-size: 0.42rem;
+          letter-spacing: 0.035em;
+        }
+
+        .canary3 .canary3-validation__case strong.is-unknown {
+          color: var(--klein-blue);
+        }
+
+        .canary3 .canary3-validation__case p {
+          color: var(--muted);
+          font-size: 0.76rem;
+          line-height: 1.28;
+        }
+
+        .canary3 .canary3-validation__foot {
+          display: grid;
+          grid-template-columns: 120px minmax(0, 1fr);
+          gap: 1rem;
+          margin-top: 0.85rem;
+          padding-top: 0.8rem;
+          border-top: 1px solid var(--rule);
+        }
+
+        .canary3 .canary3-validation__foot strong {
+          max-width: 700px;
+          font-size: 0.9rem;
+          line-height: 1.35;
+        }
+
         .canary3 .canary3-footer {
           display: flex;
           justify-content: space-between;
@@ -1326,8 +1562,24 @@ export function CanaryCaseStudy({
 
           .canary3 .canary3-regression__row,
           .canary3 .canary3-signal,
-          .canary3 .canary3-check {
+          .canary3 .canary3-check,
+          .canary3 .canary3-validation__summary {
             grid-template-columns: 1fr;
+          }
+
+          .canary3 .canary3-validation__summary article + article {
+            padding-left: 0;
+            border-top: 1px solid var(--rule);
+            border-left: 0;
+          }
+
+          .canary3 .canary3-validation__matrix-head {
+            display: none;
+          }
+
+          .canary3 .canary3-validation__case {
+            grid-template-columns: 1fr;
+            gap: 0.38rem;
           }
 
           .canary3 .canary3-trace {
@@ -1380,7 +1632,8 @@ export function CanaryCaseStudy({
           }
 
           .canary3 .canary3-thesis,
-          .canary3 .canary3-regression__result {
+          .canary3 .canary3-regression__result,
+          .canary3 .canary3-validation__foot {
             grid-template-columns: 1fr;
           }
         }
