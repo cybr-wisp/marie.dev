@@ -5,6 +5,7 @@ import {
   useEffect,
   useRef,
   useState,
+  type ReactNode,
 } from "react";
 
 import { CaseStudyTechStack } from "@/components/projects/CaseStudyTechStack";
@@ -14,6 +15,28 @@ type ParaTraceCaseStudyProps = Readonly<{
   project: Project;
 }>;
 
+/**
+ * ParaTrace portfolio case study
+ *
+ * Recruiter-facing goal:
+ * - ~3 minute scan
+ * - show the engineering/research reasoning, not every implementation detail
+ * - give immediate access to the research document, live app, and source
+ *
+ * NOTE:
+ * The repository currently does not contain a standalone abstract PDF.
+ * ABSTRACT_URL points to docs/research.md as the research-document fallback.
+ * Replace this one constant when you upload the final abstract/PDF.
+ */
+const ABSTRACT_URL =
+  "https://github.com/cybr-wisp/paratrace-cym2026/blob/master/docs/research.md";
+
+const LIVE_URL =
+  "https://paratrace-production.up.railway.app/";
+
+const REPOSITORY_URL =
+  "https://github.com/cybr-wisp/paratrace-cym2026";
+
 const levels = [
   {
     id: "L0",
@@ -21,72 +44,122 @@ const levels = [
     anthropic: 73.4,
     openai: 73.4,
     average: 73.4,
-    detail: "Original clinical speech. No rewriting.",
+    detail:
+      "Unaltered spontaneous speech. This is the distribution the downstream classifier learns from.",
   },
   {
     id: "L1",
     label: "GRAMMAR",
-    anthropic: 78.1,
-    openai: 74.8,
-    average: 76.5,
+    anthropic: 68.8,
+    openai: 66.5,
+    average: 67.7,
     detail:
-      "Correct spelling and grammar while explicitly preserving repetitions, fillers, hesitations, vocabulary, and sentence structure.",
+      "Correct spelling and grammar while preserving fillers, repetition, wording, and sentence structure as much as possible.",
   },
   {
     id: "L2",
     label: "LIGHT",
-    anthropic: 65.9,
-    openai: 58.7,
-    average: 62.3,
+    anthropic: 62.3,
+    openai: 56.9,
+    average: 59.6,
     detail:
-      "Remove obvious fillers and smooth awkward phrasing while preserving ideas and vocabulary level.",
+      "Remove obvious fillers and smooth awkward phrasing while preserving the same ideas and vocabulary level.",
   },
   {
     id: "L3",
     label: "MODERATE",
-    anthropic: 47.6,
-    openai: 53.8,
-    average: 50.7,
+    anthropic: 51.8,
+    openai: 52.5,
+    average: 52.2,
     detail:
-      "Restructure the language, improve vocabulary, organize ideas, and remove repetition.",
+      "Reorganize ideas, remove repetition, and improve vocabulary and sentence structure while retaining propositional meaning.",
   },
   {
     id: "L4",
     label: "FULL",
-    anthropic: 53.8,
-    openai: 49.6,
-    average: 51.7,
+    anthropic: 54.2,
+    openai: 53.3,
+    average: 53.8,
     detail:
-      "Full professional reformulation using polished vocabulary and more complex sentence structures.",
+      "Produce a fluent professional rewrite with more sophisticated vocabulary and sentence structure.",
   },
 ] as const;
 
-const providers = [
+const process = [
   {
-    id: "ANTHROPIC",
-    model: "CLAUDE SONNET 4.6",
-    l4: 53.8,
-    role: "Independent rewrite backend",
+    number: "01",
+    title: "PRESERVE",
     detail:
-      "Anthropic's model receives the same intervention instructions, source transcript, temperature, and output constraints.",
+      "Parse access-controlled DementiaBank CHAT transcripts without cleaning away the speech phenomena I wanted to measure.",
   },
   {
-    id: "OPENAI",
-    model: "GPT-4o-mini",
-    l4: 49.6,
-    role: "Independent rewrite backend",
+    number: "02",
+    title: "REPRESENT",
     detail:
-      "OpenAI's model independently reproduces the same degradation pattern under matched experimental conditions.",
+      "Extract 20 linguistic biomarkers spanning coherence, fluency, lexical diversity, syntax, repetition, and content.",
+  },
+  {
+    number: "03",
+    title: "INTERVENE",
+    detail:
+      "Apply four progressively stronger rewrite levels through OpenAI and Anthropic under matched generation settings.",
+  },
+  {
+    number: "04",
+    title: "MEASURE",
+    detail:
+      "Train on original speech, keep folds fixed, then test how rewritten feature distributions affect downstream classification.",
+  },
+] as const;
+
+const decisions = [
+  {
+    title: "FREEZE THE PROTOCOL",
+    why:
+      "Pre-specify hypotheses and evaluation before final analysis so the story is not rewritten around the result.",
+  },
+  {
+    title: "KEEP FOLDS FIXED",
+    why:
+      "Use identical stratified 5-fold assignments across L0–L4 so changes are attributable to the intervention, not split noise.",
+  },
+  {
+    title: "REPLICATE ACROSS PROVIDERS",
+    why:
+      "Run matched conditions through two independent LLM backends so the failure mode is not framed as a one-vendor artifact.",
+  },
+  {
+    title: "CACHE EVERY REWRITE",
+    why:
+      "Persist deterministic outputs to make long runs resumable, cheaper to reproduce, and easier to audit.",
+  },
+] as const;
+
+const takeaways = [
+  {
+    title: "SEMANTIC FIDELITY IS NOT ENOUGH",
+    detail:
+      "A rewrite can preserve meaning while shifting the structural representation another system depends on.",
+  },
+  {
+    title: "THE SYSTEM BOUNDARY MATTERS",
+    detail:
+      "If downstream analysis needs raw-speech characteristics, preserve that representation before a generative layer normalizes it.",
+  },
+  {
+    title: "MEASURE THE DOWNSTREAM TASK",
+    detail:
+      "Readability and semantic similarity are useful metrics, but they do not prove information preservation for another model.",
   },
 ] as const;
 
 const techGroups = [
   {
-    label: "LANGUAGE / FEATURES",
+    label: "RESEARCH PIPELINE",
     items: [
       {
-        name: "Python 3.11+",
-        detail: "research pipeline",
+        name: "Python",
+        detail: "experiment orchestration",
         icon: "python",
       },
       {
@@ -100,28 +173,18 @@ const techGroups = [
         icon: "huggingface",
       },
       {
-        name: "NLTK",
-        detail: "text processing",
-        mark: "NLP",
-      },
-      {
-        name: "LexicalRichness",
-        detail: "TTR / MTLD / MATTR",
-        mark: "LEX",
-      },
-      {
         name: "PyLangAcq",
-        detail: "CHAT / .cha ingestion",
+        detail: "CHAT transcript ingestion",
         mark: "CHA",
       },
     ],
   },
   {
-    label: "MODELING / STATISTICS",
+    label: "EVALUATION",
     items: [
       {
         name: "scikit-learn",
-        detail: "RF · GBT · logistic",
+        detail: "classification",
         icon: "scikitlearn",
       },
       {
@@ -130,35 +193,20 @@ const techGroups = [
         icon: "scipy",
       },
       {
-        name: "NumPy",
-        detail: "numeric feature arrays",
-        icon: "numpy",
-      },
-      {
         name: "pandas",
         detail: "experiment tables",
         icon: "pandas",
       },
       {
-        name: "Matplotlib",
-        detail: "research figures",
-        icon: "python",
+        name: "NumPy",
+        detail: "numeric feature arrays",
+        icon: "numpy",
       },
     ],
   },
   {
-    label: "LLM / APPLICATION",
+    label: "PRODUCT / DEPLOYMENT",
     items: [
-      {
-        name: "OpenAI",
-        detail: "GPT-4o-mini rewrite backend",
-        icon: "openai",
-      },
-      {
-        name: "Anthropic",
-        detail: "Claude Sonnet 4.6 backend",
-        icon: "anthropic",
-      },
       {
         name: "FastAPI",
         detail: "analysis API",
@@ -171,23 +219,8 @@ const techGroups = [
       },
       {
         name: "TypeScript",
-        detail: "frontend typing",
+        detail: "frontend",
         icon: "typescript",
-      },
-      {
-        name: "Vite",
-        detail: "frontend build",
-        icon: "vite",
-      },
-      {
-        name: "Recharts",
-        detail: "interactive results",
-        mark: "CH",
-      },
-      {
-        name: "Tailwind CSS",
-        detail: "frontend styling",
-        icon: "tailwindcss",
       },
       {
         name: "Docker",
@@ -196,55 +229,73 @@ const techGroups = [
       },
       {
         name: "Railway",
-        detail: "deployment target",
+        detail: "live deployment",
         icon: "railway",
       },
     ],
   },
 ] as const;
 
-const technicalStages = [
-  [
-    "INGEST",
-    "Parse access-controlled DementiaBank CHAT transcripts while preserving the speech phenomena that may carry clinical information.",
-  ],
-  [
-    "FEATURES",
-    "Extract 20 biomarkers spanning lexical diversity, repetition, coherence, syntax, fluency, vocabulary, and content units.",
-  ],
-  [
-    "REWRITE",
-    "Run identical L1–L4 intervention levels through OpenAI and Anthropic at temperature 0.3 with deterministic disk caching.",
-  ],
-  [
-    "EVALUATE",
-    "Establish an L0 baseline with stratified 5-fold CV, then measure degradation when an original-speech classifier encounters rewritten feature distributions.",
-  ],
-] as const;
+const chartMin = 48;
+const chartMax = 76;
+const chartTop = 38;
+const chartBottom = 220;
+const chartStartX = 62;
+const chartStepX = 166;
 
-function y(value: number) {
-  const min = 45;
-  const max = 82;
+function chartY(value: number) {
+  const normalized =
+    (value - chartMin) /
+    (chartMax - chartMin);
 
-  return 250 - ((value - min) / (max - min)) * 180;
+  return (
+    chartBottom -
+    normalized *
+      (chartBottom - chartTop)
+  );
 }
 
-function points(
+function chartPoints(
   key: "anthropic" | "openai" | "average",
 ) {
   return levels
     .map(
       (level, index) =>
-        `${70 + index * 190},${y(level[key]).toFixed(1)}`,
+        `${chartStartX + index * chartStepX},${chartY(
+          level[key],
+        ).toFixed(1)}`,
     )
     .join(" ");
+}
+
+function ExternalLink({
+  href,
+  children,
+  primary = false,
+}: Readonly<{
+  href: string;
+  children: ReactNode;
+  primary?: boolean;
+}>) {
+  return (
+    <a
+      className={`pt3-action ${
+        primary ? "is-primary" : ""
+      }`}
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+    >
+      {children}
+    </a>
+  );
 }
 
 export function ParaTraceCaseStudy({
   project,
 }: ParaTraceCaseStudyProps) {
   const [activeLevel, setActiveLevel] =
-    useState(4);
+    useState(3);
 
   const rootRef =
     useRef<HTMLElement>(null);
@@ -253,7 +304,7 @@ export function ParaTraceCaseStudy({
 
   const repository =
     project.repository ??
-    "https://github.com/cybr-wisp/paratrace-cym2026";
+    REPOSITORY_URL;
 
   useEffect(() => {
     const root = rootRef.current;
@@ -267,9 +318,10 @@ export function ParaTraceCaseStudy({
         "[data-reveal]",
       );
 
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+    const reduceMotion =
+      window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
 
     if (reduceMotion) {
       revealNodes.forEach((node) => {
@@ -279,25 +331,29 @@ export function ParaTraceCaseStudy({
       return;
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) {
-            return;
-          }
+    const observer =
+      new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) {
+              return;
+            }
 
-          entry.target.classList.add(
-            "is-visible",
-          );
+            entry.target.classList.add(
+              "is-visible",
+            );
 
-          observer.unobserve(entry.target);
-        });
-      },
-      {
-        threshold: 0.16,
-        rootMargin: "0px 0px -8% 0px",
-      },
-    );
+            observer.unobserve(
+              entry.target,
+            );
+          });
+        },
+        {
+          threshold: 0.13,
+          rootMargin:
+            "0px 0px -7% 0px",
+        },
+      );
 
     revealNodes.forEach((node) => {
       observer.observe(node);
@@ -309,16 +365,17 @@ export function ParaTraceCaseStudy({
   }, []);
 
   const activeX =
-    70 + activeLevel * 190;
+    chartStartX +
+    activeLevel * chartStepX;
 
   return (
     <article
       ref={rootRef}
-      className="case-study ptv2"
+      className="case-study pt3"
     >
       <Link
         href="/projects"
-        className="archive-back ptv2__back"
+        className="archive-back pt3__back"
       >
         ← PROJECTS
       </Link>
@@ -327,46 +384,67 @@ export function ParaTraceCaseStudy({
           HERO
           ===================================================== */}
 
-      <header className="ptv2-hero">
-        <span className="ptv2-kicker">
-          02 · PROJECT / AI SAFETY RESEARCH
+      <header className="pt3-hero" data-reveal>
+        <span className="pt3-kicker">
+          02 · AI SAFETY / APPLIED ML
         </span>
 
         <h1>{project.title}</h1>
 
-        <p className="ptv2-hero__statement copy-en">
+        <p className="pt3-hero__statement copy-en">
           AI preserved <em>what</em> patients
-          said — while erasing part of{" "}
+          said while erasing part of{" "}
           <em>how</em> they said it.
         </p>
 
-        <p className="ptv2-hero__statement copy-fr">
+        <p className="pt3-hero__statement copy-fr">
           L&apos;IA a préservé{" "}
-          <em>ce qui</em> était dit — tout en
-          effaçant une partie de{" "}
+          <em>ce qui</em> était dit tout en
+          modifiant une partie de{" "}
           <em>la manière</em> de le dire.
         </p>
 
-        <p className="ptv2-hero__dek copy-en">
-          A controlled audit of whether
-          generative rewriting can preserve
-          semantic meaning while destroying the
-          linguistic structure used by
-          downstream cognitive-screening
-          models.
+        <p className="pt3-hero__dek copy-en">
+          ParaTrace is a controlled failure-mode
+          audit of LLM rewriting in clinical speech:
+          I tested whether increasingly polished
+          rewrites preserve semantic meaning while
+          shifting the linguistic biomarkers used by
+          a downstream cognitive-status classifier.
         </p>
 
-        <p className="ptv2-hero__dek copy-fr">
-          Un audit contrôlé visant à déterminer
-          si la réécriture générative peut
-          préserver le sens tout en détruisant
-          la structure linguistique utilisée par
-          des modèles de dépistage cognitif.
+        <p className="pt3-hero__dek copy-fr">
+          ParaTrace est un audit contrôlé des
+          effets de la réécriture par LLM sur la
+          parole clinique, en comparant la fidélité
+          sémantique à la préservation des
+          biomarqueurs linguistiques utilisés en
+          aval.
         </p>
 
-        <dl className="ptv2-meta">
+        <nav
+          className="pt3-actions"
+          aria-label="ParaTrace project links"
+        >
+          <ExternalLink
+            href={ABSTRACT_URL}
+            primary
+          >
+            ABSTRACT / RESEARCH DOC ↗
+          </ExternalLink>
+
+          <ExternalLink href={LIVE_URL}>
+            LIVE APP ↗
+          </ExternalLink>
+
+          <ExternalLink href={repository}>
+            GITHUB ↗
+          </ExternalLink>
+        </nav>
+
+        <dl className="pt3-meta">
           <div>
-            <dt>DATA</dt>
+            <dt>CORPUS</dt>
             <dd>552 TRANSCRIPTS</dd>
           </div>
 
@@ -376,26 +454,13 @@ export function ParaTraceCaseStudy({
           </div>
 
           <div>
-            <dt>FEATURES</dt>
+            <dt>REPRESENTATION</dt>
             <dd>20 BIOMARKERS</dd>
           </div>
 
           <div>
-            <dt>LLMs</dt>
-            <dd>2 PROVIDERS</dd>
-          </div>
-
-          <div>
-            <dt>SOURCE</dt>
-            <dd>
-              <a
-                href={repository}
-                target="_blank"
-                rel="noreferrer"
-              >
-                GITHUB ↗
-              </a>
-            </dd>
+            <dt>REPLICATION</dt>
+            <dd>2 LLM PROVIDERS</dd>
           </div>
         </dl>
       </header>
@@ -405,313 +470,222 @@ export function ParaTraceCaseStudy({
           ===================================================== */}
 
       <section
-        className="ptv2-headline-result"
+        className="pt3-result"
         aria-label="ParaTrace headline result"
         data-reveal
       >
-        <div>
+        <article>
           <span>ORIGINAL SPEECH</span>
           <strong>73.4%</strong>
           <small>
-            diagnostic classification
+            downstream classification
           </small>
+        </article>
+
+        <div
+          className="pt3-result__arrow"
+          aria-hidden="true"
+        >
+          →
         </div>
 
-        <div className="ptv2-headline-result__bridge">
-          <span>PROGRESSIVE REWRITE</span>
-          <b>→</b>
-        </div>
-
-        <div className="is-accent">
-          <span>FULL REFORMULATION</span>
-          <strong>51.7%</strong>
+        <article className="is-accent">
+          <span>MODERATE REWRITE · L3</span>
+          <strong>52.2%</strong>
           <small>
-            two-model average · near chance
+            two-provider average
           </small>
-        </div>
-      </section>
+        </article>
 
-      <CaseStudyTechStack
-        groups={techGroups}
-        eyebrow="RESEARCH + PRODUCT STACK"
-      />
+        <article className="pt3-result__note">
+          <span>MEANING RETAINED</span>
+          <strong>&gt;83%</strong>
+          <small>
+            semantic cosine similarity
+          </small>
+        </article>
+      </section>
 
       {/* =====================================================
           01 — PROBLEM
           ===================================================== */}
 
-      <section className="ptv2-section">
-        <div className="ptv2-section__marker">
+      <section className="pt3-section" data-reveal>
+        <div className="pt3-section__marker">
           <span>01</span>
-          <h2>THE PROBLEM</h2>
+          <h2>THE TENSION</h2>
         </div>
 
-        <div className="ptv2-section__body">
-          <p className="ptv2-lead copy-en">
+        <div className="pt3-section__body">
+          <p className="pt3-lead copy-en">
             Clinical documentation systems are
-            rewarded for producing clean,
-            concise language. Cognitive
-            screening can depend on exactly the
-            opposite: repetitions, hesitations,
-            reduced coherence, unusual lexical
-            distributions, and simplified
-            syntax.
+            rewarded for making speech cleaner and
+            more concise. Cognitive-language models
+            can depend on the opposite: hesitation,
+            repetition, coherence, lexical choice,
+            and syntactic form.
           </p>
 
-          <p className="ptv2-lead copy-fr">
-            Les systèmes de documentation
-            clinique sont conçus pour produire
-            un langage clair et concis. Le
-            dépistage cognitif peut au contraire
-            dépendre des répétitions, hésitations,
-            variations de cohérence et
-            simplifications syntaxiques.
+          <p className="pt3-lead copy-fr">
+            Les systèmes de documentation clinique
+            cherchent à rendre la parole plus claire
+            et concise, alors que certains modèles
+            cognitifs dépendent précisément des
+            hésitations, répétitions et structures
+            linguistiques supprimées.
           </p>
 
           <div
-            className="ptv2-collision"
+            className="pt3-collision"
             data-reveal
           >
             <article>
-              <span>OBJECTIVE A</span>
+              <span>PRODUCT OBJECTIVE</span>
               <strong>
-                MAKE THE NOTE CLEANER
+                MAKE THE NOTE BETTER
               </strong>
               <p>
-                Remove filler, repetition,
-                awkward phrasing, and
-                grammatical irregularity.
+                Improve fluency, grammar,
+                organization, and readability.
               </p>
             </article>
 
             <div
-              className="ptv2-collision__mark"
+              className="pt3-collision__mark"
               aria-hidden="true"
             >
               ×
             </div>
 
             <article className="is-accent">
-              <span>OBJECTIVE B</span>
+              <span>DOWNSTREAM REQUIREMENT</span>
               <strong>
-                PRESERVE CLINICAL SIGNAL
+                PRESERVE THE SIGNAL
               </strong>
               <p>
-                Retain speech characteristics
-                that may differentiate healthy
-                and cognitively impaired
-                language.
+                Retain measurable properties of
+                spontaneous speech used by another
+                system.
               </p>
             </article>
           </div>
 
           <div
-            className="ptv2-question"
+            className="pt3-question"
             data-reveal
           >
-            <span>RESEARCH QUESTION</span>
-
+            <span>QUESTION I TESTED</span>
             <strong>
-              If a diagnostic mapping is learned
-              from original speech, how much of
-              that signal survives when different
-              LLMs progressively rewrite the same
-              transcript?
+              If a classifier learns from original
+              spontaneous speech, how much of that
+              signal survives progressive LLM
+              rewriting?
             </strong>
           </div>
         </div>
       </section>
 
       {/* =====================================================
-          02 — EXPERIMENT
+          02 — ENGINEERING PROCESS
           ===================================================== */}
 
-      <section className="ptv2-section">
-        <div className="ptv2-section__marker">
+      <section className="pt3-section" data-reveal>
+        <div className="pt3-section__marker">
           <span>02</span>
-          <h2>CONTROLLED EXPERIMENT</h2>
+          <h2>HOW I APPROACHED IT</h2>
         </div>
 
-        <div className="ptv2-section__body">
-          <p className="ptv2-lead copy-en">
-            Instead of asking whether one model
-            makes one transcript look different,
-            ParaTrace holds the experiment
-            constant across an entire clinically
-            labelled corpus and changes the
-            intensity of rewriting systematically.
+        <div className="pt3-section__body">
+          <p className="pt3-lead copy-en">
+            I treated rewriting as a controlled
+            intervention. The goal was not to ask
+            whether two texts “look different,” but
+            to isolate whether increasing
+            normalization moves the representation
+            away from the distribution the
+            downstream model learned.
           </p>
 
-          <p className="ptv2-lead copy-fr">
-            ParaTrace maintient les conditions
-            expérimentales constantes sur un
-            corpus clinique complet et fait
-            varier systématiquement l&apos;intensité
-            de la réécriture.
-          </p>
-
-          <div
-            className="ptv2-stage-grid"
-            data-reveal
-          >
-            {technicalStages.map(
-              ([label, copy], index) => (
-                <article key={label}>
-                  <span>
-                    {String(
-                      index + 1,
-                    ).padStart(2, "0")}
-                  </span>
-
-                  <h3>{label}</h3>
-
-                  <p>{copy}</p>
-                </article>
-              ),
-            )}
-          </div>
-
-          <div className="ptv2-method-strip">
-            <div>
-              <span>CLASSIFIERS</span>
-              <strong>
-                RF 200 · GBT 150 · LOGISTIC
-              </strong>
-            </div>
-
-            <div>
-              <span>BASELINE</span>
-              <strong>
-                STRATIFIED 5-FOLD CV
-              </strong>
-            </div>
-
-            <div>
-              <span>STATS</span>
-              <strong>
-                WILCOXON · COHEN&apos;S d · BRR
-              </strong>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================
-          03 — CROSS MODEL
-          ===================================================== */}
-
-      <section className="ptv2-section">
-        <div className="ptv2-section__marker">
-          <span>03</span>
-          <h2>CROSS-MODEL TEST</h2>
-        </div>
-
-        <div className="ptv2-section__body">
-          <p className="ptv2-lead">
-            The key replication test is whether
-            the effect belongs to one vendor or
-            survives a change in model provider.
-            Both backends receive the same
-            transcript and matched intervention
-            instructions.
+          <p className="pt3-lead copy-fr">
+            J&apos;ai traité la réécriture comme une
+            intervention contrôlée afin d&apos;isoler
+            l&apos;effet de la normalisation sur la
+            représentation utilisée par le modèle en
+            aval.
           </p>
 
           <div
-            className="ptv2-provider-grid"
+            className="pt3-process"
             data-reveal
           >
-            {providers.map((provider) => (
-              <article key={provider.id}>
-                <div className="ptv2-provider-grid__top">
-                  <span>{provider.id}</span>
-                  <small>
-                    {provider.role}
-                  </small>
-                </div>
-
-                <h3>{provider.model}</h3>
-
-                <p>{provider.detail}</p>
-
-                <div className="ptv2-provider-grid__metric">
-                  <span>L4 ACCURACY</span>
-                  <strong>
-                    {provider.l4.toFixed(1)}%
-                  </strong>
-                </div>
+            {process.map((step) => (
+              <article key={step.number}>
+                <span>{step.number}</span>
+                <h3>{step.title}</h3>
+                <p>{step.detail}</p>
               </article>
             ))}
           </div>
 
           <div
-            className="ptv2-controls"
+            className="pt3-decision-header"
             data-reveal
           >
-            <span>SAME SOURCE TRANSCRIPT</span>
-            <span>SAME L1–L4 PROMPTS</span>
-            <span>TEMPERATURE · 0.3</span>
-            <span>MAX TOKENS · 2000</span>
-            <span>DISK-CACHED OUTPUTS</span>
+            <span>EXPERIMENTAL DECISIONS</span>
+            <strong>
+              The controls mattered as much as the
+              model.
+            </strong>
           </div>
 
-          <div className="ptv2-model-table">
-            <div className="ptv2-model-table__head">
-              <span>LEVEL</span>
-              <span>ANTHROPIC</span>
-              <span>OPENAI</span>
-              <span>AVERAGE</span>
-            </div>
-
-            {levels.map((level) => (
-              <button
-                type="button"
-                key={level.id}
-                className={
-                  activeLevel ===
-                  levels.indexOf(level)
-                    ? "is-active"
-                    : ""
-                }
-                onClick={() =>
-                  setActiveLevel(
-                    levels.indexOf(level),
-                  )
-                }
-              >
-                <span>
-                  {level.id} · {level.label}
-                </span>
-
-                <strong>
-                  {level.anthropic.toFixed(1)}%
-                </strong>
-
-                <strong>
-                  {level.openai.toFixed(1)}%
-                </strong>
-
-                <strong>
-                  {level.average.toFixed(1)}%
-                </strong>
-              </button>
+          <div
+            className="pt3-decisions"
+            data-reveal
+          >
+            {decisions.map((decision) => (
+              <article key={decision.title}>
+                <h3>{decision.title}</h3>
+                <p>{decision.why}</p>
+              </article>
             ))}
+          </div>
+
+          <div className="pt3-method">
+            <span>
+              STRATIFIED 5-FOLD CV
+            </span>
+            <span>
+              MATCHED L0–L4 FOLDS
+            </span>
+            <span>
+              OPENAI + ANTHROPIC
+            </span>
+            <span>
+              TEMP · 0.3
+            </span>
+            <span>
+              DISK-CACHED OUTPUTS
+            </span>
+            <span>
+              WILCOXON + BH FDR
+            </span>
           </div>
         </div>
       </section>
 
       {/* =====================================================
-          04 — SIGNAL ERASURE
+          03 — EVIDENCE
           ===================================================== */}
 
-      <section className="ptv2-section">
-        <div className="ptv2-section__marker">
-          <span>04</span>
-          <h2>SIGNAL ERASURE</h2>
+      <section className="pt3-section" data-reveal>
+        <div className="pt3-section__marker">
+          <span>03</span>
+          <h2>WHAT THE DATA SHOWED</h2>
         </div>
 
-        <div className="ptv2-section__body">
+        <div className="pt3-section__body">
           <div
-            className="ptv2-levels"
+            className="pt3-levels"
             role="group"
             aria-label="Rewrite level"
           >
@@ -732,7 +706,6 @@ export function ParaTraceCaseStudy({
                   <strong>
                     {level.id}
                   </strong>
-
                   <span>
                     {level.label}
                   </span>
@@ -743,194 +716,198 @@ export function ParaTraceCaseStudy({
 
           <div
             key={selected.id}
-            className="ptv2-level-readout ptv2-level-readout--animated"
+            className="pt3-readout"
             aria-live="polite"
           >
-            <div>
+            <div className="pt3-readout__copy">
               <span>
                 {selected.id} ·{" "}
                 {selected.label}
               </span>
-
-              <p>
-                {selected.detail}
-              </p>
+              <p>{selected.detail}</p>
             </div>
 
             <div>
               <span>ANTHROPIC</span>
               <strong>
-                {selected.anthropic.toFixed(1)}%
+                {selected.anthropic.toFixed(
+                  1,
+                )}
+                %
               </strong>
             </div>
 
             <div>
               <span>OPENAI</span>
               <strong>
-                {selected.openai.toFixed(1)}%
+                {selected.openai.toFixed(
+                  1,
+                )}
+                %
               </strong>
             </div>
 
             <div className="is-accent">
               <span>AVERAGE</span>
               <strong>
-                {selected.average.toFixed(1)}%
+                {selected.average.toFixed(
+                  1,
+                )}
+                %
               </strong>
             </div>
           </div>
 
           <div
-            className="ptv2-chart"
+            className="pt3-chart"
             data-reveal
           >
-            <div className="ptv2-chart__head">
-              <span>
-                DIAGNOSTIC ACCURACY BY REWRITE
-                LEVEL
-              </span>
+            <div className="pt3-chart__head">
+              <div>
+                <span>
+                  DOWNSTREAM ACCURACY
+                </span>
+                <strong>
+                  SAME CLASSIFIER · SHIFTED
+                  INPUT DISTRIBUTION
+                </strong>
+              </div>
 
-              <strong>
-                19 / 20 FEATURES SIGNIFICANTLY
-                ALTERED BY L2
-              </strong>
-            </div>
-
-            <div className="ptv2-chart__legend">
-              <span className="is-anthropic">
-                ANTHROPIC
-              </span>
-
-              <span className="is-openai">
-                OPENAI
-              </span>
-
-              <span className="is-average">
-                AVERAGE
-              </span>
+              <div className="pt3-chart__legend">
+                <span className="is-anthropic">
+                  ANTHROPIC
+                </span>
+                <span className="is-openai">
+                  OPENAI
+                </span>
+                <span className="is-average">
+                  AVERAGE
+                </span>
+              </div>
             </div>
 
             <svg
-              viewBox="0 0 900 290"
+              viewBox="0 0 790 260"
               role="img"
-              aria-label="Diagnostic accuracy degradation across L0 to L4"
+              aria-label="Classification accuracy across ParaTrace rewrite levels"
             >
-              <g className="ptv2-chart__grid">
-                <line
-                  x1="45"
-                  x2="850"
-                  y1="70"
-                  y2="70"
-                />
-                <line
-                  x1="45"
-                  x2="850"
-                  y1="130"
-                  y2="130"
-                />
-                <line
-                  x1="45"
-                  x2="850"
-                  y1="190"
-                  y2="190"
-                />
-                <line
-                  x1="45"
-                  x2="850"
-                  y1="250"
-                  y2="250"
-                />
+              <g className="pt3-chart__grid">
+                {[55, 65, 75].map(
+                  (value) => (
+                    <g key={value}>
+                      <line
+                        x1="38"
+                        x2="752"
+                        y1={chartY(value)}
+                        y2={chartY(value)}
+                      />
+                      <text
+                        x="6"
+                        y={
+                          chartY(value) + 4
+                        }
+                      >
+                        {value}%
+                      </text>
+                    </g>
+                  ),
+                )}
               </g>
 
               <line
-                className="ptv2-chart__chance"
-                x1="45"
-                x2="850"
-                y1={y(50)}
-                y2={y(50)}
+                className="pt3-chart__chance"
+                x1="38"
+                x2="752"
+                y1={chartY(50)}
+                y2={chartY(50)}
               />
 
               <text
-                className="ptv2-chart__chance-label"
-                x="855"
-                y={y(50) + 4}
+                className="pt3-chart__chance-label"
+                x="650"
+                y={chartY(50) - 7}
               >
                 50% CHANCE
               </text>
 
               <line
-                className="ptv2-chart__focus"
+                className="pt3-chart__focus"
                 x1={activeX}
                 x2={activeX}
-                y1="55"
-                y2="250"
+                y1="28"
+                y2="220"
               />
 
               <polyline
-                pathLength="1"
-                className="ptv2-chart__anthropic ptv2-chart__series"
-                points={points("anthropic")}
+                className="pt3-chart__line pt3-chart__line--anthropic"
+                points={chartPoints(
+                  "anthropic",
+                )}
               />
 
               <polyline
-                pathLength="1"
-                className="ptv2-chart__openai ptv2-chart__series"
-                points={points("openai")}
+                className="pt3-chart__line pt3-chart__line--openai"
+                points={chartPoints(
+                  "openai",
+                )}
               />
 
               <polyline
-                pathLength="1"
-                className="ptv2-chart__average ptv2-chart__series"
-                points={points("average")}
+                className="pt3-chart__line pt3-chart__line--average"
+                points={chartPoints(
+                  "average",
+                )}
               />
 
               {levels.map(
                 (level, index) => {
                   const x =
-                    70 + index * 190;
+                    chartStartX +
+                    index * chartStepX;
 
                   return (
                     <g key={level.id}>
                       <circle
-                        className="ptv2-chart__provider-dot ptv2-chart__provider-dot--anthropic"
+                        className="pt3-chart__dot pt3-chart__dot--anthropic"
                         cx={x}
-                        cy={y(
+                        cy={chartY(
                           level.anthropic,
                         )}
                         r="3"
                       />
 
                       <circle
-                        className="ptv2-chart__provider-dot ptv2-chart__provider-dot--openai"
+                        className="pt3-chart__dot pt3-chart__dot--openai"
                         cx={x}
-                        cy={y(
+                        cy={chartY(
                           level.openai,
                         )}
                         r="3"
                       />
 
                       <circle
-                        className={`ptv2-chart__dot ${
+                        className={`pt3-chart__dot pt3-chart__dot--average ${
                           activeLevel ===
                           index
                             ? "is-active"
                             : ""
                         }`}
                         cx={x}
-                        cy={y(
+                        cy={chartY(
                           level.average,
                         )}
                         r="4"
                       />
 
                       <text
-                        className={`ptv2-chart__x ${
+                        className={`pt3-chart__x ${
                           activeLevel ===
                           index
                             ? "is-active"
                             : ""
                         }`}
                         x={x}
-                        y="278"
+                        y="248"
                       >
                         {level.id}
                       </text>
@@ -940,284 +917,143 @@ export function ParaTraceCaseStudy({
               )}
             </svg>
           </div>
-        </div>
-      </section>
 
-      {/* =====================================================
-          05 — WHAT VS HOW
-          ===================================================== */}
-
-      <section className="ptv2-section">
-        <div className="ptv2-section__marker">
-          <span>05</span>
-          <h2>WHAT VS HOW</h2>
-        </div>
-
-        <div className="ptv2-section__body">
           <div
-            className="ptv2-what-how"
+            className="pt3-findings"
             data-reveal
           >
             <article>
-              <span>WHAT</span>
-              <strong>&gt;83%</strong>
-              <h3>SEMANTIC SIMILARITY</h3>
+              <span>FEATURE DRIFT · L2</span>
+              <strong>
+                19 / 20
+              </strong>
               <p>
-                Meaning remained highly aligned
-                with the original transcript.
+                Anthropic biomarkers
+                significantly altered; OpenAI
+                reached 20 / 20 under paired
+                Wilcoxon testing with BH-FDR
+                correction.
               </p>
             </article>
 
             <article className="is-accent">
-              <span>HOW</span>
-              <strong>51.7%</strong>
-              <h3>DIAGNOSTIC ACCURACY</h3>
+              <span>WHAT VS HOW</span>
+              <strong>
+                &gt;83% ≠ 52.2%
+              </strong>
               <p>
-                The linguistic form carrying the
-                classification signal fell
-                toward binary chance.
+                Semantic similarity stayed high
+                even when L3 classification fell
+                close to binary chance.
               </p>
             </article>
           </div>
 
           <blockquote
-            className="ptv2-thesis"
+            className="pt3-thesis"
             data-reveal
           >
-            Semantic fidelity is not diagnostic
-            fidelity.
+            Semantic fidelity is not necessarily
+            downstream fidelity.
           </blockquote>
-
-          <p className="ptv2-technical-note">
-            A rewrite can therefore be
-            semantically excellent and still be
-            destructive to another downstream
-            task. The content survives; the
-            distributional and structural
-            properties of the language do not.
-          </p>
         </div>
       </section>
 
       {/* =====================================================
-          06 — MECHANISM
+          04 — DESIGN RESPONSE
           ===================================================== */}
 
-      <section className="ptv2-section">
-        <div className="ptv2-section__marker">
-          <span>06</span>
-          <h2>WHY IT BREAKS</h2>
+      <section className="pt3-section" data-reveal>
+        <div className="pt3-section__marker">
+          <span>04</span>
+          <h2>THE DESIGN RESPONSE</h2>
         </div>
 
-        <div className="ptv2-section__body">
-          <div
-            className="ptv2-feature-summary"
-            data-reveal
-          >
-            <div>
-              <span>
-                STRONGEST PREDICTORS
-              </span>
-
-              <strong>
-                GLOBAL COHERENCE
-              </strong>
-
-              <strong>
-                PRONOUN : NOUN RATIO
-              </strong>
-
-              <strong>CIU RATIO</strong>
-            </div>
-
-            <div>
-              <span>FEATURE SPACE</span>
-
-              <p>
-                Lexical diversity · repetition
-                · semantic coherence · syntactic
-                complexity · propositional
-                density · word finding ·
-                vocabulary sophistication ·
-                content units
-              </p>
-            </div>
-          </div>
-
-          <div
-            className="ptv2-mechanism"
-            data-reveal
-          >
-            <div>
-              <span>RAW SPEECH</span>
-              <p>
-                Hesitation · repetition ·
-                irregular syntax · local
-                coherence variation
-              </p>
-            </div>
-
-            <b>→</b>
-
-            <div>
-              <span>LLM OBJECTIVE</span>
-              <p>
-                Fluency · clarity · organization
-                · normalization
-              </p>
-            </div>
-
-            <b>→</b>
-
-            <div className="is-accent">
-              <span>SHIFTED FEATURE SPACE</span>
-              <p>
-                Language becomes easier to read
-                while drifting away from the
-                distribution the diagnostic
-                model learned.
-              </p>
-            </div>
-          </div>
-
-          <p className="ptv2-technical-note copy-en">
-            The important failure mode is not
-            simple semantic corruption. LLMs can
-            keep the topic and meaning
-            recognizable while systematically
-            regularizing disfluency, repetition,
-            coherence, lexical distribution, and
-            syntactic form — exactly the
-            dimensions the downstream model
-            uses.
+        <div className="pt3-section__body">
+          <p className="pt3-lead copy-en">
+            The failure suggested an architectural
+            response rather than a better prompt:
+            preserve the diagnostic representation
+            before the generative layer is allowed
+            to optimize the text for readability.
           </p>
 
-          <p className="ptv2-technical-note copy-fr">
-            Le mode d&apos;échec important
-            n&apos;est pas une simple corruption
-            sémantique. Les LLM peuvent préserver
-            le sujet et le sens tout en
-            régularisant les dimensions
-            linguistiques utilisées en aval.
-          </p>
-        </div>
-      </section>
-
-      {/* =====================================================
-          07 — PROPOSED SOLUTION
-          ===================================================== */}
-
-      <section className="ptv2-section">
-        <div className="ptv2-section__marker">
-          <span>07</span>
-          <h2>PROPOSED SOLUTION</h2>
-        </div>
-
-        <div className="ptv2-section__body">
-          <p className="ptv2-lead copy-en">
-            The proposed fix is architectural,
-            not prompt-based: preserve the
-            diagnostic representation before a
-            generative model is allowed to
-            normalize the language.
-          </p>
-
-          <p className="ptv2-lead copy-fr">
-            La solution proposée est
-            architecturale : préserver la
-            représentation diagnostique avant
-            qu&apos;un modèle génératif ne
-            normalise le langage.
+          <p className="pt3-lead copy-fr">
+            Le résultat suggère une réponse
+            architecturale plutôt qu&apos;un meilleur
+            prompt : préserver la représentation
+            utile avant que la couche générative
+            n&apos;optimise le texte.
           </p>
 
           <div
-            className="ptv2-current-path"
+            className="pt3-path"
             data-reveal
           >
-            <span className="ptv2-diagram-label">
-              CURRENT / FRAGILE PATH
+            <span className="pt3-path__label">
+              FRAGILE PATH
             </span>
 
             <div>
-              <strong>RAW SPEECH</strong>
+              RAW SPEECH
             </div>
-
             <b>→</b>
-
             <div>
-              <strong>AI REWRITE</strong>
+              AI REWRITE
             </div>
-
             <b>→</b>
-
             <div>
-              <strong>
-                FEATURE EXTRACTION
-              </strong>
+              FEATURE EXTRACTION
             </div>
-
             <b>→</b>
-
             <div className="is-risk">
-              <strong>
-                ALTERED SIGNAL
-              </strong>
+              SHIFTED SIGNAL
             </div>
           </div>
 
           <div
-            className="ptv2-architecture"
-            aria-label="ParaTrace pre-extraction architecture"
+            className="pt3-architecture"
             data-reveal
           >
             <div>
               <span>01</span>
-
               <strong>
                 RAW SPEECH / ASR
               </strong>
-
-              <small>
-                access-controlled source
-              </small>
             </div>
 
             <b>→</b>
 
-            <div className="ptv2-architecture__fork">
-              <div className="is-accent">
+            <div className="pt3-architecture__fork">
+              <article className="is-accent">
                 <span>02A</span>
-
                 <strong>
-                  BIOMARKER EXTRACTION
+                  PRE-EXTRACT FEATURES
                 </strong>
-
                 <small>
-                  preserve 20-feature vector
-                  before rewrite
+                  preserve original linguistic
+                  representation
                 </small>
-              </div>
+              </article>
 
-              <div>
+              <article>
                 <span>02B</span>
-
-                <strong>AI SCRIBE</strong>
-
+                <strong>
+                  GENERATE CLINICAL NOTE
+                </strong>
                 <small>
-                  readability / documentation
+                  optimize for readability
                 </small>
-              </div>
+              </article>
             </div>
 
             <b>→</b>
 
             <div className="is-accent">
               <span>03</span>
-
               <strong>
-                CLINICAL OUTPUT
+                DUAL OUTPUT
               </strong>
-
               <small>
                 polished note + preserved
                 feature profile
@@ -1225,151 +1061,135 @@ export function ParaTraceCaseStudy({
             </div>
           </div>
 
-          <div
-            className="ptv2-solution-principle"
-            data-reveal
-          >
-            <span>DESIGN PRINCIPLE</span>
-
-            <strong>
-              Do not ask the generative layer to
-              preserve information it was
-              explicitly optimized to smooth
-              away.
-            </strong>
+          <div className="pt3-boundary">
+            <span>IMPORTANT BOUNDARY</span>
+            <p>
+              This is a mitigation hypothesis, not
+              a clinically validated deployment.
+              ParaTrace demonstrates the failure
+              mode and motivates the architecture;
+              it does not claim improved clinical
+              outcomes.
+            </p>
           </div>
         </div>
       </section>
 
       {/* =====================================================
-          08 — SCOPE
+          05 — TAKEAWAYS
           ===================================================== */}
 
-      <section className="ptv2-section">
-        <div className="ptv2-section__marker">
-          <span>08</span>
-          <h2>SCOPE</h2>
+      <section className="pt3-section" data-reveal>
+        <div className="pt3-section__marker">
+          <span>05</span>
+          <h2>WHAT I TOOK AWAY</h2>
         </div>
 
-        <div className="ptv2-section__body">
-          <p className="ptv2-lead">
-            ParaTrace is a failure-mode audit,
-            not a clinical diagnostic system.
-            The experiment establishes that
-            linguistic normalization can alter
-            downstream signal; it does not claim
-            that every deployed AI scribe behaves
-            identically.
-          </p>
-
+        <div className="pt3-section__body">
           <div
-            className="ptv2-limit-grid"
+            className="pt3-takeaways"
             data-reveal
           >
-            <article>
-              <span>01</span>
-              <strong>
-                NOT A DIAGNOSTIC TOOL
-              </strong>
-              <p>
-                Classification is used to measure
-                information degradation, not to
-                make clinical decisions.
-              </p>
-            </article>
-
-            <article>
-              <span>02</span>
-              <strong>
-                CONTROLLED REWRITING
-              </strong>
-              <p>
-                The experiment isolates language
-                transformation rather than
-                reproducing every proprietary
-                production scribe pipeline.
-              </p>
-            </article>
-
-            <article>
-              <span>03</span>
-              <strong>
-                ACCESS-CONTROLLED DATA
-              </strong>
-              <p>
-                Raw DementiaBank participant
-                transcripts are not included in
-                the public repository.
-              </p>
-            </article>
+            {takeaways.map(
+              (takeaway, index) => (
+                <article
+                  key={takeaway.title}
+                >
+                  <span>
+                    {String(
+                      index + 1,
+                    ).padStart(2, "0")}
+                  </span>
+                  <h3>
+                    {takeaway.title}
+                  </h3>
+                  <p>
+                    {takeaway.detail}
+                  </p>
+                </article>
+              ),
+            )}
           </div>
 
-          <div className="ptv2-scope">
+          <div
+            className="pt3-scope"
+            data-reveal
+          >
             <span>
-              AI SAFETY AUDIT · NOT A
-              DIAGNOSTIC TOOL
+              FAILURE-MODE AUDIT
             </span>
-
             <span>
-              NO RAW PATIENT TRANSCRIPTS IN
-              PUBLIC REPOSITORY
+              NOT A DIAGNOSTIC TOOL
             </span>
-
             <span>
-              REPRODUCIBLE PIPELINE · CACHED
-              REWRITES
+              ACCESS-CONTROLLED DATA
+            </span>
+            <span>
+              NO RAW PATIENT TRANSCRIPTS PUBLIC
             </span>
           </div>
         </div>
       </section>
 
-      <footer className="ptv2-footer">
-        <a
-          href={repository}
-          target="_blank"
-          rel="noreferrer"
-        >
-          VIEW SOURCE ↗
-        </a>
+      <CaseStudyTechStack
+        groups={techGroups}
+        eyebrow="BUILT WITH"
+      />
+
+      <footer className="pt3-footer">
+        <div className="pt3-footer__links">
+          <ExternalLink
+            href={ABSTRACT_URL}
+            primary
+          >
+            RESEARCH DOC ↗
+          </ExternalLink>
+
+          <ExternalLink href={LIVE_URL}>
+            LIVE APP ↗
+          </ExternalLink>
+
+          <ExternalLink href={repository}>
+            SOURCE ↗
+          </ExternalLink>
+        </div>
 
         <Link href="/projects/microgrid-ml">
           NEXT · MICROGRID ML →
         </Link>
       </footer>
 
-
       <style>{`
         /* =========================================================
-           PARATRACE — SELF-CONTAINED CASE STUDY STYLES
-           These rules intentionally use .ptv2 as an extra scope so
-           they override the older global ParaTrace selectors.
+           PARATRACE — RECRUITER CASE STUDY
+           Compact, reasoning-first, ~3 minute scan.
            ========================================================= */
 
-        .ptv2 {
+        .pt3 {
           width: min(calc(100% - 2rem), 1040px);
           margin-inline: auto;
           padding: 2.2rem 0 5rem;
         }
 
-        body:has(.ptv2) .site-rule {
+        body:has(.pt3) .site-rule {
           display: none !important;
         }
 
-        .ptv2 .ptv2__back {
+        .pt3 .pt3__back {
           display: inline-block;
           margin-bottom: 3rem;
         }
 
         /* ---------- hero ---------- */
 
-        .ptv2 .ptv2-hero {
-          padding-bottom: 2.5rem;
+        .pt3 .pt3-hero {
+          padding-bottom: 2.35rem;
           border-bottom: 1px solid var(--rule-strong);
         }
 
-        .ptv2 .ptv2-kicker {
+        .pt3 .pt3-kicker {
           display: block;
-          margin-bottom: 1rem;
+          margin-bottom: 0.9rem;
           color: var(--muted);
           font-family: var(--font-display);
           font-size: 0.4rem;
@@ -1377,50 +1197,87 @@ export function ParaTraceCaseStudy({
           letter-spacing: 0.09em;
         }
 
-        .ptv2 .ptv2-hero h1 {
+        .pt3 .pt3-hero h1 {
           max-width: 900px;
-          font-size: clamp(4.4rem, 10vw, 8.5rem);
+          font-size: clamp(3.4rem, 7vw, 5.8rem);
           font-weight: 700;
           line-height: 0.82;
           letter-spacing: -0.07em;
         }
 
-        .ptv2 .ptv2-hero__statement {
+        .pt3 .pt3-hero__statement {
           max-width: 850px;
           margin-top: 1.55rem;
           font-family: var(--font-display);
-          font-size: clamp(1.65rem, 3.4vw, 2.9rem);
+          font-size: clamp(1.45rem, 2.8vw, 2.2rem);
           font-weight: 700;
           line-height: 1;
           letter-spacing: -0.045em;
         }
 
-        .ptv2 .ptv2-hero__statement em {
+        .pt3 .pt3-hero__statement em {
           color: var(--klein-blue);
           font-style: normal;
         }
 
-        .ptv2 .ptv2-hero__dek {
+        .pt3 .pt3-hero__dek {
           max-width: 720px;
           margin-top: 1rem;
           color: var(--muted);
-          font-size: 1.02rem;
-          line-height: 1.42;
+          font-size: 1rem;
+          line-height: 1.45;
         }
 
-        .ptv2 .ptv2-meta {
+        .pt3 .pt3-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.55rem;
+          margin-top: 1.45rem;
+        }
+
+        .pt3 .pt3-action {
+          display: inline-flex;
+          align-items: center;
+          min-height: 38px;
+          padding: 0.65rem 0.78rem;
+          border: 1px solid var(--rule-strong);
+          background: var(--surface);
+          color: var(--text);
+          font-family: var(--font-display);
+          font-size: 0.36rem;
+          font-weight: 700;
+          letter-spacing: 0.055em;
+          transition:
+            transform 180ms ease,
+            border-color 180ms ease,
+            background 180ms ease,
+            color 180ms ease;
+        }
+
+        .pt3 .pt3-action:hover {
+          transform: translateY(-2px);
+          border-color: var(--klein-blue);
+        }
+
+        .pt3 .pt3-action.is-primary {
+          border-color: var(--klein-blue);
+          background: var(--klein-blue);
+          color: white;
+        }
+
+        .pt3 .pt3-meta {
           display: grid;
-          grid-template-columns: repeat(5, minmax(0, 1fr));
+          grid-template-columns: repeat(4, minmax(0, 1fr));
           margin-top: 2rem;
           border-top: 1px solid var(--rule);
         }
 
-        .ptv2 .ptv2-meta > div {
+        .pt3 .pt3-meta > div {
           min-width: 0;
           padding: 0.8rem 0.7rem 0 0;
         }
 
-        .ptv2 .ptv2-meta dt {
+        .pt3 .pt3-meta dt {
           color: var(--muted);
           font-family: var(--font-display);
           font-size: 0.31rem;
@@ -1428,86 +1285,84 @@ export function ParaTraceCaseStudy({
           letter-spacing: 0.08em;
         }
 
-        .ptv2 .ptv2-meta dd {
-          margin-top: 0.23rem;
-          overflow-wrap: anywhere;
+        .pt3 .pt3-meta dd {
+          margin-top: 0.24rem;
           font-family: var(--font-display);
-          font-size: 0.43rem;
+          font-size: 0.44rem;
           font-weight: 700;
           line-height: 1.1;
         }
 
-        .ptv2 .ptv2-meta a {
-          color: var(--klein-blue);
-        }
-
         /* ---------- headline result ---------- */
 
-        .ptv2 .ptv2-headline-result {
+        .pt3 .pt3-result {
           display: grid;
           grid-template-columns:
             minmax(0, 1fr)
-            minmax(130px, 0.45fr)
-            minmax(0, 1fr);
-          gap: 1.25rem;
+            34px
+            minmax(0, 1fr)
+            minmax(180px, 0.8fr);
+          gap: 1rem;
           align-items: center;
-          margin: 2.4rem 0;
-          padding: 1.4rem 0;
+          margin: 2rem 0;
+          padding: 1.3rem 0;
           border-top: 1px solid var(--rule-strong);
           border-bottom: 1px solid var(--rule-strong);
           font-family: var(--font-display);
         }
 
-        .ptv2 .ptv2-headline-result > div:not(.ptv2-headline-result__bridge) {
-          display: flex;
+        .pt3 .pt3-result article {
           min-width: 0;
-          flex-direction: column;
         }
 
-        .ptv2 .ptv2-headline-result span,
-        .ptv2 .ptv2-headline-result small {
+        .pt3 .pt3-result span,
+        .pt3 .pt3-result small {
+          display: block;
           color: var(--muted);
-          font-size: 0.35rem;
+          font-size: 0.33rem;
           font-weight: 700;
-          letter-spacing: 0.07em;
+          letter-spacing: 0.065em;
         }
 
-        .ptv2 .ptv2-headline-result strong {
-          margin: 0.2rem 0;
-          font-size: clamp(2.7rem, 6vw, 5.3rem);
+        .pt3 .pt3-result strong {
+          display: block;
+          margin: 0.18rem 0;
+          font-size: clamp(2.5rem, 5vw, 4.8rem);
           line-height: 0.9;
           letter-spacing: -0.06em;
         }
 
-        .ptv2 .ptv2-headline-result .is-accent strong {
+        .pt3 .pt3-result .is-accent strong {
           color: var(--klein-blue);
         }
 
-        .ptv2 .ptv2-headline-result__bridge {
-          display: flex;
-          align-items: center;
-          flex-direction: column;
-          gap: 0.35rem;
+        .pt3 .pt3-result__arrow {
+          color: var(--klein-blue);
+          font-family: var(--font-display);
+          font-size: 1.2rem;
           text-align: center;
         }
 
-        .ptv2 .ptv2-headline-result__bridge b {
-          color: var(--klein-blue);
-          font-size: 1.3rem;
-          font-weight: 400;
+        .pt3 .pt3-result__note {
+          padding-left: 1rem;
+          border-left: 1px solid var(--rule);
+        }
+
+        .pt3 .pt3-result__note strong {
+          font-size: clamp(1.9rem, 4vw, 3.4rem);
         }
 
         /* ---------- section shell ---------- */
 
-        .ptv2 .ptv2-section {
+        .pt3 .pt3-section {
           display: grid;
           grid-template-columns: 150px minmax(0, 1fr);
           gap: 2rem;
-          padding: 3.25rem 0;
+          padding: 3rem 0;
           border-top: 1px solid var(--rule);
         }
 
-        .ptv2 .ptv2-section__marker > span {
+        .pt3 .pt3-section__marker > span {
           display: block;
           color: var(--klein-blue);
           font-family: var(--font-display);
@@ -1516,65 +1371,65 @@ export function ParaTraceCaseStudy({
           letter-spacing: 0.08em;
         }
 
-        .ptv2 .ptv2-section__marker h2 {
+        .pt3 .pt3-section__marker h2 {
           margin-top: 0.4rem;
-          font-size: 0.76rem;
+          font-size: 0.68rem;
           line-height: 1.05;
         }
 
-        .ptv2 .ptv2-section__body {
+        .pt3 .pt3-section__body {
           min-width: 0;
         }
 
-        .ptv2 .ptv2-lead {
+        .pt3 .pt3-lead {
           max-width: 760px;
           font-size: 1rem;
-          line-height: 1.45;
+          line-height: 1.48;
         }
 
-        /* ---------- 01 problem ---------- */
+        /* ---------- problem ---------- */
 
-        .ptv2 .ptv2-collision {
+        .pt3 .pt3-collision {
           display: grid;
           grid-template-columns:
             minmax(0, 1fr)
-            48px
+            46px
             minmax(0, 1fr);
-          margin-top: 1.35rem;
+          margin-top: 1.25rem;
           border: 1px solid var(--rule-strong);
           background: var(--surface);
         }
 
-        .ptv2 .ptv2-collision > article {
+        .pt3 .pt3-collision article {
           min-width: 0;
           padding: 1rem;
         }
 
-        .ptv2 .ptv2-collision > article > span {
+        .pt3 .pt3-collision article > span {
           display: block;
-          margin-bottom: 0.5rem;
           color: var(--muted);
           font-family: var(--font-display);
-          font-size: 0.32rem;
+          font-size: 0.31rem;
           font-weight: 700;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.07em;
         }
 
-        .ptv2 .ptv2-collision > article > strong {
+        .pt3 .pt3-collision article > strong {
           display: block;
+          margin-top: 0.48rem;
           font-family: var(--font-display);
-          font-size: 0.67rem;
+          font-size: 0.68rem;
           line-height: 1.05;
         }
 
-        .ptv2 .ptv2-collision > article > p {
-          margin-top: 0.45rem;
+        .pt3 .pt3-collision article > p {
+          margin-top: 0.5rem;
           color: var(--muted);
-          font-size: 0.84rem;
-          line-height: 1.28;
+          font-size: 0.83rem;
+          line-height: 1.3;
         }
 
-        .ptv2 .ptv2-collision > article.is-accent {
+        .pt3 .pt3-collision article.is-accent {
           background:
             color-mix(
               in srgb,
@@ -1583,11 +1438,11 @@ export function ParaTraceCaseStudy({
             );
         }
 
-        .ptv2 .ptv2-collision > article.is-accent > strong {
+        .pt3 .pt3-collision article.is-accent > strong {
           color: var(--klein-blue);
         }
 
-        .ptv2 .ptv2-collision__mark {
+        .pt3 .pt3-collision__mark {
           display: grid;
           place-items: center;
           border-left: 1px solid var(--rule);
@@ -1598,832 +1453,7 @@ export function ParaTraceCaseStudy({
           font-weight: 700;
         }
 
-        .ptv2 .ptv2-question {
-          margin-top: 0.8rem;
-          padding: 0.95rem 1rem;
-          border-left: 2px solid var(--klein-blue);
-          background:
-            color-mix(
-              in srgb,
-              var(--klein-blue) 4%,
-              var(--surface)
-            );
-        }
-
-        .ptv2 .ptv2-question > span {
-          display: block;
-          margin-bottom: 0.35rem;
-          color: var(--klein-blue);
-          font-family: var(--font-display);
-          font-size: 0.32rem;
-          font-weight: 700;
-          letter-spacing: 0.08em;
-        }
-
-        .ptv2 .ptv2-question > strong {
-          display: block;
-          max-width: 780px;
-          font-family: var(--font-body);
-          font-size: 1rem;
-          font-weight: 600;
-          line-height: 1.35;
-        }
-
-        /* ---------- 02 experiment ---------- */
-
-        .ptv2 .ptv2-stage-grid {
-          display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          margin-top: 1.4rem;
-          border-top: 1px solid var(--rule-strong);
-          border-left: 1px solid var(--rule-strong);
-        }
-
-        .ptv2 .ptv2-stage-grid article {
-          min-width: 0;
-          min-height: 150px;
-          padding: 0.85rem;
-          border-right: 1px solid var(--rule-strong);
-          border-bottom: 1px solid var(--rule-strong);
-          background: var(--surface);
-        }
-
-        .ptv2 .ptv2-stage-grid article > span {
-          color: var(--klein-blue);
-          font-family: var(--font-display);
-          font-size: 0.31rem;
-          font-weight: 700;
-        }
-
-        .ptv2 .ptv2-stage-grid h3 {
-          margin-top: 1.3rem;
-          font-family: var(--font-display);
-          font-size: 0.55rem;
-        }
-
-        .ptv2 .ptv2-stage-grid p {
-          margin-top: 0.4rem;
-          color: var(--muted);
-          font-size: 0.77rem;
-          line-height: 1.25;
-        }
-
-        .ptv2 .ptv2-method-strip {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          margin-top: 0.75rem;
-          border: 1px solid var(--rule);
-        }
-
-        .ptv2 .ptv2-method-strip > div {
-          min-width: 0;
-          padding: 0.72rem;
-          border-right: 1px solid var(--rule);
-        }
-
-        .ptv2 .ptv2-method-strip > div:last-child {
-          border-right: 0;
-        }
-
-        .ptv2 .ptv2-method-strip span {
-          display: block;
-          color: var(--muted);
-          font-family: var(--font-display);
-          font-size: 0.29rem;
-          font-weight: 700;
-          letter-spacing: 0.07em;
-        }
-
-        .ptv2 .ptv2-method-strip strong {
-          display: block;
-          margin-top: 0.25rem;
-          font-family: var(--font-display);
-          font-size: 0.43rem;
-          line-height: 1.08;
-        }
-
-        /* ---------- 03 providers ---------- */
-
-        .ptv2 .ptv2-provider-grid {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          margin-top: 1.35rem;
-          border: 1px solid var(--rule-strong);
-          background: var(--surface);
-        }
-
-        .ptv2 .ptv2-provider-grid > article {
-          min-width: 0;
-          padding: 1rem;
-        }
-
-        .ptv2 .ptv2-provider-grid > article + article {
-          border-left: 1px solid var(--rule);
-        }
-
-        .ptv2 .ptv2-provider-grid__top {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          gap: 1rem;
-        }
-
-        .ptv2 .ptv2-provider-grid__top > span {
-          color: var(--klein-blue);
-          font-family: var(--font-display);
-          font-size: 0.34rem;
-          font-weight: 700;
-          letter-spacing: 0.08em;
-        }
-
-        .ptv2 .ptv2-provider-grid__top > small {
-          max-width: 11rem;
-          color: var(--muted);
-          font-family: var(--font-display);
-          font-size: 0.3rem;
-          font-weight: 700;
-          line-height: 1.2;
-          text-align: right;
-        }
-
-        .ptv2 .ptv2-provider-grid h3 {
-          margin-top: 0.75rem;
-          font-family: var(--font-display);
-          font-size: clamp(1.05rem, 2vw, 1.4rem);
-          line-height: 1;
-          letter-spacing: -0.035em;
-        }
-
-        .ptv2 .ptv2-provider-grid article > p {
-          margin-top: 0.6rem;
-          color: var(--muted);
-          font-size: 0.84rem;
-          line-height: 1.3;
-        }
-
-        .ptv2 .ptv2-provider-grid__metric {
-          display: flex;
-          justify-content: space-between;
-          align-items: baseline;
-          gap: 0.7rem;
-          margin-top: 0.9rem;
-          padding-top: 0.7rem;
-          border-top: 1px solid var(--rule);
-        }
-
-        .ptv2 .ptv2-provider-grid__metric span {
-          color: var(--muted);
-          font-family: var(--font-display);
-          font-size: 0.31rem;
-          font-weight: 700;
-          letter-spacing: 0.06em;
-        }
-
-        .ptv2 .ptv2-provider-grid__metric strong {
-          font-family: var(--font-display);
-          font-size: 1.35rem;
-          line-height: 0.95;
-        }
-
-        .ptv2 .ptv2-controls {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.35rem;
-          margin-top: 0.7rem;
-        }
-
-        .ptv2 .ptv2-controls span {
-          display: inline-block;
-          padding: 0.35rem 0.48rem;
-          border: 1px solid var(--rule);
-          color: var(--muted);
-          background: var(--surface);
-          font-family: var(--font-display);
-          font-size: 0.3rem;
-          font-weight: 700;
-          letter-spacing: 0.05em;
-        }
-
-        .ptv2 .ptv2-model-table {
-          width: 100%;
-          margin-top: 0.85rem;
-          border-top: 1px solid var(--rule-strong);
-          border-left: 1px solid var(--rule-strong);
-          font-family: var(--font-display);
-        }
-
-        .ptv2 .ptv2-model-table__head,
-        .ptv2 .ptv2-model-table > button {
-          display: grid;
-          grid-template-columns:
-            minmax(150px, 1.45fr)
-            repeat(3, minmax(92px, 0.72fr));
-          align-items: stretch;
-        }
-
-        .ptv2 .ptv2-model-table__head > span,
-        .ptv2 .ptv2-model-table > button > span,
-        .ptv2 .ptv2-model-table > button > strong {
-          min-width: 0;
-          padding: 0.58rem 0.62rem;
-          border-right: 1px solid var(--rule);
-          border-bottom: 1px solid var(--rule);
-        }
-
-        .ptv2 .ptv2-model-table__head > span {
-          color: var(--muted);
-          font-size: 0.3rem;
-          font-weight: 700;
-          letter-spacing: 0.07em;
-        }
-
-        .ptv2 .ptv2-model-table > button {
-          width: 100%;
-          padding: 0;
-          border: 0;
-          background: var(--surface);
-          color: var(--text);
-          cursor: none;
-          text-align: left;
-        }
-
-        .ptv2 .ptv2-model-table > button > span {
-          font-size: 0.49rem;
-          font-weight: 700;
-        }
-
-        .ptv2 .ptv2-model-table > button > strong {
-          font-size: 0.56rem;
-          line-height: 1;
-        }
-
-        .ptv2 .ptv2-model-table > button > strong:last-child {
-          color: var(--klein-blue);
-        }
-
-        .ptv2 .ptv2-model-table > button.is-active {
-          background:
-            color-mix(
-              in srgb,
-              var(--klein-blue) 7%,
-              var(--surface)
-            );
-        }
-
-        .ptv2 .ptv2-model-table > button.is-active > span {
-          color: var(--klein-blue);
-        }
-
-        /* ---------- 04 signal erasure ---------- */
-
-        .ptv2 .ptv2-levels {
-          display: grid;
-          grid-template-columns: repeat(5, minmax(0, 1fr));
-          border-top: 1px solid var(--rule-strong);
-          border-left: 1px solid var(--rule-strong);
-        }
-
-        .ptv2 .ptv2-levels button {
-          min-height: 72px;
-          padding: 0.65rem;
-          border: 0;
-          border-right: 1px solid var(--rule-strong);
-          border-bottom: 1px solid var(--rule-strong);
-          background: var(--surface);
-          color: var(--text);
-          cursor: none;
-          text-align: left;
-        }
-
-        .ptv2 .ptv2-levels button strong,
-        .ptv2 .ptv2-levels button span {
-          display: block;
-          font-family: var(--font-display);
-        }
-
-        .ptv2 .ptv2-levels button strong {
-          font-size: 0.45rem;
-        }
-
-        .ptv2 .ptv2-levels button span {
-          margin-top: 0.3rem;
-          color: var(--muted);
-          font-size: 0.28rem;
-          font-weight: 700;
-          letter-spacing: 0.05em;
-        }
-
-        .ptv2 .ptv2-levels button.is-active {
-          background: var(--klein-blue);
-          color: white;
-        }
-
-        .ptv2 .ptv2-levels button.is-active span {
-          color: white;
-        }
-
-        .ptv2 .ptv2-level-readout {
-          display: grid;
-          grid-template-columns:
-            minmax(0, 1.55fr)
-            repeat(3, minmax(100px, 0.65fr));
-          margin-top: 0.7rem;
-          border: 1px solid var(--rule);
-        }
-
-        .ptv2 .ptv2-level-readout > div {
-          min-width: 0;
-          padding: 0.8rem;
-          border-right: 1px solid var(--rule);
-        }
-
-        .ptv2 .ptv2-level-readout > div:last-child {
-          border-right: 0;
-        }
-
-        .ptv2 .ptv2-level-readout span {
-          display: block;
-          color: var(--muted);
-          font-family: var(--font-display);
-          font-size: 0.3rem;
-          font-weight: 700;
-          letter-spacing: 0.06em;
-        }
-
-        .ptv2 .ptv2-level-readout p {
-          margin-top: 0.35rem;
-          color: var(--muted);
-          font-size: 0.78rem;
-          line-height: 1.23;
-        }
-
-        .ptv2 .ptv2-level-readout strong {
-          display: block;
-          margin-top: 0.35rem;
-          font-family: var(--font-display);
-          font-size: 1.25rem;
-        }
-
-        .ptv2 .ptv2-level-readout .is-accent strong {
-          color: var(--klein-blue);
-        }
-
-        .ptv2 .ptv2-level-readout--animated {
-          animation:
-            ptv2-local-readout
-            280ms
-            var(--ease, cubic-bezier(.22,1,.36,1))
-            both;
-        }
-
-        .ptv2 .ptv2-chart {
-          margin-top: 0.8rem;
-          padding: 0.9rem;
-          border: 1px solid var(--rule-strong);
-          background: var(--surface);
-        }
-
-        .ptv2 .ptv2-chart__head {
-          display: flex;
-          justify-content: space-between;
-          gap: 1rem;
-          align-items: flex-start;
-          font-family: var(--font-display);
-        }
-
-        .ptv2 .ptv2-chart__head span,
-        .ptv2 .ptv2-chart__head strong {
-          font-size: 0.31rem;
-          font-weight: 700;
-          letter-spacing: 0.06em;
-        }
-
-        .ptv2 .ptv2-chart__head span {
-          color: var(--muted);
-        }
-
-        .ptv2 .ptv2-chart__head strong {
-          color: var(--klein-blue);
-          text-align: right;
-        }
-
-        .ptv2 .ptv2-chart__legend {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.55rem 1rem;
-          margin-top: 0.65rem;
-          margin-bottom: 0.5rem;
-        }
-
-        .ptv2 .ptv2-chart__legend span {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.38rem;
-          color: var(--muted);
-          font-family: var(--font-display);
-          font-size: 0.29rem;
-          font-weight: 700;
-          letter-spacing: 0.05em;
-        }
-
-        .ptv2 .ptv2-chart__legend span::before {
-          content: "";
-          display: block;
-          width: 22px;
-          height: 2px;
-          background: var(--text);
-        }
-
-        .ptv2 .ptv2-chart__legend .is-anthropic::before {
-          height: 1px;
-          background: var(--muted);
-        }
-
-        .ptv2 .ptv2-chart__legend .is-openai::before {
-          height: 1px;
-          background:
-            repeating-linear-gradient(
-              to right,
-              var(--text) 0 4px,
-              transparent 4px 7px
-            );
-        }
-
-        .ptv2 .ptv2-chart__legend .is-average::before {
-          background: var(--klein-blue);
-        }
-
-        .ptv2 .ptv2-chart svg {
-          display: block;
-          width: 100%;
-          height: auto;
-          overflow: visible;
-        }
-
-        .ptv2 .ptv2-chart__grid line {
-          stroke: var(--rule);
-          stroke-width: 1;
-          vector-effect: non-scaling-stroke;
-        }
-
-        .ptv2 .ptv2-chart__chance {
-          stroke: var(--muted);
-          stroke-width: 1;
-          stroke-dasharray: 5 6;
-          opacity: 0.7;
-          vector-effect: non-scaling-stroke;
-        }
-
-        .ptv2 .ptv2-chart__chance-label,
-        .ptv2 .ptv2-chart__x {
-          fill: var(--muted);
-          font-family: var(--font-display);
-          font-size: 10px;
-          font-weight: 700;
-        }
-
-        .ptv2 .ptv2-chart__focus {
-          stroke: var(--klein-blue);
-          stroke-width: 1;
-          stroke-dasharray: 3 5;
-          opacity: 0.3;
-          vector-effect: non-scaling-stroke;
-          transition:
-            x1 260ms var(--ease, cubic-bezier(.22,1,.36,1)),
-            x2 260ms var(--ease, cubic-bezier(.22,1,.36,1));
-        }
-
-        .ptv2 .ptv2-chart__series {
-          fill: none;
-          vector-effect: non-scaling-stroke;
-          opacity: 0;
-          transition:
-            opacity 700ms var(--ease, cubic-bezier(.22,1,.36,1));
-        }
-
-        .ptv2 .ptv2-chart.is-visible .ptv2-chart__series {
-          opacity: 1;
-        }
-
-        .ptv2 .ptv2-chart__anthropic {
-          stroke: var(--muted);
-          stroke-width: 1.3;
-        }
-
-        .ptv2 .ptv2-chart__openai {
-          stroke: var(--text);
-          stroke-width: 1.3;
-          stroke-dasharray: 7 7;
-        }
-
-        .ptv2 .ptv2-chart__average {
-          stroke: var(--klein-blue);
-          stroke-width: 2.2;
-        }
-
-        .ptv2 .ptv2-chart__provider-dot--anthropic {
-          fill: var(--muted);
-        }
-
-        .ptv2 .ptv2-chart__provider-dot--openai {
-          fill: var(--text);
-        }
-
-        .ptv2 .ptv2-chart__dot {
-          fill: var(--klein-blue);
-          transform-box: fill-box;
-          transform-origin: center;
-          transition:
-            transform 260ms var(--ease, cubic-bezier(.22,1,.36,1));
-        }
-
-        .ptv2 .ptv2-chart__dot.is-active {
-          transform: scale(1.45);
-        }
-
-        .ptv2 .ptv2-chart__x.is-active {
-          fill: var(--klein-blue);
-        }
-
-        /* ---------- 05 what vs how ---------- */
-
-        .ptv2 .ptv2-what-how {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          border: 1px solid var(--rule-strong);
-        }
-
-        .ptv2 .ptv2-what-how article {
-          min-width: 0;
-          padding: 1rem;
-        }
-
-        .ptv2 .ptv2-what-how article + article {
-          border-left: 1px solid var(--rule);
-        }
-
-        .ptv2 .ptv2-what-how span {
-          color: var(--muted);
-          font-family: var(--font-display);
-          font-size: 0.32rem;
-          font-weight: 700;
-        }
-
-        .ptv2 .ptv2-what-how strong {
-          display: block;
-          margin-top: 0.55rem;
-          font-family: var(--font-display);
-          font-size: clamp(2.4rem, 5vw, 4.4rem);
-          line-height: 0.9;
-          letter-spacing: -0.05em;
-        }
-
-        .ptv2 .ptv2-what-how h3 {
-          margin-top: 0.45rem;
-          font-size: 0.5rem;
-        }
-
-        .ptv2 .ptv2-what-how p {
-          margin-top: 0.45rem;
-          color: var(--muted);
-          font-size: 0.82rem;
-          line-height: 1.25;
-        }
-
-        .ptv2 .ptv2-what-how .is-accent strong {
-          color: var(--klein-blue);
-        }
-
-        .ptv2 .ptv2-thesis {
-          margin-top: 0.8rem;
-          padding: 1rem;
-          border-left: 2px solid var(--klein-blue);
-          background:
-            color-mix(
-              in srgb,
-              var(--klein-blue) 4%,
-              var(--surface)
-            );
-          font-family: var(--font-display);
-          font-size: clamp(1.35rem, 3vw, 2.2rem);
-          font-weight: 700;
-          line-height: 1.04;
-          letter-spacing: -0.035em;
-        }
-
-        .ptv2 .ptv2-technical-note {
-          max-width: 760px;
-          margin-top: 1rem;
-          color: var(--muted);
-          font-size: 0.9rem;
-          line-height: 1.38;
-        }
-
-        /* ---------- 06 mechanism ---------- */
-
-        .ptv2 .ptv2-feature-summary {
-          display: grid;
-          grid-template-columns:
-            minmax(0, 0.8fr)
-            minmax(0, 1.2fr);
-          gap: 0.55rem;
-        }
-
-        .ptv2 .ptv2-feature-summary > div {
-          min-width: 0;
-          padding: 0.95rem;
-          border: 1px solid var(--rule);
-        }
-
-        .ptv2 .ptv2-feature-summary span {
-          display: block;
-          margin-bottom: 0.55rem;
-          color: var(--muted);
-          font-family: var(--font-display);
-          font-size: 0.31rem;
-          font-weight: 700;
-          letter-spacing: 0.06em;
-        }
-
-        .ptv2 .ptv2-feature-summary strong {
-          display: block;
-          padding: 0.3rem 0;
-          border-top: 1px solid var(--rule);
-          font-family: var(--font-display);
-          font-size: 0.49rem;
-        }
-
-        .ptv2 .ptv2-feature-summary p {
-          color: var(--muted);
-          font-size: 0.85rem;
-          line-height: 1.32;
-        }
-
-        .ptv2 .ptv2-mechanism {
-          display: grid;
-          grid-template-columns:
-            minmax(0, 1fr)
-            34px
-            minmax(0, 1fr)
-            34px
-            minmax(0, 1fr);
-          gap: 0.45rem;
-          align-items: stretch;
-          margin-top: 0.8rem;
-        }
-
-        .ptv2 .ptv2-mechanism > div {
-          min-width: 0;
-          padding: 0.85rem;
-          border: 1px solid var(--rule);
-          background: var(--surface);
-        }
-
-        .ptv2 .ptv2-mechanism > b {
-          align-self: center;
-          color: var(--klein-blue);
-          text-align: center;
-        }
-
-        .ptv2 .ptv2-mechanism span {
-          display: block;
-          color: var(--muted);
-          font-family: var(--font-display);
-          font-size: 0.3rem;
-          font-weight: 700;
-          letter-spacing: 0.06em;
-        }
-
-        .ptv2 .ptv2-mechanism p {
-          margin-top: 0.4rem;
-          color: var(--muted);
-          font-size: 0.78rem;
-          line-height: 1.24;
-        }
-
-        .ptv2 .ptv2-mechanism .is-accent {
-          border-color: var(--klein-blue);
-        }
-
-        /* ---------- 07 solution ---------- */
-
-        .ptv2 .ptv2-current-path {
-          display: grid;
-          grid-template-columns:
-            minmax(0, 1fr)
-            28px
-            minmax(0, 1fr)
-            28px
-            minmax(0, 1fr)
-            28px
-            minmax(0, 1fr);
-          gap: 0.38rem;
-          align-items: center;
-        }
-
-        .ptv2 .ptv2-diagram-label {
-          grid-column: 1 / -1;
-          color: var(--muted);
-          font-family: var(--font-display);
-          font-size: 0.3rem;
-          font-weight: 700;
-          letter-spacing: 0.07em;
-        }
-
-        .ptv2 .ptv2-current-path > div {
-          min-width: 0;
-          padding: 0.78rem;
-          border: 1px solid var(--rule);
-          background: var(--surface);
-        }
-
-        .ptv2 .ptv2-current-path > b {
-          color: var(--muted);
-          text-align: center;
-        }
-
-        .ptv2 .ptv2-current-path strong {
-          display: block;
-          overflow-wrap: anywhere;
-          font-family: var(--font-display);
-          font-size: 0.43rem;
-          line-height: 1.1;
-        }
-
-        .ptv2 .ptv2-current-path .is-risk {
-          border-color: var(--klein-blue);
-        }
-
-        .ptv2 .ptv2-current-path .is-risk strong {
-          color: var(--klein-blue);
-        }
-
-        .ptv2 .ptv2-architecture {
-          display: grid;
-          grid-template-columns:
-            minmax(160px, 0.8fr)
-            40px
-            minmax(0, 1.4fr)
-            40px
-            minmax(160px, 0.9fr);
-          gap: 0.5rem;
-          align-items: center;
-          margin-top: 1rem;
-        }
-
-        .ptv2 .ptv2-architecture > div:not(.ptv2-architecture__fork) {
-          min-width: 0;
-          padding: 0.85rem;
-          border: 1px solid var(--rule-strong);
-        }
-
-        .ptv2 .ptv2-architecture > b {
-          color: var(--klein-blue);
-          text-align: center;
-        }
-
-        .ptv2 .ptv2-architecture__fork {
-          display: grid;
-          gap: 0.5rem;
-        }
-
-        .ptv2 .ptv2-architecture__fork > div {
-          min-width: 0;
-          padding: 0.8rem;
-          border: 1px solid var(--rule);
-        }
-
-        .ptv2 .ptv2-architecture span,
-        .ptv2 .ptv2-architecture small {
-          display: block;
-          color: var(--muted);
-          font-family: var(--font-display);
-          font-size: 0.3rem;
-          font-weight: 700;
-        }
-
-        .ptv2 .ptv2-architecture strong {
-          display: block;
-          margin-top: 0.22rem;
-          overflow-wrap: anywhere;
-          font-family: var(--font-display);
-          font-size: 0.48rem;
-          line-height: 1.08;
-        }
-
-        .ptv2 .ptv2-architecture small {
-          margin-top: 0.25rem;
-          line-height: 1.2;
-        }
-
-        .ptv2 .ptv2-architecture .is-accent {
-          border-color: var(--klein-blue) !important;
-        }
-
-        .ptv2 .ptv2-solution-principle {
-          display: grid;
-          grid-template-columns: 150px minmax(0, 1fr);
-          gap: 1rem;
+        .pt3 .pt3-question {
           margin-top: 0.8rem;
           padding: 0.9rem 1rem;
           border-left: 2px solid var(--klein-blue);
@@ -2435,7 +1465,8 @@ export function ParaTraceCaseStudy({
             );
         }
 
-        .ptv2 .ptv2-solution-principle span {
+        .pt3 .pt3-question > span {
+          display: block;
           color: var(--klein-blue);
           font-family: var(--font-display);
           font-size: 0.31rem;
@@ -2443,129 +1474,763 @@ export function ParaTraceCaseStudy({
           letter-spacing: 0.07em;
         }
 
-        .ptv2 .ptv2-solution-principle strong {
+        .pt3 .pt3-question > strong {
+          display: block;
+          max-width: 780px;
+          margin-top: 0.35rem;
           font-family: var(--font-body);
-          font-size: 0.97rem;
+          font-size: 1rem;
           font-weight: 600;
-          line-height: 1.32;
+          line-height: 1.35;
         }
 
-        /* ---------- 08 scope ---------- */
+        /* ---------- process ---------- */
 
-        .ptv2 .ptv2-limit-grid {
+        .pt3 .pt3-process {
           display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          margin-top: 1.2rem;
-          border: 1px solid var(--rule-strong);
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          margin-top: 1.35rem;
+          border-top: 1px solid var(--rule-strong);
+          border-left: 1px solid var(--rule-strong);
+        }
+
+        .pt3 .pt3-process article {
+          min-width: 0;
+          min-height: 162px;
+          padding: 0.85rem;
+          border-right: 1px solid var(--rule-strong);
+          border-bottom: 1px solid var(--rule-strong);
           background: var(--surface);
         }
 
-        .ptv2 .ptv2-limit-grid article {
-          min-width: 0;
-          padding: 0.9rem;
-        }
-
-        .ptv2 .ptv2-limit-grid article + article {
-          border-left: 1px solid var(--rule);
-        }
-
-        .ptv2 .ptv2-limit-grid article > span {
-          display: block;
+        .pt3 .pt3-process article > span {
           color: var(--klein-blue);
           font-family: var(--font-display);
           font-size: 0.31rem;
           font-weight: 700;
         }
 
-        .ptv2 .ptv2-limit-grid strong {
+        .pt3 .pt3-process h3 {
+          margin-top: 1.05rem;
+          font-family: var(--font-display);
+          font-size: 0.56rem;
+        }
+
+        .pt3 .pt3-process p {
+          margin-top: 0.45rem;
+          color: var(--muted);
+          font-size: 0.76rem;
+          line-height: 1.28;
+        }
+
+        .pt3 .pt3-decision-header {
+          display: grid;
+          grid-template-columns: 170px minmax(0, 1fr);
+          gap: 1rem;
+          margin-top: 1.25rem;
+          padding: 0.8rem 0;
+          border-top: 1px solid var(--rule);
+        }
+
+        .pt3 .pt3-decision-header span {
+          color: var(--klein-blue);
+          font-family: var(--font-display);
+          font-size: 0.31rem;
+          font-weight: 700;
+          letter-spacing: 0.07em;
+        }
+
+        .pt3 .pt3-decision-header strong {
+          font-size: 0.95rem;
+          line-height: 1.3;
+        }
+
+        .pt3 .pt3-decisions {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          border: 1px solid var(--rule-strong);
+          background: var(--surface);
+        }
+
+        .pt3 .pt3-decisions article {
+          min-width: 0;
+          padding: 0.9rem;
+          border-right: 1px solid var(--rule);
+          border-bottom: 1px solid var(--rule);
+        }
+
+        .pt3 .pt3-decisions article:nth-child(2n) {
+          border-right: 0;
+        }
+
+        .pt3 .pt3-decisions article:nth-last-child(-n + 2) {
+          border-bottom: 0;
+        }
+
+        .pt3 .pt3-decisions h3 {
+          font-family: var(--font-display);
+          font-size: 0.5rem;
+        }
+
+        .pt3 .pt3-decisions p {
+          margin-top: 0.42rem;
+          color: var(--muted);
+          font-size: 0.79rem;
+          line-height: 1.3;
+        }
+
+        .pt3 .pt3-method {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.34rem;
+          margin-top: 0.7rem;
+        }
+
+        .pt3 .pt3-method span {
+          padding: 0.37rem 0.48rem;
+          border: 1px solid var(--rule);
+          background: var(--surface);
+          color: var(--muted);
+          font-family: var(--font-display);
+          font-size: 0.29rem;
+          font-weight: 700;
+          letter-spacing: 0.05em;
+        }
+
+        /* ---------- levels / evidence ---------- */
+
+        .pt3 .pt3-levels {
+          display: grid;
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+          border-top: 1px solid var(--rule-strong);
+          border-left: 1px solid var(--rule-strong);
+        }
+
+        .pt3 .pt3-levels button {
+          min-height: 68px;
+          padding: 0.62rem;
+          border: 0;
+          border-right: 1px solid var(--rule-strong);
+          border-bottom: 1px solid var(--rule-strong);
+          background: var(--surface);
+          color: var(--text);
+          cursor: pointer;
+          text-align: left;
+          transition:
+            background 170ms ease,
+            color 170ms ease;
+        }
+
+        .pt3 .pt3-levels button strong,
+        .pt3 .pt3-levels button span {
+          display: block;
+          font-family: var(--font-display);
+        }
+
+        .pt3 .pt3-levels button strong {
+          font-size: 0.45rem;
+        }
+
+        .pt3 .pt3-levels button span {
+          margin-top: 0.25rem;
+          color: var(--muted);
+          font-size: 0.28rem;
+          font-weight: 700;
+          letter-spacing: 0.05em;
+        }
+
+        .pt3 .pt3-levels button.is-active {
+          background: var(--klein-blue);
+          color: white;
+        }
+
+        .pt3 .pt3-levels button.is-active span {
+          color: rgba(255, 255, 255, 0.78);
+        }
+
+        .pt3 .pt3-readout {
+          display: grid;
+          grid-template-columns:
+            minmax(0, 2fr)
+            repeat(3, minmax(105px, 0.7fr));
+          border-right: 1px solid var(--rule-strong);
+          border-bottom: 1px solid var(--rule-strong);
+          border-left: 1px solid var(--rule-strong);
+          background: var(--surface);
+          animation:
+            pt3-readout-in
+            300ms
+            var(--ease, cubic-bezier(.22,1,.36,1))
+            both;
+        }
+
+        .pt3 .pt3-readout > div {
+          min-width: 0;
+          padding: 0.85rem;
+          border-right: 1px solid var(--rule);
+        }
+
+        .pt3 .pt3-readout > div:last-child {
+          border-right: 0;
+        }
+
+        .pt3 .pt3-readout span {
+          display: block;
+          color: var(--muted);
+          font-family: var(--font-display);
+          font-size: 0.3rem;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+        }
+
+        .pt3 .pt3-readout p {
+          margin-top: 0.42rem;
+          color: var(--muted);
+          font-size: 0.8rem;
+          line-height: 1.3;
+        }
+
+        .pt3 .pt3-readout strong {
           display: block;
           margin-top: 0.4rem;
+          font-family: var(--font-display);
+          font-size: 1.2rem;
+          line-height: 1;
+        }
+
+        .pt3 .pt3-readout .is-accent strong {
+          color: var(--klein-blue);
+        }
+
+        .pt3 .pt3-chart {
+          margin-top: 0.9rem;
+          padding: 0.9rem;
+          border: 1px solid var(--rule-strong);
+          background: var(--surface);
+        }
+
+        .pt3 .pt3-chart__head {
+          display: flex;
+          justify-content: space-between;
+          gap: 1rem;
+          align-items: flex-start;
+        }
+
+        .pt3 .pt3-chart__head > div:first-child span,
+        .pt3 .pt3-chart__head > div:first-child strong {
+          display: block;
+          font-family: var(--font-display);
+        }
+
+        .pt3 .pt3-chart__head > div:first-child span {
+          color: var(--muted);
+          font-size: 0.3rem;
+          font-weight: 700;
+          letter-spacing: 0.07em;
+        }
+
+        .pt3 .pt3-chart__head > div:first-child strong {
+          margin-top: 0.28rem;
+          font-size: 0.48rem;
+        }
+
+        .pt3 .pt3-chart__legend {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.55rem;
+          font-family: var(--font-display);
+          font-size: 0.28rem;
+          font-weight: 700;
+          letter-spacing: 0.05em;
+        }
+
+        .pt3 .pt3-chart__legend span::before {
+          content: "";
+          display: inline-block;
+          width: 12px;
+          height: 2px;
+          margin-right: 5px;
+          vertical-align: middle;
+          background: currentColor;
+        }
+
+        .pt3 .pt3-chart__legend .is-anthropic {
+          color: var(--muted);
+        }
+
+        .pt3 .pt3-chart__legend .is-openai {
+          color: var(--text);
+        }
+
+        .pt3 .pt3-chart__legend .is-average {
+          color: var(--klein-blue);
+        }
+
+        .pt3 .pt3-chart svg {
+          display: block;
+          width: 100%;
+          height: auto;
+          margin-top: 0.55rem;
+          overflow: visible;
+        }
+
+        .pt3 .pt3-chart__grid line {
+          stroke: var(--rule);
+          stroke-width: 1;
+        }
+
+        .pt3 .pt3-chart__grid text,
+        .pt3 .pt3-chart__chance-label,
+        .pt3 .pt3-chart__x {
+          fill: var(--muted);
+          font-family: var(--font-display);
+          font-size: 9px;
+          font-weight: 700;
+        }
+
+        .pt3 .pt3-chart__chance {
+          stroke: var(--rule-strong);
+          stroke-width: 1;
+          stroke-dasharray: 5 6;
+        }
+
+        .pt3 .pt3-chart__focus {
+          stroke: var(--klein-blue);
+          stroke-width: 1;
+          opacity: 0.22;
+          transition: x1 220ms ease, x2 220ms ease;
+        }
+
+        .pt3 .pt3-chart__line {
+          fill: none;
+          stroke-width: 2;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        }
+
+        .pt3 .pt3-chart__line--anthropic {
+          stroke: var(--muted);
+        }
+
+        .pt3 .pt3-chart__line--openai {
+          stroke: var(--text);
+        }
+
+        .pt3 .pt3-chart__line--average {
+          stroke: var(--klein-blue);
+          stroke-width: 2.6;
+        }
+
+        .pt3 .pt3-chart__dot--anthropic {
+          fill: var(--muted);
+        }
+
+        .pt3 .pt3-chart__dot--openai {
+          fill: var(--text);
+        }
+
+        .pt3 .pt3-chart__dot--average {
+          fill: var(--surface);
+          stroke: var(--klein-blue);
+          stroke-width: 2;
+          transition:
+            r 170ms ease,
+            fill 170ms ease;
+        }
+
+        .pt3 .pt3-chart__dot--average.is-active {
+          r: 6;
+          fill: var(--klein-blue);
+        }
+
+        .pt3 .pt3-chart__x {
+          text-anchor: middle;
+        }
+
+        .pt3 .pt3-chart__x.is-active {
+          fill: var(--klein-blue);
+        }
+
+        .pt3 .pt3-findings {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          margin-top: 0.9rem;
+          border: 1px solid var(--rule-strong);
+          background: var(--surface);
+        }
+
+        .pt3 .pt3-findings article {
+          min-width: 0;
+          padding: 1rem;
+        }
+
+        .pt3 .pt3-findings article + article {
+          border-left: 1px solid var(--rule);
+        }
+
+        .pt3 .pt3-findings span {
+          display: block;
+          color: var(--muted);
+          font-family: var(--font-display);
+          font-size: 0.31rem;
+          font-weight: 700;
+          letter-spacing: 0.07em;
+        }
+
+        .pt3 .pt3-findings strong {
+          display: block;
+          margin-top: 0.45rem;
+          font-family: var(--font-display);
+          font-size: clamp(1.7rem, 4vw, 3rem);
+          line-height: 0.95;
+          letter-spacing: -0.04em;
+        }
+
+        .pt3 .pt3-findings article.is-accent strong {
+          color: var(--klein-blue);
+        }
+
+        .pt3 .pt3-findings p {
+          margin-top: 0.55rem;
+          color: var(--muted);
+          font-size: 0.82rem;
+          line-height: 1.3;
+        }
+
+        .pt3 .pt3-thesis {
+          margin-top: 0.9rem;
+          padding: 1rem 0 0.1rem;
+          border-top: 1px solid var(--rule);
+          font-family: var(--font-display);
+          font-size: clamp(1.35rem, 3vw, 2.1rem);
+          font-weight: 700;
+          line-height: 1.05;
+          letter-spacing: -0.035em;
+        }
+
+        /* ---------- architecture ---------- */
+
+        .pt3 .pt3-path {
+          display: grid;
+          grid-template-columns:
+            minmax(0, 1fr)
+            auto
+            minmax(0, 1fr)
+            auto
+            minmax(0, 1fr)
+            auto
+            minmax(0, 1fr);
+          gap: 0.45rem;
+          align-items: center;
+          margin-top: 1.25rem;
+          padding-top: 1.6rem;
+          position: relative;
+        }
+
+        .pt3 .pt3-path__label {
+          position: absolute;
+          top: 0;
+          left: 0;
+          color: var(--muted);
+          font-family: var(--font-display);
+          font-size: 0.3rem;
+          font-weight: 700;
+          letter-spacing: 0.07em;
+        }
+
+        .pt3 .pt3-path > div {
+          min-width: 0;
+          padding: 0.7rem;
+          border: 1px solid var(--rule);
+          background: var(--surface);
+          font-family: var(--font-display);
+          font-size: 0.38rem;
+          font-weight: 700;
+          text-align: center;
+        }
+
+        .pt3 .pt3-path > b {
+          color: var(--muted);
+          font-weight: 500;
+        }
+
+        .pt3 .pt3-path > .is-risk {
+          border-color: var(--klein-blue);
+          color: var(--klein-blue);
+        }
+
+        .pt3 .pt3-architecture {
+          display: grid;
+          grid-template-columns:
+            minmax(0, 0.85fr)
+            auto
+            minmax(0, 1.45fr)
+            auto
+            minmax(0, 0.85fr);
+          gap: 0.55rem;
+          align-items: center;
+          margin-top: 0.8rem;
+        }
+
+        .pt3 .pt3-architecture > div:not(.pt3-architecture__fork),
+        .pt3 .pt3-architecture__fork article {
+          min-width: 0;
+          padding: 0.82rem;
+          border: 1px solid var(--rule-strong);
+          background: var(--surface);
+        }
+
+        .pt3 .pt3-architecture > b {
+          color: var(--klein-blue);
+          font-weight: 500;
+        }
+
+        .pt3 .pt3-architecture__fork {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0.45rem;
+        }
+
+        .pt3 .pt3-architecture span {
+          display: block;
+          color: var(--muted);
+          font-family: var(--font-display);
+          font-size: 0.29rem;
+          font-weight: 700;
+        }
+
+        .pt3 .pt3-architecture strong {
+          display: block;
+          margin-top: 0.3rem;
+          font-family: var(--font-display);
+          font-size: 0.45rem;
+          line-height: 1.08;
+        }
+
+        .pt3 .pt3-architecture small {
+          display: block;
+          margin-top: 0.35rem;
+          color: var(--muted);
+          font-size: 0.7rem;
+          line-height: 1.25;
+        }
+
+        .pt3 .pt3-architecture .is-accent {
+          border-color: var(--klein-blue) !important;
+        }
+
+        .pt3 .pt3-architecture .is-accent strong {
+          color: var(--klein-blue);
+        }
+
+        .pt3 .pt3-boundary {
+          display: grid;
+          grid-template-columns: 150px minmax(0, 1fr);
+          gap: 1rem;
+          margin-top: 0.85rem;
+          padding: 0.9rem 1rem;
+          border-left: 2px solid var(--klein-blue);
+          background:
+            color-mix(
+              in srgb,
+              var(--klein-blue) 4%,
+              var(--surface)
+            );
+        }
+
+        .pt3 .pt3-boundary span {
+          color: var(--klein-blue);
+          font-family: var(--font-display);
+          font-size: 0.31rem;
+          font-weight: 700;
+          letter-spacing: 0.07em;
+        }
+
+        .pt3 .pt3-boundary p {
+          font-size: 0.86rem;
+          line-height: 1.35;
+        }
+
+        /* ---------- takeaways ---------- */
+
+        .pt3 .pt3-takeaways {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          border: 1px solid var(--rule-strong);
+          background: var(--surface);
+        }
+
+        .pt3 .pt3-takeaways article {
+          min-width: 0;
+          padding: 0.95rem;
+        }
+
+        .pt3 .pt3-takeaways article + article {
+          border-left: 1px solid var(--rule);
+        }
+
+        .pt3 .pt3-takeaways article > span {
+          color: var(--klein-blue);
+          font-family: var(--font-display);
+          font-size: 0.3rem;
+          font-weight: 700;
+        }
+
+        .pt3 .pt3-takeaways h3 {
+          margin-top: 0.8rem;
           font-family: var(--font-display);
           font-size: 0.5rem;
           line-height: 1.08;
         }
 
-        .ptv2 .ptv2-limit-grid p {
-          margin-top: 0.45rem;
+        .pt3 .pt3-takeaways p {
+          margin-top: 0.48rem;
           color: var(--muted);
-          font-size: 0.78rem;
-          line-height: 1.25;
+          font-size: 0.79rem;
+          line-height: 1.3;
         }
 
-        .ptv2 .ptv2-scope {
+        .pt3 .pt3-scope {
           display: flex;
           flex-wrap: wrap;
           gap: 0.4rem;
-          margin-top: 0.8rem;
+          margin-top: 0.75rem;
         }
 
-        .ptv2 .ptv2-scope span {
-          padding: 0.4rem 0.52rem;
+        .pt3 .pt3-scope span {
+          padding: 0.38rem 0.5rem;
           border: 1px solid var(--rule);
           color: var(--muted);
           font-family: var(--font-display);
-          font-size: 0.31rem;
+          font-size: 0.29rem;
           font-weight: 700;
           letter-spacing: 0.04em;
         }
 
         /* ---------- footer ---------- */
 
-        .ptv2 .ptv2-footer {
+        .pt3 .pt3-footer {
           display: flex;
           justify-content: space-between;
-          gap: 2rem;
+          gap: 1.5rem;
+          align-items: center;
+          margin-top: 2.5rem;
           padding-top: 1.5rem;
           border-top: 1px solid var(--rule-strong);
           font-family: var(--font-display);
-          font-size: 0.42rem;
+          font-size: 0.4rem;
           font-weight: 700;
         }
 
-        /* ---------- reveal animation ---------- */
+        .pt3 .pt3-footer__links {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.45rem;
+        }
 
-        .ptv2 [data-reveal] {
+        /* ---------- reveal ---------- */
+
+        .pt3 [data-reveal] {
           opacity: 0;
-          transform: translateY(12px);
+          transform: translate3d(0, 18px, 0);
+          filter: blur(3px);
+          will-change: opacity, transform, filter;
           transition:
-            opacity 500ms var(--ease, cubic-bezier(.22,1,.36,1)),
-            transform 620ms var(--ease, cubic-bezier(.22,1,.36,1));
+            opacity 680ms var(--ease, cubic-bezier(.22,1,.36,1)),
+            transform 760ms var(--ease, cubic-bezier(.22,1,.36,1)),
+            filter 680ms ease;
         }
 
-        .ptv2 [data-reveal].is-visible {
+        .pt3 [data-reveal].is-visible {
           opacity: 1;
-          transform: translateY(0);
+          transform: translate3d(0, 0, 0);
+          filter: blur(0);
         }
 
-        .ptv2 .ptv2-stage-grid.is-visible article,
-        .ptv2 .ptv2-provider-grid.is-visible article,
-        .ptv2 .ptv2-limit-grid.is-visible article {
+        .pt3 .pt3-section.is-visible .pt3-section__body > * {
+          animation: pt3-content-in 620ms var(--ease, cubic-bezier(.22,1,.36,1)) both;
+        }
+
+        .pt3 .pt3-section.is-visible .pt3-section__body > *:nth-child(2) {
+          animation-delay: 70ms;
+        }
+
+        .pt3 .pt3-section.is-visible .pt3-section__body > *:nth-child(3) {
+          animation-delay: 140ms;
+        }
+
+        .pt3 .pt3-section.is-visible .pt3-section__body > *:nth-child(4) {
+          animation-delay: 210ms;
+        }
+
+        .pt3 .pt3-section.is-visible .pt3-section__body > *:nth-child(5) {
+          animation-delay: 280ms;
+        }
+
+        @keyframes pt3-content-in {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .pt3 .pt3-chart.is-visible .pt3-chart__line {
+          stroke-dasharray: 1000;
+          stroke-dashoffset: 1000;
+          animation: pt3-line-draw 1050ms var(--ease, cubic-bezier(.22,1,.36,1)) forwards;
+        }
+
+        .pt3 .pt3-chart.is-visible .pt3-chart__line--openai {
+          animation-delay: 90ms;
+        }
+
+        .pt3 .pt3-chart.is-visible .pt3-chart__line--average {
+          animation-delay: 180ms;
+        }
+
+        @keyframes pt3-line-draw {
+          to {
+            stroke-dashoffset: 0;
+          }
+        }
+
+        .pt3 .pt3-process.is-visible article,
+        .pt3 .pt3-decisions.is-visible article,
+        .pt3 .pt3-findings.is-visible article,
+        .pt3 .pt3-takeaways.is-visible article {
           animation:
-            ptv2-local-card-in
-            520ms
+            pt3-card-in
+            480ms
             var(--ease, cubic-bezier(.22,1,.36,1))
             both;
         }
 
-        .ptv2 .ptv2-stage-grid.is-visible article:nth-child(2),
-        .ptv2 .ptv2-provider-grid.is-visible article:nth-child(2),
-        .ptv2 .ptv2-limit-grid.is-visible article:nth-child(2) {
-          animation-delay: 70ms;
+        .pt3 .pt3-process.is-visible article:nth-child(2),
+        .pt3 .pt3-decisions.is-visible article:nth-child(2),
+        .pt3 .pt3-findings.is-visible article:nth-child(2),
+        .pt3 .pt3-takeaways.is-visible article:nth-child(2) {
+          animation-delay: 60ms;
         }
 
-        .ptv2 .ptv2-stage-grid.is-visible article:nth-child(3),
-        .ptv2 .ptv2-limit-grid.is-visible article:nth-child(3) {
-          animation-delay: 140ms;
+        .pt3 .pt3-process.is-visible article:nth-child(3),
+        .pt3 .pt3-decisions.is-visible article:nth-child(3),
+        .pt3 .pt3-takeaways.is-visible article:nth-child(3) {
+          animation-delay: 120ms;
         }
 
-        .ptv2 .ptv2-stage-grid.is-visible article:nth-child(4) {
-          animation-delay: 210ms;
+        .pt3 .pt3-process.is-visible article:nth-child(4),
+        .pt3 .pt3-decisions.is-visible article:nth-child(4) {
+          animation-delay: 180ms;
         }
 
-        @keyframes ptv2-local-card-in {
+        @keyframes pt3-card-in {
           from {
             opacity: 0;
-            transform: translateY(8px);
+            transform: translateY(7px);
           }
 
           to {
@@ -2574,10 +2239,10 @@ export function ParaTraceCaseStudy({
           }
         }
 
-        @keyframes ptv2-local-readout {
+        @keyframes pt3-readout-in {
           from {
             opacity: 0;
-            transform: translateY(6px);
+            transform: translateY(4px);
           }
 
           to {
@@ -2588,60 +2253,68 @@ export function ParaTraceCaseStudy({
 
         /* ---------- responsive ---------- */
 
-        @media (max-width: 980px) {
-          .ptv2 .ptv2-meta {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+        @media (max-width: 960px) {
+          .pt3 .pt3-result {
+            grid-template-columns:
+              minmax(0, 1fr)
+              30px
+              minmax(0, 1fr);
           }
 
-          .ptv2 .ptv2-stage-grid {
+          .pt3 .pt3-result__note {
+            grid-column: 1 / -1;
+            padding-top: 0.8rem;
+            padding-left: 0;
+            border-top: 1px solid var(--rule);
+            border-left: 0;
+          }
+
+          .pt3 .pt3-process {
             grid-template-columns: repeat(2, minmax(0, 1fr));
           }
 
-          .ptv2 .ptv2-mechanism,
-          .ptv2 .ptv2-current-path,
-          .ptv2 .ptv2-architecture {
+          .pt3 .pt3-path,
+          .pt3 .pt3-architecture {
             grid-template-columns: 1fr;
           }
 
-          .ptv2 .ptv2-mechanism > b,
-          .ptv2 .ptv2-current-path > b,
-          .ptv2 .ptv2-architecture > b {
+          .pt3 .pt3-path > b,
+          .pt3 .pt3-architecture > b {
             transform: rotate(90deg);
+            text-align: center;
           }
 
-          .ptv2 .ptv2-diagram-label {
-            grid-column: 1;
+          .pt3 .pt3-path__label {
+            position: static;
+            margin-bottom: 0.2rem;
+          }
+
+          .pt3 .pt3-path {
+            padding-top: 0;
           }
         }
 
         @media (max-width: 800px) {
-          .ptv2 {
+          .pt3 {
             width: min(calc(100% - 1.25rem), 1040px);
           }
 
-          .ptv2 .ptv2-section {
+          .pt3 .pt3-section {
             grid-template-columns: 1fr;
-            gap: 1.1rem;
+            gap: 1rem;
           }
 
-          .ptv2 .ptv2-headline-result {
-            grid-template-columns: 1fr;
+          .pt3 .pt3-meta {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
           }
 
-          .ptv2 .ptv2-headline-result__bridge {
-            flex-direction: row;
-            justify-content: flex-start;
-          }
-
-          .ptv2 .ptv2-collision,
-          .ptv2 .ptv2-provider-grid,
-          .ptv2 .ptv2-what-how,
-          .ptv2 .ptv2-feature-summary,
-          .ptv2 .ptv2-limit-grid {
+          .pt3 .pt3-collision,
+          .pt3 .pt3-findings,
+          .pt3 .pt3-takeaways {
             grid-template-columns: 1fr;
           }
 
-          .ptv2 .ptv2-collision__mark {
+          .pt3 .pt3-collision__mark {
             min-height: 42px;
             border-top: 1px solid var(--rule);
             border-right: 0;
@@ -2649,112 +2322,142 @@ export function ParaTraceCaseStudy({
             border-left: 0;
           }
 
-          .ptv2 .ptv2-provider-grid > article + article,
-          .ptv2 .ptv2-what-how article + article,
-          .ptv2 .ptv2-limit-grid article + article {
+          .pt3 .pt3-findings article + article,
+          .pt3 .pt3-takeaways article + article {
             border-top: 1px solid var(--rule);
             border-left: 0;
           }
 
-          .ptv2 .ptv2-level-readout {
+          .pt3 .pt3-readout {
             grid-template-columns: 1fr 1fr;
           }
 
-          .ptv2 .ptv2-level-readout > div {
+          .pt3 .pt3-readout__copy {
+            grid-column: 1 / -1;
             border-bottom: 1px solid var(--rule);
           }
 
-          .ptv2 .ptv2-level-readout > div:nth-child(2) {
+          .pt3 .pt3-readout > div:nth-child(3) {
             border-right: 0;
           }
 
-          .ptv2 .ptv2-level-readout > div:nth-last-child(-n + 2) {
-            border-bottom: 0;
+          .pt3 .pt3-readout > div:last-child {
+            grid-column: 1 / -1;
+            border-top: 1px solid var(--rule);
           }
 
-          .ptv2 .ptv2-solution-principle {
+          .pt3 .pt3-boundary {
             grid-template-columns: 1fr;
           }
 
-          .ptv2 .ptv2-footer {
+          .pt3 .pt3-footer {
             align-items: flex-start;
             flex-direction: column;
           }
         }
 
-        @media (max-width: 660px) {
-          .ptv2 .ptv2-meta,
-          .ptv2 .ptv2-stage-grid,
-          .ptv2 .ptv2-method-strip {
+        @media (max-width: 640px) {
+          .pt3 .pt3-result {
             grid-template-columns: 1fr;
           }
 
-          .ptv2 .ptv2-method-strip > div {
+          .pt3 .pt3-result__arrow {
+            text-align: left;
+            transform: rotate(90deg);
+            transform-origin: left center;
+          }
+
+          .pt3 .pt3-result__note {
+            grid-column: auto;
+          }
+
+          .pt3 .pt3-process,
+          .pt3 .pt3-decisions,
+          .pt3 .pt3-meta {
+            grid-template-columns: 1fr;
+          }
+
+          .pt3 .pt3-decisions article {
             border-right: 0;
             border-bottom: 1px solid var(--rule);
           }
 
-          .ptv2 .ptv2-method-strip > div:last-child {
+          .pt3 .pt3-decisions article:nth-last-child(-n + 2) {
+            border-bottom: 1px solid var(--rule);
+          }
+
+          .pt3 .pt3-decisions article:last-child {
             border-bottom: 0;
           }
 
-          .ptv2 .ptv2-provider-grid__top,
-          .ptv2 .ptv2-provider-grid__metric,
-          .ptv2 .ptv2-chart__head {
+          .pt3 .pt3-decision-header {
+            grid-template-columns: 1fr;
+          }
+
+          .pt3 .pt3-levels {
+            grid-template-columns: repeat(5, minmax(78px, 1fr));
+            overflow-x: auto;
+          }
+
+          .pt3 .pt3-readout {
+            grid-template-columns: 1fr;
+          }
+
+          .pt3 .pt3-readout__copy,
+          .pt3 .pt3-readout > div:last-child {
+            grid-column: auto;
+          }
+
+          .pt3 .pt3-readout > div {
+            border-right: 0;
+            border-bottom: 1px solid var(--rule);
+          }
+
+          .pt3 .pt3-readout > div:last-child {
+            border-bottom: 0;
+          }
+
+          .pt3 .pt3-chart {
+            overflow-x: auto;
+          }
+
+          .pt3 .pt3-chart svg {
+            min-width: 650px;
+          }
+
+          .pt3 .pt3-chart__head {
             align-items: flex-start;
             flex-direction: column;
           }
 
-          .ptv2 .ptv2-provider-grid__top > small,
-          .ptv2 .ptv2-chart__head strong {
-            max-width: none;
-            text-align: left;
-          }
-
-          .ptv2 .ptv2-levels {
-            grid-template-columns: repeat(5, minmax(80px, 1fr));
-            overflow-x: auto;
-          }
-
-          .ptv2 .ptv2-model-table {
-            overflow-x: auto;
-          }
-
-          .ptv2 .ptv2-model-table__head,
-          .ptv2 .ptv2-model-table > button {
-            min-width: 650px;
-          }
-
-          .ptv2 .ptv2-chart {
-            overflow-x: auto;
-          }
-
-          .ptv2 .ptv2-chart svg {
-            min-width: 650px;
+          .pt3 .pt3-architecture__fork {
+            grid-template-columns: 1fr;
           }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .ptv2 [data-reveal] {
+          .pt3 [data-reveal] {
             opacity: 1 !important;
             transform: none !important;
+            filter: none !important;
             transition: none !important;
           }
 
-          .ptv2 .ptv2-stage-grid.is-visible article,
-          .ptv2 .ptv2-provider-grid.is-visible article,
-          .ptv2 .ptv2-limit-grid.is-visible article,
-          .ptv2 .ptv2-level-readout--animated {
+          .pt3 .pt3-section.is-visible .pt3-section__body > *,
+          .pt3 .pt3-chart.is-visible .pt3-chart__line {
+            animation: none !important;
+            stroke-dashoffset: 0 !important;
+          }
+
+          .pt3 .pt3-process.is-visible article,
+          .pt3 .pt3-decisions.is-visible article,
+          .pt3 .pt3-findings.is-visible article,
+          .pt3 .pt3-takeaways.is-visible article,
+          .pt3 .pt3-readout {
             animation: none !important;
           }
 
-          .ptv2 .ptv2-chart__series {
-            opacity: 1 !important;
-            transition: none !important;
-          }
-
-          .ptv2 .ptv2-chart__focus,
-          .ptv2 .ptv2-chart__dot {
+          .pt3 .pt3-action {
             transition: none !important;
           }
         }
