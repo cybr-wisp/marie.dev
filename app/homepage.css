@@ -1,0 +1,2436 @@
+﻿/* ==========================================================
+   MARIE.DEV HOMEPAGE
+   ========================================================== */
+
+:root {
+  --homepage-body:
+    var(--font-atkinson),
+    "Atkinson Hyperlegible",
+    Arial,
+    sans-serif;
+
+  --homepage-display:
+    "Akzidenz-Grotesk BQ",
+    "Akzidenz Grotesk",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif;
+}
+
+
+/* ==========================================================
+   CUSTOM CURSOR
+   ========================================================== */
+
+.cursor-ring {
+  width: 34px !important;
+  height: 34px !important;
+
+  margin-left: -17px !important;
+  margin-top: -17px !important;
+
+  border:
+    1px solid
+    var(--editorial-text) !important;
+
+  opacity: 0.62;
+}
+
+.cursor-dot {
+  width: 4px !important;
+  height: 4px !important;
+
+  margin-left: -2px !important;
+  margin-top: -2px !important;
+
+  background:
+    var(--editorial-text) !important;
+}
+
+.cursor-ring--active {
+  width: 42px !important;
+  height: 42px !important;
+
+  margin-left: -21px !important;
+  margin-top: -21px !important;
+
+  border-color:
+    #002fa7 !important;
+
+  opacity: 1;
+}
+
+.cursor-ring--active + .cursor-dot {
+  background:
+    #002fa7 !important;
+}
+
+
+/*
+   When hovering a project, the card itself is blue.
+   Make both cursor pieces white so they remain visible.
+*/
+
+body:has(.home-project__link:hover)
+.cursor-ring,
+body:has(.home-project__link:focus-visible)
+.cursor-ring {
+  border-color:
+    #ffffff !important;
+}
+
+body:has(.home-project__link:hover)
+.cursor-dot,
+body:has(.home-project__link:focus-visible)
+.cursor-dot {
+  background:
+    #ffffff !important;
+}
+
+
+/* ==========================================================
+   HEADER
+   ========================================================== */
+
+.portfolio-header-v2 {
+  position: fixed;
+  z-index: 500;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 92px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding:
+    0
+    clamp(2.5rem, 3vw, 3.2rem);
+
+  color:
+    var(--editorial-text);
+
+  font-family:
+    var(--homepage-body);
+
+  font-size:
+    clamp(0.9rem, 1.02vw, 1.03rem);
+
+  font-weight: 400;
+  line-height: 1;
+
+  letter-spacing:
+    -0.055em;
+
+  pointer-events: none;
+}
+
+.portfolio-header-v2 nav {
+  pointer-events: auto;
+}
+
+.portfolio-header-v2__primary,
+.portfolio-header-v2__controls {
+  display: flex;
+  align-items: center;
+}
+
+
+/* tighter than previous version */
+
+.portfolio-header-v2__primary {
+  gap:
+    clamp(1rem, 1.55vw, 1.55rem);
+}
+
+.portfolio-header-v2__controls {
+  gap:
+    clamp(
+      0.85rem,
+      1.2vw,
+      1.2rem
+    );
+}
+
+.portfolio-header-v2 a,
+.portfolio-header-v2 button {
+  position: relative;
+
+  appearance: none;
+
+  border: 0;
+  padding: 0;
+
+  background: transparent;
+  color: inherit;
+
+  font-family:
+    var(--homepage-body);
+
+  font-size: inherit;
+  font-weight: 400;
+  line-height: 1;
+
+  letter-spacing:
+    -0.055em;
+
+  white-space: nowrap;
+
+  transition:
+    opacity 160ms ease,
+    color 160ms ease;
+}
+
+.portfolio-header-v2 a::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: -0.14em;
+
+  height: 1px;
+
+  background: currentColor;
+
+  transform:
+    scaleX(0);
+
+  transform-origin:
+    right;
+
+  transition:
+    transform
+    200ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    );
+}
+
+.portfolio-header-v2 a:hover::after,
+.portfolio-header-v2 a:focus-visible::after {
+  transform:
+    scaleX(1);
+
+  transform-origin:
+    left;
+}
+
+.portfolio-header-v2 button:hover {
+  opacity: 0.55;
+}
+
+
+
+/* tighter tracking inside primary navigation labels */
+.portfolio-header-v2__primary a {
+  letter-spacing: -0.085em;
+}
+
+/* ==========================================================
+   PAGE
+   ========================================================== */
+
+.home-v3 {
+  position: relative;
+
+  width: 100%;
+  min-height: 100svh;
+
+  padding:
+    205px
+    2rem
+    78px;
+
+  overflow-x: hidden;
+
+  background:
+    var(--editorial-bg);
+
+  color:
+    var(--editorial-text);
+
+  font-family:
+    var(--homepage-body);
+}
+
+
+/* ==========================================================
+   HERO
+   ========================================================== */
+
+.home-v3__hero {
+  width:
+    min(
+      100%,
+      820px
+    );
+
+  margin-inline: auto;
+
+  text-align: center;
+}
+
+.home-v3__intro {
+  margin-bottom:
+    0.9rem;
+
+  font-family:
+    var(--homepage-body);
+
+  font-size:
+    clamp(
+      0.9rem,
+      1.04vw,
+      1.03rem
+    );
+
+  font-weight: 400;
+  line-height: 1;
+
+  letter-spacing:
+    -0.05em;
+}
+
+.home-v3__title {
+  font-family:
+    var(--homepage-display);
+
+  font-size:
+    clamp(
+      3.75rem,
+      4.45vw,
+      4.7rem
+    );
+
+  font-weight: 700;
+  line-height: 0.78;
+
+  letter-spacing:
+    -0.078em;
+}
+
+.home-v3__explore {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 0.28rem;
+
+  margin-top:
+    1.8rem;
+
+  font-family:
+    var(--homepage-body);
+
+  font-size:
+    clamp(
+      0.9rem,
+      1.05vw,
+      1.04rem
+    );
+
+  font-weight: 400;
+  line-height: 1;
+
+  letter-spacing:
+    -0.045em;
+}
+
+.home-v3__explore-arrow {
+  display: block;
+
+  transition:
+    transform
+    260ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    );
+}
+
+.home-v3__explore:hover
+.home-v3__explore-arrow {
+  transform:
+    translateY(4px);
+}
+
+
+/* ==========================================================
+   PROJECTS
+   ========================================================== */
+
+.spotlight {
+  width:
+    min(
+      100%,
+      850px
+    );
+
+  margin:
+    2rem
+    auto
+    0;
+}
+
+.spotlight__grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 18px;
+}
+
+.home-project {
+  min-width: 0;
+}
+
+.home-project__link {
+  display: block;
+}
+
+
+/* ----------------------------------------------------------
+   CARD BASE
+   ---------------------------------------------------------- */
+
+.home-project__surface {
+  position: relative;
+
+  width: 100%;
+
+  aspect-ratio:
+    0.76;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    var(--editorial-line);
+
+  background:
+    var(--editorial-bg);
+
+  color:
+    var(--editorial-text);
+
+  transition:
+    background-color
+      320ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      ),
+    border-color
+      320ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      ),
+    color
+      220ms ease,
+    transform
+      320ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
+}
+
+.home-project__link:hover
+.home-project__surface,
+.home-project__link:focus-visible
+.home-project__surface {
+  background:
+    #002fa7;
+
+  border-color:
+    #002fa7;
+
+  color:
+    #ffffff;
+
+  transform:
+    translateY(-2px);
+}
+
+
+/* ----------------------------------------------------------
+   NUMBER
+   ---------------------------------------------------------- */
+
+.home-project__number {
+  position: absolute;
+  z-index: 5;
+
+  top: 1rem;
+  right: 1rem;
+
+  font-family:
+    var(--homepage-body);
+
+  font-size:
+    0.48rem;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.05em;
+}
+
+
+/* ----------------------------------------------------------
+   TITLE
+   ---------------------------------------------------------- */
+
+.home-project__center {
+  position: absolute;
+  z-index: 5;
+
+  top: 50%;
+  left: 50%;
+
+  width:
+    calc(
+      100% - 2rem
+    );
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 0.55rem;
+
+  transform:
+    translate(
+      -50%,
+      -50%
+    );
+
+  transition:
+    top
+      340ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      ),
+    transform
+      340ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
+}
+
+
+/*
+   Move title upward when description appears.
+*/
+
+.home-project__link:hover
+.home-project__center,
+.home-project__link:focus-visible
+.home-project__center {
+  top: 34%;
+}
+
+.home-project__center h2 {
+  max-width: 82%;
+
+  font-family:
+    var(--homepage-display);
+
+  font-size:
+    clamp(
+      1.25rem,
+      1.65vw,
+      1.7rem
+    );
+
+  font-weight: 700;
+  line-height: 0.94;
+
+  letter-spacing:
+    -0.052em;
+
+  text-align: center;
+}
+
+.home-project__bracket {
+  color: currentColor;
+
+  opacity: 0.48;
+
+  font-family:
+    var(--homepage-body);
+
+  font-size:
+    1.2rem;
+}
+
+
+/* ----------------------------------------------------------
+   DESCRIPTION INSIDE CARD
+   ---------------------------------------------------------- */
+
+.home-project__description {
+  position: absolute;
+  z-index: 4;
+
+  top: 48%;
+  left: 1.25rem;
+  right: 1.25rem;
+
+  opacity: 0;
+
+  transform:
+    translateY(10px);
+
+  transition:
+    opacity
+      210ms ease,
+    transform
+      320ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
+}
+
+.home-project__link:hover
+.home-project__description,
+.home-project__link:focus-visible
+.home-project__description {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+.home-project__description p {
+  color:
+    #ffffff;
+
+  font-family:
+    var(--homepage-body);
+
+  font-size:
+    clamp(
+      0.66rem,
+      0.76vw,
+      0.78rem
+    );
+
+  font-weight: 400;
+  line-height: 1.28;
+
+  letter-spacing:
+    -0.02em;
+
+  text-align: center;
+}
+
+
+/* ----------------------------------------------------------
+   VIEW PROJECT
+   ---------------------------------------------------------- */
+
+.home-project__view {
+  position: absolute;
+  z-index: 5;
+
+  left: 1rem;
+  bottom: 3rem;
+
+  display: flex;
+  align-items: center;
+
+  gap: 0.42rem;
+
+  opacity: 0;
+
+  transform:
+    translateY(7px);
+
+  font-family:
+    var(--homepage-body);
+
+  font-size:
+    0.39rem;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.055em;
+
+  transition:
+    opacity
+      180ms ease,
+    transform
+      300ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
+}
+
+.home-project__link:hover
+.home-project__view,
+.home-project__link:focus-visible
+.home-project__view {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+.home-project__view
+span:last-child {
+  display: inline-block;
+
+  font-size:
+    0.78rem;
+
+  transition:
+    transform
+    240ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    );
+}
+
+.home-project__link:hover
+.home-project__view
+span:last-child {
+  transform:
+    translate(
+      3px,
+      -3px
+    );
+}
+
+
+/* ----------------------------------------------------------
+   CARD FOOTER
+   ---------------------------------------------------------- */
+
+.home-project__footer {
+  position: absolute;
+  z-index: 5;
+
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  opacity: 0.7;
+
+  font-family:
+    var(--homepage-body);
+
+  font-size:
+    0.38rem;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.055em;
+}
+
+
+/* ==========================================================
+   META BELOW CARD
+   ========================================================== */
+
+.home-project__meta {
+  padding-top:
+    0.62rem;
+}
+
+.home-project__meta h3 {
+  font-family:
+    var(--homepage-display);
+
+  font-size:
+    0.68rem;
+
+  font-weight: 700;
+  line-height: 1;
+
+  letter-spacing:
+    -0.025em;
+}
+
+.home-project__tags {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap:
+    0.14rem
+    0.38rem;
+
+  margin-top:
+    0.38rem;
+
+  font-family:
+    var(--homepage-body);
+
+  font-size:
+    0.31rem;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.04em;
+}
+
+.home-project__tags
+span:not(:last-child)::after {
+  content:
+    " \00b7";
+
+  color:
+    #002fa7;
+}
+
+
+/* ==========================================================
+   CURRENT
+   ========================================================== */
+
+.home-v3__current {
+  width:
+    min(
+      100%,
+      920px
+    );
+
+  margin:
+    2.55rem
+    auto
+    0;
+
+  font-family:
+    var(--homepage-body);
+
+  font-size:
+    clamp(
+      0.88rem,
+      1.05vw,
+      1rem
+    );
+
+  font-weight: 400;
+  line-height: 1.25;
+
+  letter-spacing:
+    -0.045em;
+
+  text-align: center;
+}
+
+.home-v3__current span {
+  text-decoration-line:
+    underline;
+
+  text-decoration-color:
+    #002fa7;
+
+  text-decoration-thickness:
+    1px;
+
+  text-underline-offset:
+    3px;
+}
+
+
+/* ==========================================================
+   FOOTER
+   ========================================================== */
+
+.home-v3__footer {
+  position: fixed;
+  z-index: 40;
+
+  right:
+    clamp(
+      2.5rem,
+      3vw,
+      3.2rem
+    );
+
+  bottom:
+    24px;
+
+  left:
+    clamp(
+      2.5rem,
+      3vw,
+      3.2rem
+    );
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-family:
+    var(--homepage-body);
+
+  font-size:
+    clamp(
+      0.86rem,
+      1.02vw,
+      0.98rem
+    );
+
+  font-weight: 400;
+
+  letter-spacing:
+    -0.045em;
+}
+
+.home-v3__footer a {
+  transition:
+    color
+    160ms ease;
+}
+
+.home-v3__footer a:hover {
+  color:
+    #002fa7;
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+@media (max-width: 900px) {
+  .home-v3 {
+    padding-top:
+      175px;
+  }
+
+  .portfolio-header-v2 {
+    padding-inline:
+      2rem;
+  }
+
+  .portfolio-header-v2__primary {
+    gap:
+      0.9rem;
+  }
+
+  .spotlight {
+    width:
+      min(
+        100%,
+        620px
+      );
+  }
+
+  .spotlight__grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .home-v3__footer {
+    right:
+      2rem;
+
+    left:
+      2rem;
+  }
+}
+
+@media (max-width: 650px) {
+  .portfolio-header-v2 {
+    position: absolute;
+
+    height: auto;
+
+    align-items:
+      flex-start;
+
+    padding:
+      1.3rem
+      1.25rem;
+  }
+
+  .portfolio-header-v2__primary {
+    max-width:
+      66%;
+
+    flex-wrap:
+      wrap;
+
+    gap:
+      0.65rem
+      0.85rem;
+  }
+
+  .portfolio-header-v2__controls {
+    gap:
+      0.55rem;
+  }
+
+  .home-v3 {
+    min-height: auto;
+
+    padding:
+      9rem
+      1.25rem
+      3rem;
+  }
+
+  .home-v3__title {
+    font-size:
+      clamp(
+        3rem,
+        14vw,
+        4.1rem
+      );
+  }
+
+  .spotlight {
+    width:
+      min(
+        100%,
+        340px
+      );
+
+    margin-top:
+      3rem;
+  }
+
+  .spotlight__grid {
+    grid-template-columns:
+      1fr;
+
+    gap:
+      2.8rem;
+  }
+
+  .home-v3__current {
+    width:
+      min(
+        100%,
+        340px
+      );
+
+    margin-top:
+      3rem;
+  }
+
+  .home-v3__footer {
+    position: static;
+
+    width:
+      min(
+        100%,
+        340px
+      );
+
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+
+    gap:
+      0.8rem;
+
+    margin:
+      2.5rem
+      auto
+      0;
+  }
+}
+
+
+/* ==========================================================
+   TOUCH
+   ========================================================== */
+
+@media (hover: none) {
+  .home-project__surface {
+    background:
+      #002fa7;
+
+    border-color:
+      #002fa7;
+
+    color:
+      #ffffff;
+  }
+
+  .home-project__center {
+    top:
+      34%;
+  }
+
+  .home-project__description,
+  .home-project__view {
+    opacity:
+      1;
+
+    transform:
+      none;
+  }
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .home-v3 *,
+  .portfolio-header-v2 * {
+    animation:
+      none !important;
+
+    transition-duration:
+      0.01ms !important;
+  }
+}
+
+
+
+
+/* ==========================================================
+   HOME VIEWPORT LOCK + LOAD FADE
+   ========================================================== */
+
+
+/* ----------------------------------------------------------
+   HOME-SPECIFIC PAGE TRANSITION
+
+   The site already has a generic page-transition veil.
+   Disable it only for the homepage so the staggered entrance
+   below becomes the homepage load animation.
+   ---------------------------------------------------------- */
+
+.page-transition:has(.home-v3)
+.page-transition__veil {
+  display: none;
+}
+
+.page-transition:has(.home-v3)
+.page-transition__content {
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+
+
+/* ----------------------------------------------------------
+   ONE-VIEWPORT DESKTOP HOME
+
+   Desktop homepage is treated as a fixed composition rather
+   than a scrolling document.
+
+   Mobile remains scrollable further below.
+   ---------------------------------------------------------- */
+
+@media (min-width: 901px) {
+  html:has(.home-v3),
+  body:has(.home-v3) {
+    width: 100%;
+    height: 100dvh;
+
+    overflow: hidden;
+  }
+
+  .page-transition:has(.home-v3),
+  .page-transition:has(.home-v3)
+  .page-transition__content {
+    width: 100%;
+    height: 100dvh;
+    min-height: 0;
+
+    overflow: hidden;
+  }
+
+  .home-v3 {
+    width: 100%;
+    height: 100dvh;
+    min-height: 0;
+
+    overflow: hidden;
+
+    padding:
+      clamp(10rem, 22vh, 12.8rem)
+      2rem
+      3.6rem;
+  }
+
+  /*
+     Let card height respond to viewport height instead of
+     allowing the fixed portrait ratio to push the page
+     beyond the bottom of the screen.
+  */
+
+  .home-project__surface {
+    height:
+      clamp(
+        250px,
+        34vh,
+        350px
+      );
+
+    aspect-ratio: auto;
+  }
+
+  .spotlight {
+    margin-top:
+      clamp(
+        1.15rem,
+        2.4vh,
+        2rem
+      );
+  }
+
+  .home-v3__current {
+    margin-top:
+      clamp(
+        1.15rem,
+        2.4vh,
+        1.8rem
+      );
+  }
+}
+
+
+/* ----------------------------------------------------------
+   HOMEPAGE LOAD ANIMATION
+   ---------------------------------------------------------- */
+
+@keyframes home-load-in {
+  from {
+    opacity: 0;
+    transform:
+      translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0);
+  }
+}
+
+
+/* header */
+
+body:has(.home-v3)
+.portfolio-header-v2 {
+  opacity: 0;
+
+  animation:
+    home-load-in
+    700ms
+    cubic-bezier(0.16, 1, 0.3, 1)
+    40ms
+    both;
+}
+
+
+/* intro */
+
+.home-v3__intro {
+  opacity: 0;
+
+  animation:
+    home-load-in
+    700ms
+    cubic-bezier(0.16, 1, 0.3, 1)
+    100ms
+    both;
+}
+
+
+/* headline */
+
+.home-v3__title {
+  opacity: 0;
+
+  animation:
+    home-load-in
+    760ms
+    cubic-bezier(0.16, 1, 0.3, 1)
+    160ms
+    both;
+}
+
+
+/* explore */
+
+.home-v3__explore {
+  opacity: 0;
+
+  animation:
+    home-load-in
+    720ms
+    cubic-bezier(0.16, 1, 0.3, 1)
+    250ms
+    both;
+}
+
+
+/* project cards */
+
+.home-project {
+  opacity: 0;
+
+  animation:
+    home-load-in
+    760ms
+    cubic-bezier(0.16, 1, 0.3, 1)
+    both;
+}
+
+.home-project:nth-child(1) {
+  animation-delay:
+    330ms;
+}
+
+.home-project:nth-child(2) {
+  animation-delay:
+    390ms;
+}
+
+.home-project:nth-child(3) {
+  animation-delay:
+    450ms;
+}
+
+
+/* current-status line */
+
+.home-v3__current {
+  opacity: 0;
+
+  animation:
+    home-load-in
+    720ms
+    cubic-bezier(0.16, 1, 0.3, 1)
+    530ms
+    both;
+}
+
+
+/* bottom links */
+
+.home-v3__footer {
+  opacity: 0;
+
+  animation:
+    home-load-in
+    720ms
+    cubic-bezier(0.16, 1, 0.3, 1)
+    600ms
+    both;
+}
+
+
+/* ----------------------------------------------------------
+   SHORT DESKTOP SCREENS
+
+   Compress only vertical geometry.
+   Widths, typography and horizontal layout remain unchanged.
+   ---------------------------------------------------------- */
+
+@media (min-width: 901px) and (max-height: 800px) {
+  .home-v3 {
+    padding-top:
+      clamp(
+        8.8rem,
+        20vh,
+        10rem
+      );
+
+    padding-bottom:
+      3.25rem;
+  }
+
+  .home-project__surface {
+    height:
+      clamp(
+        230px,
+        33vh,
+        285px
+      );
+  }
+
+  .spotlight {
+    margin-top:
+      1rem;
+  }
+
+  .home-v3__current {
+    margin-top:
+      1rem;
+  }
+}
+
+
+/* ----------------------------------------------------------
+   MOBILE / TABLET
+
+   Do not viewport-lock a stacked card layout.
+   ---------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  html:has(.home-v3),
+  body:has(.home-v3),
+  .page-transition:has(.home-v3),
+  .page-transition:has(.home-v3)
+  .page-transition__content {
+    height: auto;
+
+    overflow-x: hidden;
+    overflow-y: visible;
+  }
+
+  .home-v3 {
+    height: auto;
+    min-height: 100svh;
+
+    overflow: visible;
+  }
+}
+
+
+/* ----------------------------------------------------------
+   ACCESSIBILITY
+   ---------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  body:has(.home-v3)
+  .portfolio-header-v2,
+  .home-v3__intro,
+  .home-v3__title,
+  .home-v3__explore,
+  .home-project,
+  .home-v3__current,
+  .home-v3__footer {
+    opacity: 1;
+
+    transform: none;
+
+    animation: none !important;
+  }
+}
+
+/* END HOME VIEWPORT LOCK + LOAD FADE */
+
+
+/* ==========================================================
+   HERO TYPING + BLUE ACCENTS
+   ========================================================== */
+
+
+/* ----------------------------------------------------------
+   TOP + BOTTOM ACCENT TEXT
+   ---------------------------------------------------------- */
+
+.home-v3__intro {
+  color: #002fa7;
+}
+
+.home-v3__current {
+  color: #002fa7;
+}
+
+
+/* Keep the actual links visually distinct while preserving
+   the blue editorial status line.
+*/
+
+.home-v3__current-link {
+  position: relative;
+
+  color: #002fa7;
+
+  text-decoration: none;
+
+  transition:
+    opacity 160ms ease;
+}
+
+.home-v3__current-link::after {
+  content: "";
+
+  position: absolute;
+
+  right: 0;
+  bottom: -0.08em;
+  left: 0;
+
+  height: 1px;
+
+  background: #002fa7;
+
+  transform: scaleX(1);
+
+  transform-origin: left;
+
+  transition:
+    transform
+    220ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    );
+}
+
+.home-v3__current-link:hover::after,
+.home-v3__current-link:focus-visible::after {
+  transform: scaleX(0.45);
+}
+
+.home-v3__current-link:hover {
+  opacity: 0.62;
+}
+
+
+/* ----------------------------------------------------------
+   TYPING HERO
+   ---------------------------------------------------------- */
+
+.hero-typing {
+  display: block;
+
+  width: 100%;
+
+  font-family:
+    var(--homepage-display);
+
+  font: inherit;
+
+  color:
+    var(--editorial-text);
+}
+
+.hero-typing__line {
+  position: relative;
+
+  display: block;
+
+  min-height: 0.79em;
+
+  white-space: nowrap;
+}
+
+
+/*
+   Typing cursor.
+   Uses the same display face and sits directly after the
+   currently typed character.
+*/
+
+.hero-typing__cursor {
+  display: inline-block;
+
+  width: 0.055em;
+  height: 0.74em;
+
+  margin-left: 0.055em;
+
+  vertical-align: -0.02em;
+
+  background:
+    #002fa7;
+}
+
+
+/*
+   Once typing has completed, keep the cursor alive with a
+   restrained blink instead of abruptly removing it.
+*/
+
+.hero-typing__cursor--done {
+  animation:
+    hero-cursor-blink
+    900ms
+    steps(1, end)
+    infinite;
+}
+
+@keyframes hero-cursor-blink {
+  0%,
+  48% {
+    opacity: 1;
+  }
+
+  49%,
+  100% {
+    opacity: 0;
+  }
+}
+
+
+/* ----------------------------------------------------------
+   PULSING EXPLORE ARROW
+   ---------------------------------------------------------- */
+
+.home-v3__explore-arrow {
+  color: #002fa7;
+
+  animation:
+    home-arrow-pulse
+    1.45s
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    )
+    infinite;
+}
+
+@keyframes home-arrow-pulse {
+  0% {
+    opacity: 0.42;
+
+    transform:
+      translateY(0);
+  }
+
+  45% {
+    opacity: 1;
+
+    transform:
+      translateY(6px);
+  }
+
+  70% {
+    opacity: 1;
+
+    transform:
+      translateY(6px);
+  }
+
+  100% {
+    opacity: 0.42;
+
+    transform:
+      translateY(0);
+  }
+}
+
+
+/*
+   Do not let the older hover transform compete with the
+   pulse animation.
+*/
+
+.home-v3__explore:hover
+.home-v3__explore-arrow {
+  animation-duration:
+    900ms;
+}
+
+
+/* ----------------------------------------------------------
+   LOAD ANIMATION COMPATIBILITY
+
+   The hero title itself already fades in as a container.
+   Typing starts immediately within that fade.
+   ---------------------------------------------------------- */
+
+.home-v3__title {
+  overflow: visible;
+}
+
+
+/* ----------------------------------------------------------
+   REDUCED MOTION
+   ---------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-typing__cursor--done,
+  .home-v3__explore-arrow {
+    animation:
+      none !important;
+  }
+
+  .home-v3__explore-arrow {
+    opacity: 1;
+
+    transform: none;
+  }
+}
+
+/* END HERO TYPING + BLUE ACCENTS */
+
+
+/* ==========================================================
+   SPOTLIGHT RECRUITER METRICS
+   ========================================================== */
+
+
+/* ----------------------------------------------------------
+   MOVE TITLE UP ON HOVER
+   Leaves space for summary + two benchmark metrics.
+   ---------------------------------------------------------- */
+
+.home-project__link:hover
+.home-project__center,
+.home-project__link:focus-visible
+.home-project__center {
+  top: 27%;
+}
+
+
+/* ----------------------------------------------------------
+   DESCRIPTION
+   ---------------------------------------------------------- */
+
+.home-project__description {
+  top: 40%;
+  left: 1.15rem;
+  right: 1.15rem;
+}
+
+.home-project__description p {
+  max-width: 25rem;
+
+  margin-inline: auto;
+
+  font-family:
+    var(--homepage-body);
+
+  font-size:
+    clamp(
+      0.63rem,
+      0.72vw,
+      0.75rem
+    );
+
+  font-weight: 400;
+  line-height: 1.27;
+
+  letter-spacing:
+    -0.018em;
+
+  text-align: center;
+}
+
+
+/* ----------------------------------------------------------
+   RECRUITER METRICS
+   ---------------------------------------------------------- */
+
+.home-project__metrics {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  margin-top:
+    1.05rem;
+
+  border-top:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.32
+    );
+
+  border-bottom:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.32
+    );
+}
+
+.home-project__metric {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  gap:
+    0.35rem;
+
+  min-height:
+    58px;
+
+  padding:
+    0.6rem
+    0.45rem;
+}
+
+.home-project__metric +
+.home-project__metric {
+  border-left:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.32
+    );
+}
+
+.home-project__metric strong {
+  color:
+    #ffffff;
+
+  font-family:
+    var(--homepage-body);
+
+  font-size:
+    clamp(
+      0.85rem,
+      1.15vw,
+      1.12rem
+    );
+
+  font-weight: 700;
+  line-height: 1;
+
+  letter-spacing:
+    -0.035em;
+
+  white-space: nowrap;
+}
+
+.home-project__metric span {
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.68
+    );
+
+  font-family:
+    var(--homepage-body);
+
+  font-size:
+    0.31rem;
+
+  font-weight: 700;
+  line-height: 1.1;
+
+  letter-spacing:
+    0.055em;
+
+  text-transform:
+    uppercase;
+}
+
+
+/* ----------------------------------------------------------
+   TECH STACK PILLS
+   ---------------------------------------------------------- */
+
+.home-project__tags {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap:
+    0.35rem;
+
+  margin-top:
+    0.52rem;
+}
+
+.home-project__tags span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height:
+    23px;
+
+  padding:
+    0.31rem
+    0.58rem
+    0.27rem;
+
+  border:
+    1px solid
+    var(--editorial-line);
+
+  border-radius:
+    999px;
+
+  color:
+    var(--editorial-text);
+
+  font-family:
+    var(--homepage-body);
+
+  font-size:
+    0.38rem;
+
+  font-weight: 700;
+  line-height: 1;
+
+  letter-spacing:
+    0.045em;
+
+  text-transform:
+    uppercase;
+
+  transition:
+    border-color
+    180ms ease,
+    color
+    180ms ease;
+}
+
+.home-project__tags span::after {
+  content:
+    none !important;
+}
+
+.home-project:hover
+.home-project__tags span {
+  border-color:
+    #002fa7;
+
+  color:
+    #002fa7;
+}
+
+
+/* ----------------------------------------------------------
+   KEEP VIEW CTA CLEAR OF METRICS
+   ---------------------------------------------------------- */
+
+.home-project__view {
+  bottom:
+    3.2rem;
+}
+
+
+/* ----------------------------------------------------------
+   SMALLER DESKTOP CARDS
+   ---------------------------------------------------------- */
+
+@media (
+  min-width: 901px
+) and (
+  max-height: 800px
+) {
+  .home-project__description {
+    top:
+      39%;
+  }
+
+  .home-project__metrics {
+    margin-top:
+      0.7rem;
+  }
+
+  .home-project__metric {
+    min-height:
+      48px;
+
+    padding:
+      0.45rem
+      0.35rem;
+  }
+
+  .home-project__view {
+    bottom:
+      2.75rem;
+  }
+}
+
+
+/* END SPOTLIGHT RECRUITER METRICS */
+
+/* bold highlighted current-status links */
+.home-v3__current-link {
+  font-weight: 700;
+}
+
+
+/* ==========================================================
+   PROJECT META — FOUR TAGS + REPOSITORY
+   ========================================================== */
+
+.home-project__meta-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+}
+
+.home-project__repo {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.35rem;
+
+  color: var(--editorial-text);
+
+  font-family: var(--homepage-body);
+  font-size: 0.48rem;
+  font-weight: 700;
+  line-height: 1;
+
+  letter-spacing: -0.02em;
+
+  white-space: nowrap;
+
+  transition:
+    color 180ms ease;
+}
+
+.home-project__repo span:last-child {
+  display: inline-block;
+
+  font-size: 0.75rem;
+
+  transition:
+    transform
+    220ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    );
+}
+
+.home-project__repo:hover,
+.home-project__repo:focus-visible {
+  color: #002fa7;
+}
+
+.home-project__repo:hover
+span:last-child,
+.home-project__repo:focus-visible
+span:last-child {
+  transform:
+    translate(
+      3px,
+      -3px
+    );
+}
+
+
+/* Four pills need to stay compact under each card. */
+
+.home-project__tags {
+  gap: 0.3rem;
+
+  margin-top: 0.52rem;
+}
+
+.home-project__tags span {
+  padding:
+    0.3rem
+    0.5rem
+    0.26rem;
+
+  font-size: 0.35rem;
+}
+
+
+/* force four tech pills + repo link under spotlight cards */
+
+.home-project__meta-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+}
+
+.home-project__repo {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.35rem;
+
+  color: var(--editorial-text);
+
+  font-family: var(--homepage-body);
+  font-size: 0.48rem;
+  font-weight: 700;
+  line-height: 1;
+
+  white-space: nowrap;
+
+  transition:
+    color 180ms ease;
+}
+
+.home-project__repo span:last-child {
+  display: inline-block;
+
+  font-size: 0.75rem;
+
+  transition:
+    transform
+    220ms
+    cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.home-project__repo:hover,
+.home-project__repo:focus-visible {
+  color: #002fa7;
+}
+
+.home-project__repo:hover span:last-child,
+.home-project__repo:focus-visible span:last-child {
+  transform: translate(3px, -3px);
+}
+
+.home-project__tags {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 0.32rem;
+
+  margin-top: 0.52rem;
+}
+
+.home-project__tags span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 23px;
+
+  padding:
+    0.3rem
+    0.52rem
+    0.26rem;
+
+  border:
+    1px solid
+    var(--editorial-line);
+
+  border-radius: 999px;
+
+  font-family: var(--homepage-body);
+  font-size: 0.35rem;
+  font-weight: 700;
+  line-height: 1;
+
+  letter-spacing: 0.04em;
+
+  text-transform: uppercase;
+}
+
+.home-project__tags span::after {
+  content: none !important;
+}
+
+
+
+/* ==========================================================
+   HOMEPAGE SCALE POLISH
+   ========================================================== */
+
+
+/* ----------------------------------------------------------
+   1. PROJECTS — stronger visual weight
+   Previous spotlight width: ~850px
+   New width: 930px
+   ---------------------------------------------------------- */
+
+.spotlight {
+  width:
+    min(
+      100%,
+      930px
+    );
+}
+
+.spotlight__grid {
+  gap:
+    20px;
+}
+
+
+/*
+   Slightly taller cards on desktop without allowing the
+   homepage to begin scrolling again.
+*/
+
+@media (min-width: 901px) {
+  .home-project__surface {
+    height:
+      clamp(
+        265px,
+        35vh,
+        365px
+      );
+  }
+}
+
+
+/* ----------------------------------------------------------
+   2. PROJECT META — improve readability
+   ---------------------------------------------------------- */
+
+.home-project__meta {
+  padding-top:
+    0.72rem;
+}
+
+
+/* project name */
+
+.home-project__meta h3 {
+  font-size:
+    0.78rem;
+
+  line-height:
+    1.05;
+
+  letter-spacing:
+    -0.03em;
+}
+
+
+/* title + repo row */
+
+.home-project__meta-head {
+  min-height:
+    1.1rem;
+
+  gap:
+    0.8rem;
+}
+
+
+/* repo ↗ */
+
+.home-project__repo {
+  gap:
+    0.3rem;
+
+  font-size:
+    0.57rem;
+
+  font-weight:
+    700;
+}
+
+.home-project__repo span:last-child {
+  font-size:
+    0.82rem;
+}
+
+
+/* tech pills */
+
+.home-project__tags {
+  gap:
+    0.38rem;
+
+  margin-top:
+    0.58rem;
+}
+
+.home-project__tags span {
+  min-height:
+    27px;
+
+  padding:
+    0.36rem
+    0.62rem
+    0.31rem;
+
+  border-width:
+    1px;
+
+  font-size:
+    0.41rem;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.035em;
+}
+
+
+/* ----------------------------------------------------------
+   3. FOOTER — pull links away from browser edges
+   ---------------------------------------------------------- */
+
+.home-v3__footer {
+  left:
+    clamp(
+      4.5rem,
+      5vw,
+      5.75rem
+    );
+
+  right:
+    clamp(
+      4.5rem,
+      5vw,
+      5.75rem
+    );
+}
+
+
+/* Slightly more intentional footer text size */
+
+.home-v3__footer {
+  font-size:
+    clamp(
+      0.88rem,
+      1vw,
+      1rem
+    );
+}
+
+
+/* ----------------------------------------------------------
+   SHORT DESKTOPS
+   Preserve the single-screen homepage.
+   ---------------------------------------------------------- */
+
+@media (min-width: 901px) and (max-height: 800px) {
+  .home-project__surface {
+    height:
+      clamp(
+        240px,
+        34vh,
+        300px
+      );
+  }
+
+  .spotlight {
+    width:
+      min(
+        100%,
+        900px
+      );
+  }
+
+  .home-project__tags span {
+    min-height:
+      24px;
+
+    padding:
+      0.3rem
+      0.52rem
+      0.27rem;
+
+    font-size:
+      0.37rem;
+  }
+}
+
+
+/* ----------------------------------------------------------
+   TABLET
+   Keep the existing responsive composition.
+   ---------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .spotlight {
+    width:
+      min(
+        100%,
+        620px
+      );
+  }
+
+  .home-v3__footer {
+    left:
+      2rem;
+
+    right:
+      2rem;
+  }
+}
+
+
+/* ----------------------------------------------------------
+   MOBILE
+   ---------------------------------------------------------- */
+
+@media (max-width: 650px) {
+  .spotlight {
+    width:
+      min(
+        100%,
+        340px
+      );
+  }
+
+  .home-project__tags span {
+    min-height:
+      26px;
+
+    font-size:
+      0.4rem;
+  }
+
+  .home-v3__footer {
+    left:
+      auto;
+
+    right:
+      auto;
+  }
+}
+
+/* END HOMEPAGE SCALE POLISH */
