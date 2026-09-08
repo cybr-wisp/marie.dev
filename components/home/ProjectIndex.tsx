@@ -3,156 +3,76 @@
 import { projects } from "@/content/projects";
 import { TypingHero } from "@/components/home/TypingHero";
 
+function categoryLabel(category: string) {
+  if (category === "AI / ML") return "APPLIED ML / AI";
+  if (category === "DEVELOPER TOOLS") return "DEVELOPER TOOL";
+  return category;
+}
+
 export function ProjectIndex() {
-  const featuredProjects = projects.slice(0, 2);
+  const featuredProjects = projects.slice(0, 6);
 
   return (
-    <section
-      className="index-work"
-      id="work"
-      aria-label="Featured projects"
-    >
-      <header className="index-masthead fade-up" style={{ animationDelay: "0.05s" }}>
-        <div className="index-masthead__copy">
-          <TypingHero />
-        </div>
+    <section className="landing-work" id="work" aria-label="Selected projects">
+      <TypingHero />
 
-        <div className="index-masthead__meta">
-          <span>SELECTED · 02</span>
-          <span>2026</span>
-        </div>
-      </header>
-
-      <div className="index-exhibits fade-up" style={{ animationDelay: "0.3s" }}>
+      <div className="landing-projects">
         {featuredProjects.map((project) => (
-          <article
-            className="index-exhibit"
-            key={project.slug}
-          >
+          <article className="landing-project" key={project.slug}>
             <Link
-              className="index-exhibit__object"
               href={`/projects/${project.slug}`}
+              className="landing-project__card"
               aria-label={`Open ${project.title}`}
             >
-              <div className="index-exhibit__top">
-                <span className="index-exhibit__number">
-                  {project.number}
-                </span>
+              <div className="landing-project__top">
+                <span>{project.number}</span>
               </div>
 
-              <div className="index-exhibit__center">
-                <span
-                  className="index-exhibit__bracket"
-                  aria-hidden="true"
-                >
-                  [
-                </span>
-
+              <div className="landing-project__center">
+                <span className="landing-project__bracket" aria-hidden="true">[</span>
                 <h2>{project.title}</h2>
-
-                <span
-                  className="index-exhibit__bracket"
-                  aria-hidden="true"
-                >
-                  ]
-                </span>
+                <span className="landing-project__bracket" aria-hidden="true">]</span>
               </div>
 
-              <span className="index-exhibit__view">
-                VIEW PROJECT
-                <span aria-hidden="true">↗</span>
-              </span>
+              <div className="landing-project__description">
+                <p className="copy-en">{project.summary.en}</p>
+                <p className="copy-fr">{project.summary.fr}</p>
+              </div>
 
-              <div className="index-exhibit__footer">
+              <div className="landing-project__view">
+                <span>VIEW PROJECT</span>
+                <span aria-hidden="true">↗</span>
+              </div>
+
+              <div className="landing-project__footer">
                 <span>PROJECT {project.number}</span>
                 <span>{project.year}</span>
               </div>
             </Link>
 
-            <div
-              className="index-exhibit__hover-note"
-              aria-hidden="true"
-            >
-              <svg
-                className="index-exhibit__sketch-arrow"
-                viewBox="0 0 180 140"
-                aria-hidden="true"
-              >
-                <path
-                  className="index-exhibit__sketch-stroke"
-                  pathLength="1"
-                  d="
-                    M158 40
-                    C147 13, 122 7, 98 9
-                    C64 12, 42 33, 33 61
-                    C28 77, 29 92, 36 106
-                  "
-                />
-
-                <path
-                  className="index-exhibit__sketch-head"
-                  pathLength="1"
-                  d="
-                    M20 90
-                    L36 106
-                    L48 83
-                  "
-                />
-              </svg>
-
-              <div className="index-exhibit__description">
-                <p className="copy-en">
-                  {project.summary.en}
-                </p>
-
-                <p className="copy-fr">
-                  {project.summary.fr}
-                </p>
-              </div>
-            </div>
-
-            <div className="index-exhibit__meta">
+            <div className="landing-project__meta">
               <h3>{project.title}</h3>
 
-              <div className="index-exhibit__tags">
-                {project.tags
-                  .slice(0, 3)
-                  .map((tag) => (
-                    <span key={tag}>
-                      {tag}
-                    </span>
+              <div className="landing-project__meta-line">
+                <div className="landing-project__tags">
+                  {project.tags.slice(0, 3).map((tag) => (
+                    <span key={tag}>{tag}</span>
                   ))}
+                </div>
+
+                <span className="project-category-badge">
+                  {categoryLabel(project.categories[0])}
+                </span>
               </div>
             </div>
           </article>
         ))}
       </div>
 
-      <div className="field-notes-footer fade-up" style={{ animationDelay: "0.5s" }}>
-        <a
-          href="https://github.com/cybr-wisp/marie.dev"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <span className="copy-en">
-            ACCESS FIELD NOTES →
-          </span>
-          <span className="copy-fr">
-            ACCÉDER AUX NOTES DE TERRAIN →
-          </span>
-        </a>
-      </div>
-
-      <div className="index-projects-footer fade-up" style={{ animationDelay: "0.5s" }}>
-        <Link href="/projects">
-          <span className="copy-en">
-            ALL PROJECTS →
-          </span>
-          <span className="copy-fr">
-            TOUS LES PROJETS →
-          </span>
-        </Link>
-      </div>
+      <Link href="/projects" className="landing-all-projects">
+        <span className="copy-en">all projects ↗</span>
+        <span className="copy-fr">tous les projets ↗</span>
+      </Link>
     </section>
   );
 }
