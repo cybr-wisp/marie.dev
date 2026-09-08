@@ -17,16 +17,16 @@
   --klein-blue-light: #1a4db5;
 
   --font-display:
-    "Helvetica Neue",
     Helvetica,
+    "Helvetica Neue",
     Arial,
     sans-serif;
 
   --font-body:
-    var(--font-garamond),
-    Garamond,
-    "Times New Roman",
-    serif;
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif;
 
   --ease:
     cubic-bezier(0.16, 1, 0.3, 1);
@@ -420,692 +420,6 @@ html[data-language="fr"] .language-switch-to-en {
 
 
 /* ==========================================================
-   PAGE
-   ========================================================== */
-
-.index-page {
-  min-height: 100svh;
-  height: 100svh;
-
-  overflow: hidden;
-
-  background: var(--background);
-}
-
-.index-frame {
-  min-height: 100svh;
-
-  display: grid;
-  grid-template-columns:
-    var(--rail-width)
-    minmax(0, 1fr);
-
-  gap: var(--stage-gap);
-
-  padding:
-    7.2rem
-    var(--page-edge)
-    3.2rem;
-}
-
-
-/* ==========================================================
-   LEFT INDEX
-   ========================================================== */
-
-.index-rail {
-  position: fixed;
-  z-index: 80;
-
-  top: var(--rail-top);
-  left: var(--page-edge);
-
-  width: var(--rail-width);
-
-  padding-top: 0;
-}
-
-.index-identity h1 {
-  font-family: var(--font-display);
-  font-size: 0.72rem;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-
-.index-identity > span {
-  display: block;
-
-  margin-top: 0.45rem;
-
-  font-family: var(--font-display);
-  font-size: 0.48rem;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-}
-
-.index-nav {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-
-  gap: 0.12rem;
-
-  margin-top: 2.5rem;
-}
-
-.index-nav a {
-  position: relative;
-
-  font-family: var(--font-display);
-  font-size: 0.78rem;
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-
-  transition: color var(--fast);
-}
-
-.index-nav a:hover,
-.index-nav a.is-active {
-  color: var(--klein-blue);
-}
-
-.index-disciplines {
-  display: flex;
-  flex-direction: column;
-
-  margin-top: 3rem;
-
-  color: var(--muted);
-
-  font-family: var(--font-display);
-  font-size: 0.44rem;
-  font-weight: 700;
-  line-height: 1.32;
-  letter-spacing: 0.08em;
-}
-
-
-/* ==========================================================
-   PROJECT AREA
-   ========================================================== */
-
-.index-work {
-  grid-column: 2;
-
-  min-width: 0;
-  min-height: calc(100svh - 9.6rem);
-
-  display: flex;
-  flex-direction: column;
-}
-
-
-
-
-/* ==========================================================
-   INDEX MASTHEAD
-   ========================================================== */
-
-.index-masthead {
-  position: fixed;
-  z-index: 42;
-
-  top: var(--rail-top);
-  left: var(--stage-left);
-  right: var(--page-edge);
-
-  width: auto;
-  min-height: calc(var(--top-rule-top) - var(--rail-top));
-
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-
-  gap: 2rem;
-  align-items: end;
-
-  padding-bottom: 1.05rem;
-
-  background: var(--background);
-  border-bottom: 0;
-}
-
-.index-masthead__copy p {
-  max-width: 760px;
-}
-
-.index-masthead__copy .keep-together {
-  display: inline;
-  white-space: nowrap;
-}
-
-.index-masthead__copy strong,
-.index-masthead__copy span {
-  display: block;
-}
-
-.index-masthead__copy strong {
-  font-family: var(--font-display);
-  font-size: clamp(1.45rem, 2.35vw, 2.3rem);
-  font-weight: 700;
-  line-height: 0.94;
-  letter-spacing: -0.048em;
-}
-
-.index-masthead__copy span {
-  margin-top: 0.22rem;
-
-  font-family: var(--font-body);
-  font-size: clamp(1.18rem, 1.8vw, 1.72rem);
-  line-height: 1.03;
-  letter-spacing: -0.02em;
-}
-
-.index-masthead__meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-
-  gap: 0.18rem;
-
-  color: var(--muted);
-
-  font-family: var(--font-display);
-  font-size: 0.42rem;
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: 0.08em;
-}
-
-
-/* ==========================================================
-   FEATURED PROJECTS
-   ========================================================== */
-
-.index-exhibits {
-  position: fixed;
-  z-index: 30;
-
-  top: calc(var(--top-rule-top) + clamp(1rem, 2vh, 1.35rem));
-  left: var(--stage-left);
-  right: var(--page-edge);
-
-  display: grid;
-  grid-template-columns: repeat(2, 210px);
-
-  justify-content: center;
-  align-items: start;
-
-  /* intentionally close — the cards read as a pair */
-  gap: clamp(1rem, 1.6vw, 1.45rem);
-
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-.index-exhibit {
-  position: relative;
-
-  width: 210px;
-  min-width: 0;
-}
-
-
-/* ==========================================================
-   PROJECT OBJECT
-   ========================================================== */
-
-.index-exhibit__object {
-  position: relative;
-
-  width: 210px;
-  height: 300px;
-
-  display: flex;
-  flex-direction: column;
-
-  overflow: hidden;
-
-  padding: 0.8rem;
-
-  border: 1px solid var(--rule-strong);
-
-  background: var(--surface);
-  color: var(--text);
-
-  transition:
-    background-color 240ms var(--ease),
-    color 240ms var(--ease),
-    border-color 240ms var(--ease),
-    transform 240ms var(--ease);
-}
-
-.index-exhibit:hover .index-exhibit__object {
-  background: var(--klein-blue);
-  border-color: var(--klein-blue);
-  color: #ffffff;
-
-  transform: translateY(-3px);
-}
-
-
-/* ==========================================================
-   CARD TOP
-   ========================================================== */
-
-.index-exhibit__top {
-  position: relative;
-  z-index: 2;
-
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
-}
-
-.index-exhibit__number {
-  color: inherit;
-
-  font-family: var(--font-display);
-  font-size: 0.44rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-
-/* ==========================================================
-   CARD TITLE
-   ========================================================== */
-
-.index-exhibit__center {
-  flex: 1;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  gap: 0.55rem;
-
-  transition: transform 300ms var(--ease);
-}
-
-.index-exhibit:hover .index-exhibit__center {
-  transform: translateY(-10px);
-}
-
-.index-exhibit__center h2 {
-  color: inherit;
-
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.045em;
-}
-
-.index-exhibit__bracket {
-  color: inherit;
-  opacity: 0.52;
-
-  font-family: var(--font-body);
-  font-size: 1.15rem;
-}
-
-
-/* ==========================================================
-   CARD FOOTER
-   ========================================================== */
-
-.index-exhibit__footer {
-  position: relative;
-  z-index: 2;
-
-  display: flex;
-  justify-content: space-between;
-
-  margin-top: auto;
-
-  color: inherit;
-  opacity: 0.65;
-
-  font-family: var(--font-display);
-  font-size: 0.38rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.index-exhibit:hover .index-exhibit__footer {
-  opacity: 0.86;
-}
-
-
-
-
-/* ==========================================================
-   CLICKABLE CTA INSIDE CARD
-   The entire card is a Link, so this label is clickable too.
-   ========================================================== */
-
-.index-exhibit__view {
-  position: absolute;
-  z-index: 4;
-
-  left: 0.8rem;
-  bottom: 2.15rem;
-
-  display: flex;
-  align-items: center;
-
-  gap: 0.35rem;
-
-  color: inherit;
-
-  font-family: var(--font-display);
-  font-size: 0.39rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-
-  opacity: 0;
-
-  transform: translateY(7px);
-
-  transition:
-    opacity 180ms var(--ease),
-    transform 260ms var(--ease);
-}
-
-.index-exhibit:hover
-.index-exhibit__view {
-  opacity: 1;
-
-  transform: translateY(0);
-}
-
-.index-exhibit__view > span {
-  display: inline-block;
-
-  font-size: 0.72rem;
-
-  transform: translate(0, 0);
-
-  transition: transform 260ms var(--ease);
-}
-
-.index-exhibit:hover
-.index-exhibit__view > span {
-  transform: translate(3px, -3px);
-}
-
-/* ==========================================================
-   OUTSIDE HOVER NOTE
-   description + pencil arrow live outside the card
-   ========================================================== */
-
-.index-exhibit__hover-note {
-  position: absolute;
-  z-index: 8;
-
-  top: 102px;
-
-  width: 245px;
-
-  pointer-events: none;
-
-  /*
-    Keep the wrapper visible. The SVG paths themselves are hidden
-    with dashoffset until hover, which lets the drawing animation
-    begin visibly from the very first pixel.
-  */
-  opacity: 1;
-
-  transition:
-    transform 280ms var(--ease);
-}
-
-.index-exhibit:hover .index-exhibit__hover-note {
-  opacity: 1;
-}
-
-
-/* Canary: note opens to the LEFT */
-
-.index-exhibit:nth-child(1)
-.index-exhibit__hover-note {
-  right: calc(100% + 16px);
-
-  transform: translateX(10px);
-}
-
-.index-exhibit:nth-child(1):hover
-.index-exhibit__hover-note {
-  transform: translateX(0);
-}
-
-
-/* Keel: note opens to the RIGHT */
-
-.index-exhibit:nth-child(2)
-.index-exhibit__hover-note {
-  left: calc(100% + 16px);
-
-  transform: translateX(-10px);
-}
-
-.index-exhibit:nth-child(2):hover
-.index-exhibit__hover-note {
-  transform: translateX(0);
-}
-
-
-/* ==========================================================
-   OUTSIDE DESCRIPTION
-   ========================================================== */
-
-.index-exhibit__description {
-  position: relative;
-
-  opacity: 0;
-
-  transform: translateY(5px);
-
-  transition:
-    opacity 210ms var(--ease) 300ms,
-    transform 300ms var(--ease) 300ms;
-}
-
-.index-exhibit:hover
-.index-exhibit__description {
-  opacity: 1;
-
-  transform: translateY(0);
-}
-
-.index-exhibit:nth-child(1)
-.index-exhibit__description {
-  padding-top: 3.35rem;
-  padding-right: 6.4rem;
-
-  text-align: right;
-}
-
-.index-exhibit:nth-child(2)
-.index-exhibit__description {
-  padding-top: 3.35rem;
-  padding-left: 6.4rem;
-
-  text-align: left;
-}
-
-.index-exhibit__description p {
-  color: var(--text);
-
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  line-height: 1.15;
-}
-
-
-/* ==========================================================
-   DEEPLY CURVED EDITORIAL ARROW
-   ========================================================== */
-
-.index-exhibit__sketch-arrow {
-  position: absolute;
-
-  top: -45px;
-
-  width: 156px;
-  height: 122px;
-
-  overflow: visible;
-
-  color: var(--text);
-  opacity: 0.92;
-}
-
-.index-exhibit__sketch-stroke,
-.index-exhibit__sketch-head {
-  fill: none;
-
-  stroke: currentColor;
-  stroke-width: 1.12;
-
-  stroke-linecap: round;
-  stroke-linejoin: round;
-
-  vector-effect: non-scaling-stroke;
-
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-}
-
-.index-exhibit__sketch-stroke {
-  transition:
-    stroke-dashoffset 620ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.index-exhibit__sketch-head {
-  transition:
-    stroke-dashoffset 180ms cubic-bezier(0.4, 0, 0.2, 1);
-
-  transition-delay: 510ms;
-}
-
-.index-exhibit:hover
-.index-exhibit__sketch-stroke,
-.index-exhibit:hover
-.index-exhibit__sketch-head {
-  stroke-dashoffset: 0;
-}
-
-/*
-  The SVG points from the card side toward a left-side annotation.
-  It bows outward first, then curls back into the note.
-*/
-.index-exhibit:nth-child(1)
-.index-exhibit__sketch-arrow {
-  right: -14px;
-
-  /*
-    Keep the exact SVG gesture, but rotate the annotation end upward.
-  */
-  transform: rotate(7deg);
-  transform-origin: center;
-}
-
-/* Mirror the exact same gesture for the second project. */
-.index-exhibit:nth-child(2)
-.index-exhibit__sketch-arrow {
-  left: -14px;
-
-  /*
-    Mirror first, then counter-rotate so this arrow head rises by
-    the same amount as the left annotation.
-  */
-  transform: rotate(-7deg) scaleX(-1);
-  transform-origin: center;
-}
-
-
-/* ==========================================================
-   META BELOW CARD
-   ========================================================== */
-
-.index-exhibit__meta {
-  width: 210px;
-
-  padding-top: 0.6rem;
-}
-
-.index-exhibit__meta h3 {
-  margin-bottom: 0.45rem;
-
-  font-family: var(--font-display);
-  font-size: 0.54rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.index-exhibit__tags {
-  display: flex;
-  flex-wrap: wrap;
-
-  gap: 0.2rem 0.45rem;
-
-  margin-top: 0;
-
-  font-family: var(--font-display);
-  font-size: 0.37rem;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.index-exhibit__tags span:not(:last-child)::after {
-  content: " ·";
-
-  color: var(--klein-blue);
-}
-
-
-/* ==========================================================
-   ALL PROJECTS
-   ========================================================== */
-
-.index-projects-footer {
-  position: fixed;
-  z-index: 45;
-
-  left: var(--stage-left);
-  right: var(--page-edge);
-  bottom: 0.72rem;
-
-  display: flex;
-  justify-content: flex-end;
-
-  padding-top: 0;
-
-  border-top: 0;
-
-  pointer-events: none;
-}
-
-.index-projects-footer a {
-  pointer-events: auto;
-
-  font-family: var(--font-display);
-  font-size: 0.48rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-
-  transition: color var(--fast);
-}
-
-.index-projects-footer a:hover {
-  color: var(--klein-blue);
-}
-
-
-/* ==========================================================
    ACCESS FIELD NOTES
    fixed bottom-left companion to ALL PROJECTS
    ========================================================== */
@@ -1221,15 +535,14 @@ html[data-language="fr"] .language-switch-to-en {
 
 @media (pointer: coarse) {
   .cursor-ring,
-  .cursor-dot,
-  .index-exhibit__hover-note {
+  .cursor-dot {
     display: none;
   }
 }
 
 
 /* ==========================================================
-   TABLET
+   GLOBAL RESPONSIVE CONTROLS
    ========================================================== */
 
 @media (max-width: 980px) {
@@ -1237,104 +550,12 @@ html[data-language="fr"] .language-switch-to-en {
     top: 2rem;
     right: 2rem;
   }
-
-  .index-frame {
-    grid-template-columns: 140px 1fr;
-
-    gap: 2.5rem;
-
-    padding:
-      6.5rem
-      2rem
-      2rem;
-  }
-
-  .index-exhibits {
-    grid-template-columns: repeat(2, 195px);
-
-    gap: 1.25rem;
-  }
-
-  .index-exhibit,
-  .index-exhibit__meta {
-    width: 195px;
-  }
-
-  .index-exhibit__object {
-    width: 195px;
-    height: 280px;
-  }
-
-  .index-exhibit__hover-note {
-    display: none;
-  }
 }
-
-
-/* ==========================================================
-   MOBILE
-   ========================================================== */
 
 @media (max-width: 760px) {
   .index-controls {
     top: 1.25rem;
     right: 1.25rem;
-  }
-
-  .index-frame {
-    display: block;
-
-    min-height: auto;
-
-    padding:
-      5.5rem
-      1.25rem
-      2rem;
-  }
-
-  .index-rail {
-    padding-bottom: 4rem;
-  }
-
-  .index-masthead {
-    grid-template-columns: 1fr;
-
-    gap: 1rem;
-  }
-
-  .index-masthead__meta {
-    align-items: flex-start;
-  }
-
-  .index-exhibits {
-    grid-template-columns: 220px;
-
-    max-width: 220px;
-
-    margin-inline: auto;
-
-    gap: 4rem;
-
-    padding-top: 2rem;
-    padding-bottom: 3rem;
-  }
-
-  .index-exhibit,
-  .index-exhibit__object,
-  .index-exhibit__meta {
-    width: 220px;
-  }
-
-  .index-exhibit__object {
-    height: 315px;
-  }
-
-  .index-exhibit__hover-note {
-    display: none;
-  }
-
-  .index-projects-footer {
-    margin-top: 2rem;
   }
 }
 
@@ -1354,22 +575,6 @@ html[data-language="fr"] .language-switch-to-en {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-  }
-
-  .index-exhibit__object {
-    transform: none !important;
-  }
-
-  .index-exhibit__sketch-stroke,
-  .index-exhibit__sketch-head {
-    stroke-dashoffset: 0 !important;
-    transition: none !important;
-  }
-
-  .index-exhibit__description {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
   }
 }
 
@@ -10484,33 +9689,6 @@ html[data-theme="dark"] .case-tech-badge__icon img {
 }
 
 /* ==========================================================
-   TYPING CURSOR (index page)
-   ========================================================== */
-
-.index-masthead__copy .typing-cursor {
-  display: inline-block;
-
-  width: 2px;
-  height: 0.85em;
-
-  margin-left: 2px;
-
-  vertical-align: baseline;
-
-  background: currentColor;
-}
-
-.index-masthead__copy .typing-cursor--blink {
-  animation: cursor-blink 0.72s steps(2) infinite;
-}
-
-@keyframes cursor-blink {
-  0% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-
-/* ==========================================================
    FADE-UP ANIMATION (about page)
    ========================================================== */
 
@@ -10551,4 +9729,748 @@ html[data-theme="dark"] .case-tech-badge__icon img {
   opacity: 0.45;
 
   letter-spacing: -0.02em;
+}
+
+
+/* ==========================================================
+   LANDING PAGE
+   ========================================================== */
+
+body:has(.index-page) .site-rule {
+  display: none;
+}
+
+.index-page {
+  min-height: 100svh;
+  background: var(--background);
+}
+
+.index-frame {
+  width: 100%;
+  min-height: 100svh;
+}
+
+
+/* ----------------------------------------------------------
+   LANDING NAVIGATION
+   ---------------------------------------------------------- */
+
+.landing-nav {
+  position: fixed;
+  z-index: 70;
+
+  top: 2.75rem;
+  left: 50%;
+
+  width: min(
+    calc(100% - 3rem),
+    1090px
+  );
+
+  display: flex;
+  align-items: center;
+
+  gap: clamp(1.55rem, 2.5vw, 2.6rem);
+
+  transform: translateX(-50%);
+
+  font-family: var(--font-body);
+  font-size: clamp(0.95rem, 1.15vw, 1.18rem);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.landing-nav a {
+  transition:
+    color var(--fast),
+    opacity var(--fast);
+}
+
+.landing-nav a:hover,
+.landing-nav a:focus-visible,
+.landing-nav a.is-active {
+  color: var(--klein-blue);
+}
+
+
+/* ----------------------------------------------------------
+   LANDING CONTROLS + RESUME
+   ---------------------------------------------------------- */
+
+body:has(.index-page) .index-controls {
+  top: 2.75rem;
+
+  right: max(
+    1.5rem,
+    calc((100vw - 1090px) / 2)
+  );
+
+  gap: 0.45rem;
+}
+
+body:has(.index-page) .mode-button {
+  height: 29px;
+  min-height: 29px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.resume-button {
+  height: 29px;
+  min-height: 29px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.4rem;
+
+  padding: 0 0.58rem;
+
+  border: 1px solid var(--rule-strong);
+
+  background: var(--background);
+  color: var(--text);
+
+  font-family: var(--font-body);
+  font-size: 0.53rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.055em;
+
+  transition:
+    background-color var(--fast),
+    border-color var(--fast),
+    color var(--fast);
+}
+
+.resume-button svg {
+  width: 11px;
+  height: 11px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.resume-button:hover,
+.resume-button:focus-visible {
+  background: var(--klein-blue);
+  border-color: var(--klein-blue);
+  color: #ffffff;
+}
+
+
+/* ----------------------------------------------------------
+   TYPING HERO
+   ---------------------------------------------------------- */
+
+.landing-work {
+  width: 100%;
+
+  padding:
+    clamp(11.5rem, 12.5vw, 13.5rem)
+    1.5rem
+    7rem;
+}
+
+.landing-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}
+
+.landing-hero__title {
+  width: min(100%, 1020px);
+  min-height: 1.82em;
+
+  font-family: var(--font-display);
+  font-size: clamp(3.25rem, 4.8vw, 5rem);
+  font-weight: 700;
+  line-height: 0.88;
+  letter-spacing: -0.067em;
+
+  text-wrap: balance;
+}
+
+.landing-hero__title > span:first-child {
+  display: inline;
+}
+
+.landing-typing-cursor {
+  display: inline-block;
+
+  width: 0.055em;
+  height: 0.78em;
+
+  margin-left: 0.075em;
+
+  background: currentColor;
+
+  vertical-align: -0.03em;
+}
+
+.landing-typing-cursor--blink {
+  animation:
+    landing-cursor-blink
+    0.72s
+    steps(2)
+    infinite;
+}
+
+@keyframes landing-cursor-blink {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.landing-hero__explore {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.48rem;
+
+  margin-top: 1.8rem;
+
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.2vw, 1.18rem);
+  font-weight: 400;
+  line-height: 1;
+
+  transition: color var(--fast);
+}
+
+.landing-hero__explore:hover,
+.landing-hero__explore:focus-visible {
+  color: var(--klein-blue);
+}
+
+.landing-hero__arrow {
+  display: inline-block;
+
+  font-size: 0.82em;
+
+  animation:
+    landing-arrow-pulse
+    1.55s
+    ease-in-out
+    infinite;
+}
+
+@keyframes landing-arrow-pulse {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+
+/* ----------------------------------------------------------
+   LANDING PROJECT GRID
+   ---------------------------------------------------------- */
+
+.landing-projects {
+  width: min(100%, 890px);
+
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  row-gap: clamp(1.35rem, 1.8vw, 1.8rem);
+  column-gap: clamp(1rem, 1.55vw, 1.5rem);
+
+  margin:
+    clamp(3.8rem, 4.8vw, 4.8rem)
+    auto
+    0;
+}
+
+.landing-project {
+  min-width: 0;
+}
+
+.landing-project__card {
+  position: relative;
+
+  width: 100%;
+  aspect-ratio: 1 / 1;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  padding: 1rem;
+
+  border: 1px solid var(--rule-strong);
+
+  background: var(--surface);
+  color: var(--text);
+
+  transition:
+    background-color 200ms var(--ease),
+    border-color 200ms var(--ease),
+    color 200ms var(--ease);
+}
+
+.landing-project__card:hover,
+.landing-project__card:focus-visible {
+  background: var(--klein-blue);
+  border-color: var(--klein-blue);
+  color: #ffffff;
+}
+
+.landing-project__top {
+  position: relative;
+  z-index: 3;
+
+  display: flex;
+  justify-content: flex-end;
+
+  font-family: var(--font-display);
+  font-size: 0.47rem;
+  font-weight: 700;
+  letter-spacing: 0.065em;
+}
+
+.landing-project__center {
+  position: relative;
+  z-index: 2;
+
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.55rem;
+
+  transition:
+    transform 280ms var(--ease);
+}
+
+.landing-project__card:hover
+.landing-project__center,
+.landing-project__card:focus-visible
+.landing-project__center {
+  transform: translateY(-2.1rem);
+}
+
+.landing-project__center h2 {
+  max-width: 78%;
+
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 1.65vw, 1.7rem);
+  font-weight: 700;
+  line-height: 0.94;
+  letter-spacing: -0.047em;
+
+  text-align: center;
+}
+
+.landing-project__bracket {
+  opacity: 0.48;
+
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  font-weight: 400;
+}
+
+.landing-project__description {
+  position: absolute;
+  z-index: 3;
+
+  top: 56%;
+  left: 1.15rem;
+  right: 1.15rem;
+
+  opacity: 0;
+
+  transform: translateY(8px);
+
+  transition:
+    opacity 190ms var(--ease),
+    transform 260ms var(--ease);
+}
+
+.landing-project__description p {
+  display: -webkit-box;
+
+  overflow: hidden;
+
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+
+  color: #ffffff;
+
+  font-family: var(--font-body);
+  font-size: clamp(0.58rem, 0.72vw, 0.7rem);
+  font-weight: 400;
+  line-height: 1.28;
+
+  text-align: center;
+}
+
+.landing-project__card:hover
+.landing-project__description,
+.landing-project__card:focus-visible
+.landing-project__description {
+  opacity: 0.88;
+  transform: translateY(0);
+}
+
+.landing-project__view {
+  position: absolute;
+  z-index: 4;
+
+  left: 1rem;
+  bottom: 2.55rem;
+
+  display: flex;
+  align-items: center;
+
+  gap: 0.38rem;
+
+  font-family: var(--font-display);
+  font-size: 0.4rem;
+  font-weight: 700;
+  letter-spacing: 0.065em;
+
+  opacity: 0;
+
+  transform: translateY(6px);
+
+  transition:
+    opacity 180ms var(--ease),
+    transform 240ms var(--ease);
+}
+
+.landing-project__card:hover
+.landing-project__view,
+.landing-project__card:focus-visible
+.landing-project__view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.landing-project__view span:last-child {
+  display: inline-block;
+
+  font-size: 0.76rem;
+
+  transition:
+    transform 240ms var(--ease);
+}
+
+.landing-project__card:hover
+.landing-project__view span:last-child {
+  transform: translate(3px, -3px);
+}
+
+.landing-project__footer {
+  position: relative;
+  z-index: 3;
+
+  display: flex;
+  justify-content: space-between;
+
+  margin-top: auto;
+
+  opacity: 0.66;
+
+  font-family: var(--font-display);
+  font-size: 0.38rem;
+  font-weight: 700;
+  letter-spacing: 0.065em;
+}
+
+.landing-project__meta {
+  padding-top: 0.68rem;
+}
+
+.landing-project__meta h3 {
+  margin-bottom: 0.38rem;
+
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.landing-project__tags {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 0.18rem 0.42rem;
+
+  font-family: var(--font-body);
+  font-size: 0.39rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.landing-project__tags
+span:not(:last-child)::after {
+  content: " ·";
+  color: var(--klein-blue);
+}
+
+.landing-project__meta-line,
+.work-card__meta-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.project-category-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 18px;
+  padding: 0.14rem 0.38rem;
+
+  border: 1px solid var(--rule-strong);
+  border-radius: 6px;
+
+  color: var(--muted);
+  background: transparent;
+
+  font-family: var(--font-body);
+  font-size: 0.34rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.045em;
+  white-space: nowrap;
+}
+
+.landing-project__meta-line .landing-project__tags,
+.work-card__meta-line .work-card__tech {
+  min-width: 0;
+}
+
+.work-card__meta-line {
+  margin-top: 0.15rem;
+}
+
+.work-card__meta-line .project-category-badge {
+  min-height: 17px;
+  font-size: 0.31rem;
+}
+
+
+/* ----------------------------------------------------------
+   ALL PROJECTS
+   ---------------------------------------------------------- */
+
+.landing-all-projects {
+  width: min(100%, 890px);
+
+  display: flex;
+  justify-content: flex-end;
+
+  margin:
+    3rem
+    auto
+    0;
+
+  font-family: var(--font-body);
+  font-size: 0.52rem;
+  font-weight: 500;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+
+  transition: color var(--fast);
+}
+
+.landing-all-projects:hover {
+  color: var(--klein-blue);
+}
+
+
+/* ----------------------------------------------------------
+   PROJECTS PAGE HOVER DESCRIPTION
+   Existing projects-page grid/rules remain unchanged.
+   ---------------------------------------------------------- */
+
+.work-card__description {
+  position: absolute;
+  z-index: 3;
+
+  top: 55%;
+  left: 0.95rem;
+  right: 0.95rem;
+
+  opacity: 0;
+
+  transform: translateY(7px);
+
+  transition:
+    opacity 180ms var(--ease),
+    transform 240ms var(--ease);
+}
+
+.work-card__description p {
+  display: -webkit-box;
+
+  overflow: hidden;
+
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+
+  color: #ffffff;
+
+  font-family: var(--font-body);
+  font-size: 0.59rem;
+  font-weight: 400;
+  line-height: 1.27;
+
+  text-align: center;
+}
+
+.work-card__project-link:hover
+.work-card__description,
+.work-card__project-link:focus-visible
+.work-card__description {
+  opacity: 0.88;
+  transform: translateY(0);
+}
+
+.work-card__project-link:hover
+.work-card__center,
+.work-card__project-link:focus-visible
+.work-card__center {
+  transform: translateY(-2rem);
+}
+
+
+/* ----------------------------------------------------------
+   LANDING RESPONSIVE
+   ---------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .landing-nav {
+    top: 2.25rem;
+
+    width: calc(100% - 3rem);
+
+    gap: 1.35rem;
+
+    font-size: 0.95rem;
+  }
+
+  body:has(.index-page) .index-controls {
+    top: 2.25rem;
+    right: 1.5rem;
+  }
+
+  .landing-work {
+    padding-top: 10.5rem;
+  }
+
+  .landing-hero__title {
+    min-height: 2.65em;
+
+    font-size:
+      clamp(3rem, 7vw, 4.4rem);
+  }
+
+  .landing-projects {
+    max-width: 620px;
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .landing-nav {
+    top: 4.9rem;
+
+    gap: 1.05rem;
+
+    font-size: 0.82rem;
+  }
+
+  body:has(.index-page) .index-controls {
+    top: 1.15rem;
+    right: 1.25rem;
+  }
+
+  .resume-button {
+    height: 27px;
+    min-height: 27px;
+
+    padding-inline: 0.48rem;
+
+    font-size: 0.46rem;
+  }
+
+  body:has(.index-page) .mode-button {
+    height: 27px;
+    min-height: 27px;
+  }
+
+  .landing-work {
+    padding:
+      9.7rem
+      1.25rem
+      5rem;
+  }
+
+  .landing-hero__title {
+    min-height: 3.4em;
+
+    font-size:
+      clamp(2.7rem, 12.5vw, 3.8rem);
+
+    line-height: 0.9;
+  }
+
+  .landing-hero__explore {
+    margin-top: 1.5rem;
+  }
+
+  .landing-projects {
+    width: min(100%, 330px);
+
+    grid-template-columns: 1fr;
+
+    margin-top: 3.5rem;
+
+    gap: 3.4rem;
+  }
+
+  .landing-all-projects {
+    width: min(100%, 330px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-hero__arrow,
+  .landing-typing-cursor {
+    animation: none;
+  }
+
+  .landing-project__center,
+  .landing-project__description,
+  .landing-project__view,
+  .landing-project__view span:last-child,
+  .work-card__center,
+  .work-card__description {
+    transform: none !important;
+  }
 }

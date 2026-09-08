@@ -1,32 +1,32 @@
-import type { Metadata } from "next";
-import { EB_Garamond } from "next/font/google";
+﻿import type { Metadata } from "next";
+import { Atkinson_Hyperlegible } from "next/font/google";
 import type { ReactNode } from "react";
 
-import { CustomCursor } from "@/components/chrome/CustomCursor";
 import { Header } from "@/components/chrome/Header";
+import { CustomCursor } from "@/components/chrome/CustomCursor";
 import { PreferencesBoot } from "@/components/controls/PreferencesBoot";
 import { siteConfig } from "@/lib/site";
 
 import "./globals.css";
+import "./editorial.css";
+import "./homepage.css";
 
-const garamond = EB_Garamond({
+const atkinson = Atkinson_Hyperlegible({
   subsets: ["latin"],
-  variable: "--font-garamond",
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-atkinson",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: {
-  default: "marie.dev",
-  template: "%s — marie.dev",
+    default: "marie.dev",
+    template: "%s - marie.dev",
   },
   description: siteConfig.description,
   applicationName: "marie.dev",
-  authors: [
-    {
-      name: siteConfig.name,
-    },
-  ],
+  authors: [{ name: siteConfig.name }],
   creator: siteConfig.name,
 };
 
@@ -41,30 +41,24 @@ export default function RootLayout({
       data-theme="light"
       data-language="en"
       suppressHydrationWarning
-      className={garamond.variable}
+      className={atkinson.variable}
     >
-      <body id="top">
+      <body
+        id="top"
+        className="editorial-site"
+      >
         <PreferencesBoot />
+
         <CustomCursor />
 
         <a
-          className="skip-link"
+          className="skip-link editorial-skip-link"
           href="#main-content"
         >
           Skip to content
         </a>
 
         <Header />
-
-        <div
-          className="site-rule site-rule--top"
-          aria-hidden="true"
-        />
-
-        <div
-          className="site-rule site-rule--bottom"
-          aria-hidden="true"
-        />
 
         {children}
       </body>
