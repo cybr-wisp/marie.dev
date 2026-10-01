@@ -2579,3 +2579,38 @@ html[data-theme="dark"]
 
 
 /* END GLOBAL FIXED SITE CHROME */
+
+/* =========================================================
+   MOBILE HERO FIX
+   ========================================================= */
+
+@media (max-width: 600px) {
+  .home-v3 .hero-v3 h1,
+  .home-v3 .home-hero h1,
+  .home-v3 .hero-title {
+    width: 100%;
+    max-width: 100%;
+
+    font-size: clamp(3.15rem, 13vw, 4.4rem);
+    line-height: 0.9;
+    letter-spacing: -0.055em;
+
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .home-v3 .hero-v3,
+  .home-v3 .home-hero {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .home-v3 .hero-v3__intro,
+  .home-v3 .home-hero__intro {
+    font-size: 0.9rem;
+    white-space: normal;
+    text-align: center;
+  }
+}
+
