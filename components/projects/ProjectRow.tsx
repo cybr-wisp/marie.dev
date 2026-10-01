@@ -6,15 +6,19 @@ type ProjectRowProps = Readonly<{
   project: Project;
 }>;
 
+const ongoingProjects = new Set([
+  "helios",
+  "tracellm",
+]);
+
 export function ProjectRow({
   project,
 }: ProjectRowProps) {
-  return (
-    <Link
-      className="project-row"
-      href={`/projects/${project.slug}`}
-      aria-label={`Open ${project.title} project`}
-    >
+  const isOngoing =
+    ongoingProjects.has(project.slug);
+
+  const content = (
+    <>
       <span className="project-number">
         {project.number}
       </span>
@@ -35,7 +39,9 @@ export function ProjectRow({
 
       <div className="project-meta">
         <span className="project-year">
-          {project.year}
+          {isOngoing
+            ? "IN PROGRESS"
+            : project.year}
         </span>
 
         <div
@@ -53,15 +59,51 @@ export function ProjectRow({
         </div>
 
         <span className="project-open">
-          <span className="copy-en">
-            OPEN →
-          </span>
+          {isOngoing ? (
+            <>
+              <span className="copy-en">
+                ONGOING
+              </span>
 
-          <span className="copy-fr">
-            OUVRIR →
-          </span>
+              <span className="copy-fr">
+                EN COURS
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="copy-en">
+                OPEN →
+              </span>
+
+              <span className="copy-fr">
+                OUVRIR →
+              </span>
+            </>
+          )}
         </span>
       </div>
+    </>
+  );
+
+  if (isOngoing) {
+    return (
+      <div
+        className="project-row project-row--ongoing"
+        id={project.slug}
+        aria-label={`${project.title} — project in progress`}
+      >
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      className="project-row"
+      href={`/projects/${project.slug}`}
+      aria-label={`Open ${project.title} project`}
+    >
+      {content}
     </Link>
   );
 }
