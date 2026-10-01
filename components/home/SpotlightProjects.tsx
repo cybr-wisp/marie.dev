@@ -1,6 +1,10 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 
 import { projects } from "@/content/projects";
+import {
+  caseStudyHref,
+  hasCaseStudy,
+} from "@/lib/projectLinks";
 
 const featuredSlugs = [
   "vanguard-x",
@@ -8,91 +12,61 @@ const featuredSlugs = [
   "paratrace",
 ] as const;
 
-const spotlightDetails: Record<
+const projectMetrics: Record<
   string,
-  {
-    displayNumber: string;
-    repo: string;
-    tags: string[];
-    metrics: {
-      value: string;
-      label: string;
-    }[];
-  }
+  readonly [
+    { value: string; label: string },
+    { value: string; label: string },
+  ]
 > = {
-  "vanguard-x": {
-    displayNumber: "1.0",
-    repo: "https://github.com/cybr-wisp/vanguard-x",
-    tags: [
-      "JAVA",
-      "KAFKA",
-      "REDIS",
-      "PROTOBUF",
-    ],
-    metrics: [
-      {
-        value: "23K",
-        label: "events / sec",
-      },
-      {
-        value: "~12 ms",
-        label: "p99 latency",
-      },
-    ],
-  },
+  "vanguard-x": [
+    {
+      value: "21,348",
+      label: "reports / sec",
+    },
+    {
+      value: "18.45 ms",
+      label: "p95 latency",
+    },
+  ],
 
-  "aurora-borealis": {
-    displayNumber: "2.0",
-    repo: "https://github.com/cybr-wisp/aurora-borealis",
-    tags: [
-      "PYTHON",
-      "C++",
-      "EKF",
-      "UKF",
-    ],
-    metrics: [
-      {
-        value: "91.97%",
-        label: "RMSE reduction",
-      },
-      {
-        value: "1.37 m",
-        label: "tracking RMSE",
-      },
-    ],
-  },
+  "aurora-borealis": [
+    {
+      value: "7.89M",
+      label: "messages / sec",
+    },
+    {
+      value: "38.573 μs",
+      label: "p99 association",
+    },
+  ],
 
-  paratrace: {
-    displayNumber: "3.0",
-    repo: "https://github.com/cybr-wisp/paratrace-cym2026",
-    tags: [
-      "PYTHON",
-      "NLP",
-      "SCIKIT-LEARN",
-      "LLM EVAL",
-    ],
-    metrics: [
-      {
-        value: "4,416",
-        label: "LLM rewrites",
-      },
-      {
-        value: "21.2 pt",
-        label: "accuracy drop",
-      },
-    ],
-  },
+  paratrace: [
+    {
+      value: "4,416",
+      label: "LLM rewrites",
+    },
+    {
+      value: "552",
+      label: "transcripts",
+    },
+  ],
 };
 
-const featuredProjects = featuredSlugs.flatMap((slug) => {
-  const project = projects.find(
-    (candidate) => candidate.slug === slug,
-  );
-
-  return project ? [project] : [];
-});
-
 export function SpotlightProjects() {
+  const featuredProjects = featuredSlugs
+    .map((slug) =>
+      projects.find(
+        (project) => project.slug === slug,
+      ),
+    )
+    .filter(
+      (
+        project,
+      ): project is (typeof projects)[number] =>
+        project !== undefined,
+    );
+
   return (
     <section
       id="featured-work"
@@ -100,9 +74,13 @@ export function SpotlightProjects() {
       aria-label="Featured projects"
     >
       <div className="spotlight__grid">
-        {featuredProjects.map((project) => {
-          const spotlight =
-            spotlightDetails[project.slug];
+        {featuredProjects.map((project, index) => {
+          const pageHref = hasCaseStudy(project.slug)
+            ? caseStudyHref(project.slug)
+            : project.repository ?? "/projects";
+
+          const metrics =
+            projectMetrics[project.slug];
 
           return (
             <article
@@ -110,13 +88,13 @@ export function SpotlightProjects() {
               key={project.slug}
             >
               <Link
-                href={`/projects/${project.slug}`}
+                href={pageHref}
                 className="home-project__link"
-                aria-label={`Open ${project.title}`}
+                aria-label={`Open ${project.title} case study`}
               >
                 <div className="home-project__surface">
                   <span className="home-project__number">
-                    {spotlight.displayNumber}
+                    {index + 1}.0
                   </span>
 
                   <div className="home-project__center">
@@ -127,9 +105,7 @@ export function SpotlightProjects() {
                       [
                     </span>
 
-                    <h2>
-                      {project.title}
-                    </h2>
+                    <h2>{project.title}</h2>
 
                     <span
                       className="home-project__bracket"
@@ -148,9 +124,9 @@ export function SpotlightProjects() {
                       {project.summary.fr}
                     </p>
 
-                    <div className="home-project__metrics">
-                      {spotlight.metrics.map(
-                        (metric) => (
+                    {metrics ? (
+                      <div className="home-project__metrics">
+                        {metrics.map((metric) => (
                           <div
                             className="home-project__metric"
                             key={metric.label}
@@ -163,24 +139,24 @@ export function SpotlightProjects() {
                               {metric.label}
                             </span>
                           </div>
-                        ),
-                      )}
-                    </div>
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
 
                   <div className="home-project__view">
                     <span>
-                      VIEW PROJECT
+                      VIEW CASE STUDY
                     </span>
 
                     <span aria-hidden="true">
-                      {"\u2197"}
+                      ↗
                     </span>
                   </div>
 
                   <div className="home-project__footer">
                     <span>
-                      PROJECT {spotlight.displayNumber}
+                      PROJECT {index + 1}.0
                     </span>
 
                     <span>
@@ -196,26 +172,32 @@ export function SpotlightProjects() {
                     {project.title}
                   </h3>
 
-                  <a
-                    href={spotlight.repo}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="home-project__repo"
-                    aria-label={`${project.title} repository`}
-                  >
-                    <span>repo</span>
-                    <span aria-hidden="true">
-                      {"\u2197"}
-                    </span>
-                  </a>
+                  {project.repository ? (
+                    <a
+                      href={project.repository}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="home-project__repo"
+                    >
+                      <span>
+                        repo
+                      </span>
+
+                      <span aria-hidden="true">
+                        ↗
+                      </span>
+                    </a>
+                  ) : null}
                 </div>
 
                 <div className="home-project__tags">
-                  {spotlight.tags.map((tag) => (
-                    <span key={tag}>
-                      {tag}
-                    </span>
-                  ))}
+                  {project.tags
+                    .slice(0, 4)
+                    .map((tag) => (
+                      <span key={tag}>
+                        {tag}
+                      </span>
+                    ))}
                 </div>
               </div>
             </article>
