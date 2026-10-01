@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
 
 import type { Project } from "@/types/content";
 
@@ -9,1648 +8,941 @@ type CanaryCaseStudyProps = Readonly<{
   project: Project;
 }>;
 
-const stack = [
-  "PYTHON",
+const technologies = [
+  "Python 3.11+",
   "AST",
-  "FASTAPI",
-  "GITHUB APPS",
-  "CHECKS API",
-] as const;
-
-const flowStages = [
-  {
-    number: "01",
-    label: "BASE / HEAD",
-    detail: "Resolve the repository before and after the pull request.",
-  },
-  {
-    number: "02",
-    label: "AST CONTRACTS",
-    detail: "Extract callable signatures and behavioral interface changes.",
-  },
-  {
-    number: "03",
-    label: "API DIFF",
-    detail: "Classify compatibility risks such as required parameters or async changes.",
-  },
-  {
-    number: "04",
-    label: "CALL SITES",
-    detail: "Index repository callers connected to the changed symbol.",
-  },
-  {
-    number: "05",
-    label: "BIND",
-    detail: "Validate real positional and keyword arguments against the new signature.",
-  },
-  {
-    number: "06",
-    label: "REPORT",
-    detail: "Return BREAKS, UNAFFECTED, or UNKNOWN with source locations.",
-  },
-] as const;
-
-const decisions = [
-  {
-    title: "ANALYZE CONTRACTS, NOT TEXT",
-    detail:
-      "The AST gives Canary structured callable interfaces, so formatting noise does not become a regression signal.",
-  },
-  {
-    title: "TRACE THE BLAST RADIUS",
-    detail:
-      "A breaking API change matters only when existing repository callers depend on the old contract.",
-  },
-  {
-    title: "BIND REAL ARGUMENTS",
-    detail:
-      "Potential risk becomes confirmed breakage only after the existing call is checked against the new signature.",
-  },
-  {
-    title: "KEEP AN UNKNOWN STATE",
-    detail:
-      "When static information is insufficient, Canary reports uncertainty rather than manufacturing confidence.",
-  },
+  "FastAPI",
+  "GitHub Apps",
+  "Checks API",
+  "Typer",
+  "Rich",
+  "Pydantic",
+  "HTTPX",
+  "pytest",
+  "GitHub Actions",
 ] as const;
 
 export function CanaryCaseStudy({
   project,
 }: CanaryCaseStudyProps) {
-  const articleRef = useRef<HTMLElement>(null);
-
   const repository =
     project.repository ??
     "https://github.com/cybr-wisp/canary";
 
-  useEffect(() => {
-    const root = articleRef.current;
-    if (!root) return;
-
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    const reveals = Array.from(
-      root.querySelectorAll<HTMLElement>(
-        "[data-reveal]",
-      ),
-    );
-
-    if (reducedMotion) {
-      reveals.forEach((node) =>
-        node.classList.add("is-visible"),
-      );
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add(
-            "is-visible",
-          );
-          observer.unobserve(entry.target);
-        });
-      },
-      {
-        threshold: 0.13,
-        rootMargin: "0px 0px -8% 0px",
-      },
-    );
-
-    reveals.forEach((node) =>
-      observer.observe(node),
-    );
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const root = articleRef.current;
-    if (!root) return;
-
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    const diagrams = Array.from(
-      root.querySelectorAll<HTMLElement>(
-        "[data-scroll-diagram]",
-      ),
-    );
-
-    if (!diagrams.length) return;
-
-    const clamp = (value: number) =>
-      Math.min(Math.max(value, 0), 1);
-
-    const progressFor = (
-      element: HTMLElement,
-    ) => {
-      const rect =
-        element.getBoundingClientRect();
-      const viewport = window.innerHeight;
-      const start = viewport * 0.9;
-      const end = viewport * 0.22;
-
-      return clamp(
-        (start - rect.top) /
-          (start - end),
-      );
-    };
-
-    const prepared = diagrams.map(
-      (diagram) => {
-        const path =
-          diagram.querySelector<SVGPathElement>(
-            "[data-progress-path]",
-          );
-
-        const nodes = Array.from(
-          diagram.querySelectorAll<HTMLElement>(
-            "[data-stage-node]",
-          ),
-        );
-
-        const caption =
-          diagram.querySelector<HTMLElement>(
-            "[data-stage-caption]",
-          );
-
-        let length = 0;
-
-        if (path) {
-          length = path.getTotalLength();
-          path.style.strokeDasharray =
-            String(length);
-          path.style.strokeDashoffset =
-            reducedMotion
-              ? "0"
-              : String(length);
-        }
-
-        const setStage = (index: number) => {
-          const safeIndex = Math.min(
-            Math.max(index, 0),
-            nodes.length - 1,
-          );
-
-          nodes.forEach(
-            (node, nodeIndex) => {
-              node.classList.toggle(
-                "is-complete",
-                nodeIndex <= safeIndex,
-              );
-              node.classList.toggle(
-                "is-current",
-                nodeIndex === safeIndex,
-              );
-            },
-          );
-
-          const current =
-            nodes[safeIndex];
-
-          if (caption && current) {
-            caption.textContent =
-              current.dataset.detail ?? "";
-          }
-        };
-
-        nodes.forEach((node, index) => {
-          node.addEventListener(
-            "click",
-            () => setStage(index),
-          );
-        });
-
-        if (
-          reducedMotion &&
-          nodes.length
-        ) {
-          setStage(nodes.length - 1);
-        }
-
-        return {
-          diagram,
-          path,
-          nodes,
-          length,
-          setStage,
-        };
-      },
-    );
-
-    if (reducedMotion) return;
-
-    let frame = 0;
-
-    const update = () => {
-      frame = 0;
-
-      prepared.forEach(
-        ({
-          diagram,
-          path,
-          nodes,
-          length,
-          setStage,
-        }) => {
-          const progress =
-            progressFor(diagram);
-
-          diagram.style.setProperty(
-            "--diagram-progress",
-            progress.toFixed(3),
-          );
-
-          if (path && length) {
-            path.style.strokeDashoffset =
-              String(
-                length *
-                  (1 - progress),
-              );
-          }
-
-          if (nodes.length) {
-            const stage = Math.min(
-              nodes.length - 1,
-              Math.floor(
-                progress *
-                  nodes.length,
-              ),
-            );
-
-            setStage(stage);
-          }
-        },
-      );
-    };
-
-    const requestUpdate = () => {
-      if (frame) return;
-      frame =
-        window.requestAnimationFrame(
-          update,
-        );
-    };
-
-    update();
-
-    window.addEventListener(
-      "scroll",
-      requestUpdate,
-      { passive: true },
-    );
-    window.addEventListener(
-      "resize",
-      requestUpdate,
-    );
-
-    return () => {
-      if (frame) {
-        window.cancelAnimationFrame(
-          frame,
-        );
-      }
-
-      window.removeEventListener(
-        "scroll",
-        requestUpdate,
-      );
-      window.removeEventListener(
-        "resize",
-        requestUpdate,
-      );
-    };
-  }, []);
-
   return (
-    <article
-      ref={articleRef}
-      className="case-study canary3"
-    >
+    <article className="pcs">
+      <style>{CASE_STUDY_CSS}</style>
+
       <Link
         href="/projects"
-        className="archive-back canary3__back"
+        className="pcs__back"
       >
-        ← PROJECTS
+        ← all projects
       </Link>
 
-      <header
-        className="canary3-hero"
-        data-reveal
-      >
-        <div className="canary3-hero__meta">
-          <span>
-            01 · STATIC ANALYSIS /
-            DEVELOPER TOOLS
-          </span>
-          <span>PYTHON</span>
-        </div>
-
-        <h1>Canary</h1>
-
-        <p className="canary3-hero__question copy-en">
-          What existing code could this
-          change break?
-        </p>
-
-        <p className="canary3-hero__question copy-fr">
-          Quel code existant cette
-          modification pourrait-elle casser ?
-        </p>
-
-        <p className="canary3-hero__deck copy-en">
-          A deterministic GitHub App that
-          compares Python API contracts,
-          traces changed symbols to repository
-          callers, and confirms semantic
-          breakage before merge.
-        </p>
-
-        <p className="canary3-hero__deck copy-fr">
-          Une GitHub App déterministe qui
-          compare les contrats d&apos;API
-          Python, suit les symboles modifiés
-          jusqu&apos;aux appelants du dépôt et
-          confirme les ruptures avant la
-          fusion.
-        </p>
-
-        <div className="canary3-actions">
-          <a
-            href={repository}
-            target="_blank"
-            rel="noreferrer"
-            className="is-primary"
-          >
-            SOURCE ON GITHUB ↗
-          </a>
-        </div>
-
-        <div
-          className="canary3-stack"
-          aria-label="Primary technology stack"
-        >
-          {stack.map((item) => (
-            <span key={item}>{item}</span>
-          ))}
-        </div>
-      </header>
-
-      <section
-        className="canary3-section"
-        data-reveal
-      >
-        <header className="canary3-section__label">
-          <span>01</span>
-          <h2>The failure mode</h2>
-        </header>
-
-        <div className="canary3-section__body">
-          <p className="canary3-lead copy-en">
-            Syntax can remain valid while the
-            repository becomes semantically
-            incompatible. The useful question
-            is not just &ldquo;did the signature
-            change?&rdquo; but &ldquo;which current callers
-            can no longer satisfy it?&rdquo;
+      <div className="pcs__panel">
+        <header className="pcs__hero">
+          <p className="pcs__eyebrow">
+            Developer tools · static analysis · 2026
           </p>
 
-          <p className="canary3-lead copy-fr">
-            La syntaxe peut rester valide alors
-            que le dépôt devient
-            sémantiquement incompatible. La
-            vraie question est de savoir quels
-            appelants ne respectent plus le
-            nouveau contrat.
+          <h1>Canary</h1>
+
+          <p className="pcs__statement">
+            What existing code could this change break?
           </p>
 
-          <figure
-            className="canary3-regression"
-            data-scroll-diagram
-          >
-            <figcaption>
-              DIAGRAM 01 · FROM API CHANGE TO
-              CONFIRMED BREAKAGE
-            </figcaption>
-
-            <div className="canary3-regression__row">
-              <div className="canary3-code">
-                <span>
-                  AUTH.PY · CHANGED API
-                </span>
-                <code>
-                  <b>
-                    - def
-                    authenticate(token):
-                  </b>
-                  <strong>
-                    + def
-                    authenticate(token,
-                    strict):
-                  </strong>
-                </code>
-              </div>
-
-              <div
-                className="canary3-trace"
-                aria-hidden="true"
-              >
-                <span>TRACE SYMBOL</span>
-                <i />
-              </div>
-
-              <div className="canary3-code">
-                <span>
-                  CALLER.PY · EXISTING CALL
-                </span>
-                <code>
-                  <b>def login():</b>
-                  <strong>
-                    {'    return authenticate("demo-token")'}
-                  </strong>
-                </code>
-              </div>
-            </div>
-
-            <div className="canary3-regression__result">
-              <span>STATIC BINDING</span>
-              <strong>
-                CONFIRMED BREAKAGE
-              </strong>
-              <code>
-                REQUIRED_PARAMETER_ADDED ·
-                caller.py:5
-              </code>
-            </div>
-          </figure>
-        </div>
-      </section>
-
-      <section
-        className="canary3-section"
-        data-reveal
-      >
-        <header className="canary3-section__label">
-          <span>02</span>
-          <h2>Engineering process</h2>
-        </header>
-
-        <div className="canary3-section__body">
-          <p className="canary3-lead copy-en">
-            I separated detection from impact
-            analysis: first identify the
-            interface change, then ask whether
-            real repository calls still bind
-            correctly to the new contract.
+          <p className="pcs__deck">
+            Canary is a deterministic, repository-aware
+            compatibility analyzer for Python pull requests.
+            It compares API contracts across BASE and HEAD,
+            traces changed symbols into real call sites, and
+            proves which existing calls no longer satisfy the
+            new contract.
           </p>
 
-          <p className="canary3-lead copy-fr">
-            J&apos;ai séparé la détection du
-            changement de l&apos;analyse de son
-            impact : identifier le nouveau
-            contrat, puis vérifier les appels
-            réels du dépôt.
-          </p>
-
-          <figure
-            className="canary3-flow"
-            data-scroll-diagram
-            aria-label="Canary semantic regression analysis pipeline"
-          >
-            <figcaption>
-              DIAGRAM 02 · ANALYSIS PIPELINE
-            </figcaption>
-
-            <svg
-              className="canary3-flow__svg"
-              viewBox="0 0 1000 320"
-              role="img"
-              aria-label="Repository analysis from base and head revisions through AST extraction, API change detection, call-site tracing, argument binding, and reporting."
+          <div className="pcs__actions">
+            <a
+              href={repository}
+              target="_blank"
+              rel="noreferrer"
+              className="pcs__action"
             >
-              <path
-                className="canary3-flow__track"
-                d="M 72 98 H 505 C 625 98 702 122 702 176 C 702 236 625 256 505 256 H 72"
-              />
-              <path
-                className="canary3-flow__progress"
-                data-progress-path
-                d="M 72 98 H 505 C 625 98 702 122 702 176 C 702 236 625 256 505 256 H 72"
-              />
-            </svg>
+              GitHub ↗
+            </a>
+          </div>
+        </header>
 
-            {flowStages.map(
-              (stage, index) => (
-                <button
-                  type="button"
-                  key={stage.number}
-                  className={`canary3-flow__node canary3-flow__node--${
-                    index + 1
-                  }`}
-                  data-stage-node
-                  data-detail={stage.detail}
-                  aria-label={`${stage.number} ${stage.label}: ${stage.detail}`}
-                >
-                  <span>
-                    {stage.number}
-                  </span>
-                  <i aria-hidden="true" />
-                  <strong>
-                    {stage.label}
-                  </strong>
-                </button>
-              ),
-            )}
+        <section
+          className="pcs__metrics"
+          aria-label="Canary benchmark highlights"
+        >
+          <article className="pcs__metric">
+            <strong>64.45 ms</strong>
+            <span>median analysis latency</span>
+          </article>
 
-            <div className="canary3-flow__caption">
-              <span>ACTIVE STEP</span>
-              <p data-stage-caption>
-                {flowStages[0].detail}
+          <article className="pcs__metric">
+            <strong>118,549</strong>
+            <span>lines analyzed / second</span>
+          </article>
+
+          <article className="pcs__metric">
+            <strong>100 / 100</strong>
+            <span>semantic mutation cases</span>
+          </article>
+
+          <article className="pcs__metric">
+            <strong>50 / 50</strong>
+            <span>identical repeated executions</span>
+          </article>
+        </section>
+
+        <div className="pcs__body">
+          <section className="pcs__section">
+            <header className="pcs__label">
+              <span>01</span>
+              <h2>Problem</h2>
+            </header>
+
+            <div className="pcs__copy">
+              <h3>
+                Valid Python can still introduce a
+                repository-level breaking change.
+              </h3>
+
+              <p>
+                A pull request can modify a function
+                signature, pass syntax checks, satisfy the
+                project&apos;s current tests, and still break
+                an existing caller that the test suite never
+                exercises.
+              </p>
+
+              <p>
+                Consider a function changing from:
+              </p>
+
+              <div className="pcs__highlight">
+                authenticate(token) → authenticate(token,
+                strict)
+              </div>
+
+              <p>
+                The new function definition is valid Python.
+                The existing caller is also valid Python.
+                The incompatibility only becomes visible when
+                those two pieces of code are analyzed together.
+              </p>
+
+              <p>
+                That makes semantic compatibility a
+                repository-level problem rather than a
+                file-level diff problem.
               </p>
             </div>
-          </figure>
+          </section>
 
-          <div
-            className="canary3-decisions"
-            data-reveal
-          >
-            {decisions.map(
-              (decision, index) => (
-                <article
-                  key={decision.title}
-                >
-                  <span>
-                    {String(
-                      index + 1,
-                    ).padStart(2, "0")}
-                  </span>
-                  <h3>
-                    {decision.title}
-                  </h3>
+          <section className="pcs__section">
+            <header className="pcs__label">
+              <span>02</span>
+              <h2>Constraints</h2>
+            </header>
+
+            <div className="pcs__copy">
+              <h3>
+                Python&apos;s flexibility makes false certainty
+                dangerous.
+              </h3>
+
+              <p>
+                Static analysis has to reason about more than
+                simple positional function calls.
+              </p>
+
+              <ul>
+                <li>
+                  imports can be aliased or relative;
+                </li>
+
+                <li>
+                  parameters can be positional-only or
+                  keyword-only;
+                </li>
+
+                <li>
+                  calls may contain <code>*args</code> and{" "}
+                  <code>**kwargs</code>;
+                </li>
+
+                <li>
+                  defaults can disappear between BASE and
+                  HEAD;
+                </li>
+
+                <li>
+                  sync functions can become async;
+                </li>
+
+                <li>
+                  public functions can disappear entirely;
+                </li>
+
+                <li>
+                  dynamic dispatch and reflection cannot
+                  always be resolved safely.
+                </li>
+              </ul>
+
+              <p>
+                A useful analyzer therefore cannot simply
+                label every unresolved case safe or broken.
+              </p>
+            </div>
+          </section>
+
+          <section className="pcs__section">
+            <header className="pcs__label">
+              <span>03</span>
+              <h2>Design</h2>
+            </header>
+
+            <div className="pcs__copy">
+              <h3>
+                Separate API change detection from caller
+                impact analysis.
+              </h3>
+
+              <div className="pcs__decision-grid">
+                <article className="pcs__decision">
+                  <span>01</span>
+
+                  <strong>EXTRACT CONTRACTS</strong>
+
                   <p>
-                    {decision.detail}
+                    Parse BASE and HEAD Python APIs into
+                    structured AST-derived callable
+                    contracts.
                   </p>
                 </article>
-              ),
-            )}
-          </div>
+
+                <article className="pcs__decision">
+                  <span>02</span>
+
+                  <strong>INDEX CALL SITES</strong>
+
+                  <p>
+                    Build a repository-wide index of imports,
+                    aliases, symbols, and candidate calls.
+                  </p>
+                </article>
+
+                <article className="pcs__decision">
+                  <span>03</span>
+
+                  <strong>RE-BIND ARGUMENTS</strong>
+
+                  <p>
+                    Apply existing positional and keyword
+                    arguments against the changed signature.
+                  </p>
+                </article>
+              </div>
+
+              <p>
+                This separates the question:
+              </p>
+
+              <div className="pcs__highlight">
+                “Did an API change?” from “Which existing
+                callers are actually incompatible with that
+                change?”
+              </div>
+
+              <p>
+                That distinction is what prevents Canary from
+                turning every signature change into a noisy
+                pull-request warning.
+              </p>
+            </div>
+          </section>
+
+          <section className="pcs__section">
+            <header className="pcs__label">
+              <span>04</span>
+              <h2>Static binding</h2>
+            </header>
+
+            <div className="pcs__copy">
+              <h3>
+                Reconstruct Python argument binding instead
+                of relying on text matching.
+              </h3>
+
+              <p>
+                Canary validates calls using the structure of
+                the new function signature. It checks whether
+                existing arguments still satisfy the changed
+                contract.
+              </p>
+
+              <p>
+                This includes:
+              </p>
+
+              <ul>
+                <li>missing required arguments;</li>
+                <li>removed keyword parameters;</li>
+                <li>duplicate argument bindings;</li>
+                <li>positional-only violations;</li>
+                <li>keyword-only violations;</li>
+                <li>removed defaults;</li>
+                <li>argument ordering changes;</li>
+                <li>await / non-await mismatches.</li>
+              </ul>
+
+              <p>
+                Because the analysis understands argument
+                semantics, two identical-looking signature
+                diffs can produce different results depending
+                on how the repository actually calls the
+                function.
+              </p>
+            </div>
+          </section>
+
+          <section className="pcs__section">
+            <header className="pcs__label">
+              <span>05</span>
+              <h2>Abstention</h2>
+            </header>
+
+            <div className="pcs__copy">
+              <h3>
+                UNKNOWN is a valid result when the evidence
+                is insufficient.
+              </h3>
+
+              <p>
+                Canary produces three outcomes rather than
+                forcing a binary safe/broken decision.
+              </p>
+
+              <ul>
+                <li>
+                  <strong>BREAKS</strong> — incompatibility can
+                  be proven from static evidence.
+                </li>
+
+                <li>
+                  <strong>UNAFFECTED</strong> — the existing
+                  call continues to satisfy the new contract.
+                </li>
+
+                <li>
+                  <strong>UNKNOWN</strong> — static analysis
+                  cannot safely prove either conclusion.
+                </li>
+              </ul>
+
+              <p>
+                This matters for dynamic Python behavior.
+                Reflection, runtime-created arguments, or
+                unresolved dispatch should not silently become
+                false confidence.
+              </p>
+
+              <div className="pcs__highlight">
+                Canary would rather explicitly abstain than
+                manufacture certainty it cannot justify.
+              </div>
+            </div>
+          </section>
+
+          <section className="pcs__section">
+            <header className="pcs__label">
+              <span>06</span>
+              <h2>Rules</h2>
+            </header>
+
+            <div className="pcs__copy">
+              <h3>
+                Compatibility rules represent different
+                classes of semantic breakage.
+              </h3>
+
+              <p>
+                The rule engine covers seven primary change
+                classes:
+              </p>
+
+              <ul>
+                <li>required parameter added;</li>
+                <li>parameter removed;</li>
+                <li>parameter reordered;</li>
+                <li>default removed;</li>
+                <li>return annotation changed;</li>
+                <li>sync / async behavior changed;</li>
+                <li>public API removed.</li>
+              </ul>
+
+              <p>
+                Not every change produces the same confidence
+                level. A removed required keyword may be a
+                provable break, while a return-type annotation
+                change may require downstream type information
+                that is unavailable statically.
+              </p>
+            </div>
+          </section>
+
+          <section className="pcs__section">
+            <header className="pcs__label">
+              <span>07</span>
+              <h2>Integration</h2>
+            </header>
+
+            <div className="pcs__copy">
+              <h3>
+                One deterministic engine powers both local
+                analysis and pull-request review.
+              </h3>
+
+              <p>
+                The core analysis engine is shared between the
+                Typer CLI and the GitHub App.
+              </p>
+
+              <p>
+                FastAPI handles webhook delivery while GitHub
+                App authentication and Checks API integration
+                live behind dedicated boundaries.
+              </p>
+
+              <p>
+                Pull-request findings can include:
+              </p>
+
+              <ul>
+                <li>changed symbol;</li>
+                <li>semantic change category;</li>
+                <li>affected caller;</li>
+                <li>source file and line;</li>
+                <li>confirmed incompatibility reason;</li>
+                <li>unresolved / UNKNOWN callers.</li>
+              </ul>
+
+              <p>
+                The same deterministic result can therefore be
+                inspected locally or surfaced directly in the
+                code-review workflow.
+              </p>
+            </div>
+          </section>
+
+          <section className="pcs__section">
+            <header className="pcs__label">
+              <span>08</span>
+              <h2>Validation</h2>
+            </header>
+
+            <div className="pcs__copy">
+              <h3>
+                Test semantic behavior, determinism, and
+                scaling independently.
+              </h3>
+
+              <p>
+                Canary&apos;s benchmark suite exercises seeded
+                semantic mutations, deliberately ambiguous
+                cases, repeated execution, and generated
+                repositories.
+              </p>
+
+              <p>
+                The seeded semantic benchmark reported{" "}
+                <strong>100 / 100</strong> cases with precision,
+                recall, and F1 of{" "}
+                <strong>100% / 100% / 1.0</strong>.
+              </p>
+
+              <p>
+                All <strong>10 / 10</strong> deliberately
+                ambiguous cases were preserved as abstentions.
+              </p>
+
+              <p>
+                Repeating the same analysis{" "}
+                <strong>50 times</strong> produced identical
+                results in all 50 runs.
+              </p>
+            </div>
+          </section>
+
+          <section className="pcs__section">
+            <header className="pcs__label">
+              <span>09</span>
+              <h2>Result</h2>
+            </header>
+
+            <div className="pcs__copy">
+              <h3>
+                Repository-wide analysis remained fast enough
+                to fit naturally into code review.
+              </h3>
+
+              <p>
+                Median analysis latency measured{" "}
+                <strong>64.45 ms</strong>.
+              </p>
+
+              <p>
+                Source-analysis throughput reached{" "}
+                <strong>118,549 LOC/s</strong> under the
+                repository benchmark.
+              </p>
+
+              <p>
+                A generated <strong>1,000-file</strong>{" "}
+                repository completed in{" "}
+                <strong>210.36 ms</strong>.
+              </p>
+
+              <div className="pcs__highlight">
+                The key result was not just detection accuracy.
+                Canary could remain deterministic, explainable,
+                and repository-aware without turning pull
+                requests into multi-second analysis jobs.
+              </div>
+
+              <p className="pcs__note">
+                These numbers describe controlled repository
+                benchmarks and should not be interpreted as
+                universal performance across arbitrary Python
+                codebases.
+              </p>
+            </div>
+          </section>
+
+          <section className="pcs__section">
+            <header className="pcs__label">
+              <span>10</span>
+              <h2>What I learned</h2>
+            </header>
+
+            <div className="pcs__copy">
+              <h3>
+                Developer tools become useful when they model
+                uncertainty instead of hiding it.
+              </h3>
+
+              <p>
+                The most important design choice in Canary was
+                not a parser or framework. It was deciding
+                that UNKNOWN should be a first-class result.
+              </p>
+
+              <p>
+                Static analysis is strongest when it clearly
+                distinguishes what it can prove from what it
+                cannot.
+              </p>
+
+              <p>
+                That same principle applies to code-review
+                tooling more broadly: a smaller number of
+                defensible findings is often more useful than
+                a larger number of speculative warnings.
+              </p>
+            </div>
+          </section>
+
+          <section className="pcs__section">
+            <header className="pcs__label">
+              <span>11</span>
+              <h2>Built with</h2>
+            </header>
+
+            <div className="pcs__copy">
+              <h3>Implementation stack</h3>
+
+              <div className="pcs__stack">
+                {technologies.map((technology) => (
+                  <span key={technology}>
+                    {technology}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </section>
         </div>
-      </section>
+      </div>
 
-      <section
-        className="canary3-section"
-        data-reveal
-      >
-        <header className="canary3-section__label">
-          <span>03</span>
-          <h2>What ships</h2>
-        </header>
-
-        <div className="canary3-section__body">
-          <div className="canary3-signal">
-            <article>
-              <span>DETERMINISTIC</span>
-              <strong>
-                No LLM in the analysis loop
-              </strong>
-              <p>
-                Same repository state and pull
-                request produce the same
-                finding.
-              </p>
-            </article>
-
-            <article>
-              <span>REPOSITORY AWARE</span>
-              <strong>
-                Callers, not just diffs
-              </strong>
-              <p>
-                Findings are tied back to
-                existing source locations and
-                actual usage.
-              </p>
-            </article>
-
-            <article>
-              <span>CONSERVATIVE</span>
-              <strong>
-                BREAKS · UNAFFECTED · UNKNOWN
-              </strong>
-              <p>
-                Unresolvable static cases stay
-                uncertain instead of being
-                labeled as facts.
-              </p>
-            </article>
-          </div>
-
-          <div className="canary3-check">
-            <div>
-              <span>GITHUB CHECK</span>
-              <strong>HIGH RISK</strong>
-            </div>
-
-            <code>
-              REQUIRED_PARAMETER_ADDED ·
-              caller.py:5
-            </code>
-
-            <small>
-              GitHub App + Checks API · same
-              analysis engine also exposed via
-              CLI
-            </small>
-          </div>
-
-          <p className="canary3-thesis">
-            <span>CORE IDEA</span>
-            <strong>
-              Don&apos;t stop at &ldquo;the API
-              changed.&rdquo; Trace the blast radius
-              and prove whether current callers
-              still satisfy the contract.
-            </strong>
-          </p>
-        </div>
-      </section>
-
-      <section
-        className="canary3-section"
-        data-reveal
-      >
-        <header className="canary3-section__label">
-          <span>04</span>
-          <h2>Validation</h2>
-        </header>
-
-        <div className="canary3-section__body">
-          <p className="canary3-lead copy-en">
-            Canary is tested as a semantic analysis
-            engine, not just as a UI surface. The
-            suite exercises compatibility rules,
-            call binding, webhook boundaries,
-            Checks API behavior, CLI output, and
-            end-to-end integration paths.
-          </p>
-
-          <p className="canary3-lead copy-fr">
-            Canary est testé comme moteur
-            d&apos;analyse sémantique, et pas
-            seulement comme interface. La suite
-            couvre les règles de compatibilité,
-            la liaison des appels, les webhooks,
-            l&apos;API Checks, la CLI et les chemins
-            d&apos;intégration.
-          </p>
-
-          <div className="canary3-validation__summary">
-            <article>
-              <span>FULL SUITE</span>
-              <strong>88 TESTS</strong>
-              <p>
-                Passing coverage across analysis,
-                presentation, CLI, GitHub Checks,
-                webhook authentication, and
-                integration behavior.
-              </p>
-            </article>
-
-            <article>
-              <span>RUNNER</span>
-              <strong>PYTEST</strong>
-              <p>
-                Regression-focused tests exercise
-                both breaking and safe compatibility
-                paths against deterministic fixtures.
-              </p>
-            </article>
-
-            <article>
-              <span>CONTINUOUS VALIDATION</span>
-              <strong>GITHUB ACTIONS</strong>
-              <p>
-                CI reruns the suite so changes to
-                analysis or integration boundaries
-                are checked before merge.
-              </p>
-            </article>
-          </div>
-
-          <div
-            className="canary3-validation__matrix"
-            aria-label="Representative Canary regression cases"
-          >
-            <div className="canary3-validation__matrix-head">
-              <span>REGRESSION CASE</span>
-              <span>EXPECTED</span>
-              <span>WHY</span>
-            </div>
-
-            <div className="canary3-validation__case">
-              <code>required parameter added</code>
-              <strong>BREAKS</strong>
-              <p>
-                An existing call can no longer bind
-                without supplying the new argument.
-              </p>
-            </div>
-
-            <div className="canary3-validation__case">
-              <code>removed keyword parameter</code>
-              <strong>BREAKS</strong>
-              <p>
-                A repository caller still supplies a
-                keyword the new contract rejects.
-              </p>
-            </div>
-
-            <div className="canary3-validation__case">
-              <code>sync → async</code>
-              <strong>BREAKS</strong>
-              <p>
-                A previously synchronous caller now
-                invokes an awaitable without the
-                required await semantics.
-              </p>
-            </div>
-
-            <div className="canary3-validation__case">
-              <code>return type changed</code>
-              <strong className="is-unknown">
-                UNKNOWN
-              </strong>
-              <p>
-                When static evidence cannot prove
-                downstream incompatibility, Canary
-                preserves uncertainty.
-              </p>
-            </div>
-          </div>
-
-          <div className="canary3-validation__foot">
-            <span>TEST PHILOSOPHY</span>
-            <strong>
-              Confirm what static evidence can
-              prove. Preserve UNKNOWN where it
-              cannot.
-            </strong>
-          </div>
-        </div>
-      </section>
-
-      <footer className="canary3-footer">
+      <footer className="pcs__footer">
         <span>
-          CANARY / STATIC ANALYSIS / 2026
+          Canary / static analysis / 2026
         </span>
+
         <Link href="/projects/paratrace">
-          NEXT · PARATRACE →
+          next · paratrace →
         </Link>
       </footer>
-
-      <style>{`
-        .canary3 {
-          --canary-danger: #b42318;
-          width: min(calc(100% - 2rem), 1040px);
-          margin-inline: auto;
-          padding: 2.2rem 0 5rem;
-        }
-
-        body:has(.canary3) .site-rule {
-          display: none !important;
-        }
-
-        .canary3 [data-reveal] {
-          opacity: 0;
-          transform: translate3d(0, 18px, 0);
-          filter: blur(3px);
-          will-change: opacity, transform, filter;
-          transition:
-            opacity 680ms var(--ease, cubic-bezier(.22,1,.36,1)),
-            transform 760ms var(--ease, cubic-bezier(.22,1,.36,1)),
-            filter 680ms ease;
-        }
-
-        .canary3 [data-reveal].is-visible {
-          opacity: 1;
-          transform: translate3d(0, 0, 0);
-          filter: blur(0);
-        }
-
-        .canary3 .canary3-section.is-visible .canary3-section__body > * {
-          animation: canary3-content-in 620ms var(--ease, cubic-bezier(.22,1,.36,1)) both;
-        }
-
-        .canary3 .canary3-section.is-visible .canary3-section__body > *:nth-child(2) {
-          animation-delay: 70ms;
-        }
-
-        .canary3 .canary3-section.is-visible .canary3-section__body > *:nth-child(3) {
-          animation-delay: 140ms;
-        }
-
-        .canary3 .canary3-section.is-visible .canary3-section__body > *:nth-child(4) {
-          animation-delay: 210ms;
-        }
-
-        @keyframes canary3-content-in {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .canary3 .canary3__back {
-          display: inline-block;
-          margin-bottom: 2.5rem;
-        }
-
-        .canary3 .canary3-hero {
-          padding-bottom: 2.3rem;
-          border-bottom: 1px solid var(--rule-strong);
-        }
-
-        .canary3 .canary3-hero__meta {
-          display: flex;
-          justify-content: space-between;
-          gap: 1rem;
-          color: var(--muted);
-          font-family: var(--font-display);
-          font-size: 0.34rem;
-          font-weight: 700;
-          letter-spacing: 0.08em;
-        }
-
-        .canary3 .canary3-hero__meta span:last-child {
-          color: var(--klein-blue);
-        }
-
-        .canary3 .canary3-hero h1 {
-          margin-top: 0.9rem;
-          font-family: var(--font-display);
-          font-size: clamp(3.4rem, 7vw, 5.8rem);
-          font-weight: 700;
-          line-height: 0.88;
-          letter-spacing: -0.065em;
-        }
-
-        .canary3 .canary3-hero__question {
-          max-width: 820px;
-          margin-top: 1.25rem;
-          font-family: var(--font-display);
-          font-size: clamp(1.45rem, 2.8vw, 2.2rem);
-          font-weight: 700;
-          line-height: 1.03;
-          letter-spacing: -0.035em;
-        }
-
-        .canary3 .canary3-hero__deck {
-          max-width: 720px;
-          margin-top: 0.85rem;
-          color: var(--muted);
-          font-size: 0.98rem;
-          line-height: 1.45;
-        }
-
-        .canary3 .canary3-actions {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.5rem;
-          margin-top: 1.25rem;
-        }
-
-        .canary3 .canary3-actions a {
-          padding: 0.62rem 0.76rem;
-          border: 1px solid var(--rule-strong);
-          background: var(--surface);
-          font-family: var(--font-display);
-          font-size: 0.34rem;
-          font-weight: 700;
-          letter-spacing: 0.05em;
-          transition:
-            transform 170ms ease,
-            border-color 170ms ease,
-            background 170ms ease,
-            color 170ms ease;
-        }
-
-        .canary3 .canary3-actions a:hover {
-          transform: translateY(-2px);
-          border-color: var(--klein-blue);
-        }
-
-        .canary3 .canary3-actions a.is-primary {
-          border-color: var(--klein-blue);
-          background: var(--klein-blue);
-          color: white;
-        }
-
-        .canary3 .canary3-stack {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.35rem;
-          margin-top: 1rem;
-        }
-
-        .canary3 .canary3-stack span {
-          padding: 0.32rem 0.45rem;
-          border: 1px solid var(--rule);
-          border-radius: 999px;
-          color: var(--muted);
-          font-family: var(--font-display);
-          font-size: 0.28rem;
-          font-weight: 700;
-          letter-spacing: 0.05em;
-        }
-
-        .canary3 .canary3-section {
-          display: grid;
-          grid-template-columns: 130px minmax(0, 1fr);
-          gap: 2rem;
-          padding: 2.8rem 0;
-          border-bottom: 1px solid var(--rule);
-        }
-
-        .canary3 .canary3-section__label span {
-          display: block;
-          color: var(--klein-blue);
-          font-family: var(--font-display);
-          font-size: 0.31rem;
-          font-weight: 700;
-          letter-spacing: 0.08em;
-        }
-
-        .canary3 .canary3-section__label h2 {
-          margin-top: 0.35rem;
-          font-family: var(--font-display);
-          font-size: 0.68rem;
-          line-height: 1.05;
-        }
-
-        .canary3 .canary3-section__body {
-          min-width: 0;
-        }
-
-        .canary3 .canary3-lead {
-          max-width: 740px;
-          font-size: 0.98rem;
-          line-height: 1.46;
-        }
-
-        .canary3 figure {
-          margin: 1.2rem 0 0;
-        }
-
-        .canary3 figure > figcaption {
-          margin-bottom: 0.7rem;
-          color: var(--muted);
-          font-family: var(--font-display);
-          font-size: 0.29rem;
-          font-weight: 700;
-          letter-spacing: 0.07em;
-        }
-
-        .canary3 .canary3-regression {
-          --diagram-progress: 0;
-          padding: 0.9rem;
-          border: 1px solid var(--rule-strong);
-          background: var(--surface);
-        }
-
-        .canary3 .canary3-regression__row {
-          display: grid;
-          grid-template-columns:
-            minmax(0, 1fr)
-            82px
-            minmax(0, 1fr);
-          gap: 0.75rem;
-          align-items: center;
-        }
-
-        .canary3 .canary3-code {
-          min-width: 0;
-          padding: 0.75rem 0;
-          border-top: 1px solid var(--rule);
-          border-bottom: 1px solid var(--rule);
-        }
-
-        .canary3 .canary3-code > span,
-        .canary3 .canary3-regression__result > span,
-        .canary3 .canary3-flow__caption > span,
-        .canary3 .canary3-signal span,
-        .canary3 .canary3-check span {
-          display: block;
-          color: var(--muted);
-          font-family: var(--font-display);
-          font-size: 0.29rem;
-          font-weight: 700;
-          letter-spacing: 0.065em;
-        }
-
-        .canary3 .canary3-code code {
-          display: grid;
-          gap: 0.34rem;
-          margin-top: 0.7rem;
-          overflow-x: auto;
-          font-size: 0.7rem;
-          white-space: nowrap;
-        }
-
-        .canary3 .canary3-code code b {
-          color: var(--muted);
-          font-weight: 500;
-          text-decoration: line-through;
-        }
-
-        .canary3 .canary3-code code strong {
-          color: var(--klein-blue);
-          font-weight: 600;
-        }
-
-        .canary3 .canary3-code:last-child code strong {
-          color: var(--text);
-        }
-
-        .canary3 .canary3-trace {
-          display: grid;
-          place-items: center;
-          gap: 0.4rem;
-          color: var(--muted);
-          font-family: var(--font-display);
-          font-size: 0.26rem;
-          font-weight: 700;
-          letter-spacing: 0.05em;
-        }
-
-        .canary3 .canary3-trace i {
-          position: relative;
-          display: block;
-          width: 100%;
-          height: 1px;
-          overflow: hidden;
-          background: var(--rule-strong);
-        }
-
-        .canary3 .canary3-trace i::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: var(--klein-blue);
-          transform: scaleX(var(--diagram-progress));
-          transform-origin: left;
-        }
-
-        .canary3 .canary3-regression__result {
-          display: grid;
-          grid-template-columns:
-            120px
-            minmax(180px, 0.65fr)
-            minmax(0, 1fr);
-          gap: 1rem;
-          align-items: center;
-          margin-top: 0.65rem;
-          padding: 0.75rem 0 0.1rem;
-          border-top: 1px solid var(--rule);
-          opacity: calc(0.2 + (var(--diagram-progress) * 0.8));
-          transform: translateY(calc((1 - var(--diagram-progress)) * 6px));
-        }
-
-        .canary3 .canary3-regression__result strong {
-          color: var(--canary-danger);
-          font-family: var(--font-display);
-          font-size: 0.56rem;
-        }
-
-        .canary3 .canary3-regression__result code {
-          color: var(--muted);
-          font-size: 0.67rem;
-        }
-
-        .canary3 .canary3-flow {
-          --diagram-progress: 0;
-          position: relative;
-          min-height: 320px;
-          padding-top: 1.8rem;
-        }
-
-        .canary3 .canary3-flow__svg {
-          position: absolute;
-          inset: 1.8rem 0 0;
-          width: 100%;
-          height: calc(100% - 1.8rem);
-          overflow: visible;
-          pointer-events: none;
-        }
-
-        .canary3 .canary3-flow__track,
-        .canary3 .canary3-flow__progress {
-          fill: none;
-          stroke-width: 1.3;
-          vector-effect: non-scaling-stroke;
-        }
-
-        .canary3 .canary3-flow__track {
-          stroke: var(--rule-strong);
-        }
-
-        .canary3 .canary3-flow__progress {
-          stroke: var(--klein-blue);
-          transition: stroke-dashoffset 60ms linear;
-        }
-
-        .canary3 .canary3-flow__node {
-          position: absolute;
-          display: grid;
-          grid-template-columns: auto auto;
-          gap: 0.32rem 0.5rem;
-          align-items: center;
-          width: 125px;
-          padding: 0;
-          border: 0;
-          background: transparent;
-          color: var(--text);
-          cursor: pointer;
-          text-align: left;
-          transform: translate(-50%, -50%);
-        }
-
-        .canary3 .canary3-flow__node > span {
-          color: var(--muted);
-          font-family: var(--font-display);
-          font-size: 0.28rem;
-          font-weight: 700;
-        }
-
-        .canary3 .canary3-flow__node > i {
-          grid-column: 1;
-          grid-row: 2;
-          width: 9px;
-          height: 9px;
-          border: 1px solid var(--rule-strong);
-          border-radius: 50%;
-          background: var(--surface);
-          transition:
-            transform 250ms ease,
-            background 250ms ease,
-            border-color 250ms ease,
-            box-shadow 250ms ease;
-        }
-
-        .canary3 .canary3-flow__node > strong {
-          grid-column: 2;
-          grid-row: 2;
-          font-family: var(--font-display);
-          font-size: 0.42rem;
-          line-height: 1.05;
-          opacity: 0.38;
-          transition:
-            opacity 220ms ease,
-            color 220ms ease;
-        }
-
-        .canary3 .canary3-flow__node.is-complete > i {
-          border-color: var(--klein-blue);
-          background: var(--klein-blue);
-        }
-
-        .canary3 .canary3-flow__node.is-complete > strong {
-          opacity: 0.75;
-        }
-
-        .canary3 .canary3-flow__node.is-current > span,
-        .canary3 .canary3-flow__node.is-current > strong {
-          color: var(--klein-blue);
-        }
-
-        .canary3 .canary3-flow__node.is-current > strong {
-          opacity: 1;
-        }
-
-        .canary3 .canary3-flow__node.is-current > i {
-          transform: scale(1.3);
-          box-shadow:
-            0 0 0 5px
-            color-mix(
-              in srgb,
-              var(--klein-blue) 10%,
-              transparent
-            );
-        }
-
-        .canary3 .canary3-flow__node--1 {
-          left: 7.2%;
-          top: 34%;
-        }
-
-        .canary3 .canary3-flow__node--2 {
-          left: 28.5%;
-          top: 34%;
-        }
-
-        .canary3 .canary3-flow__node--3 {
-          left: 50.5%;
-          top: 34%;
-        }
-
-        .canary3 .canary3-flow__node--4 {
-          left: 70%;
-          top: 58%;
-        }
-
-        .canary3 .canary3-flow__node--5 {
-          left: 48%;
-          top: 82%;
-        }
-
-        .canary3 .canary3-flow__node--6 {
-          left: 7.2%;
-          top: 82%;
-        }
-
-        .canary3 .canary3-flow__caption {
-          position: absolute;
-          right: 0;
-          bottom: 0;
-          width: min(330px, 42%);
-          padding-top: 0.65rem;
-          border-top: 1px solid var(--rule);
-        }
-
-        .canary3 .canary3-flow__caption p {
-          margin-top: 0.3rem;
-          color: var(--muted);
-          font-size: 0.78rem;
-          line-height: 1.3;
-        }
-
-        .canary3 .canary3-decisions {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          margin-top: 0.95rem;
-          border: 1px solid var(--rule-strong);
-          background: var(--surface);
-        }
-
-        .canary3 .canary3-decisions article {
-          min-width: 0;
-          padding: 0.85rem;
-          border-right: 1px solid var(--rule);
-          border-bottom: 1px solid var(--rule);
-        }
-
-        .canary3 .canary3-decisions article:nth-child(2n) {
-          border-right: 0;
-        }
-
-        .canary3 .canary3-decisions article:nth-last-child(-n + 2) {
-          border-bottom: 0;
-        }
-
-        .canary3 .canary3-decisions article > span {
-          color: var(--klein-blue);
-          font-family: var(--font-display);
-          font-size: 0.28rem;
-          font-weight: 700;
-        }
-
-        .canary3 .canary3-decisions h3 {
-          margin-top: 0.55rem;
-          font-family: var(--font-display);
-          font-size: 0.47rem;
-          line-height: 1.08;
-        }
-
-        .canary3 .canary3-decisions p {
-          margin-top: 0.4rem;
-          color: var(--muted);
-          font-size: 0.77rem;
-          line-height: 1.3;
-        }
-
-        .canary3 .canary3-signal {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          border-top: 1px solid var(--rule-strong);
-        }
-
-        .canary3 .canary3-signal article {
-          min-width: 0;
-          padding: 0.9rem 0.9rem 0.9rem 0;
-        }
-
-        .canary3 .canary3-signal article + article {
-          padding-left: 0.9rem;
-          border-left: 1px solid var(--rule);
-        }
-
-        .canary3 .canary3-signal article > span {
-          color: var(--klein-blue);
-        }
-
-        .canary3 .canary3-signal strong {
-          display: block;
-          margin-top: 0.45rem;
-          font-family: var(--font-display);
-          font-size: 0.53rem;
-          line-height: 1.08;
-        }
-
-        .canary3 .canary3-signal p {
-          margin-top: 0.4rem;
-          color: var(--muted);
-          font-size: 0.78rem;
-          line-height: 1.3;
-        }
-
-        .canary3 .canary3-check {
-          display: grid;
-          grid-template-columns:
-            minmax(170px, 0.45fr)
-            minmax(0, 1fr)
-            minmax(180px, 0.6fr);
-          gap: 1rem;
-          align-items: center;
-          margin-top: 1.1rem;
-          padding: 0.8rem 0;
-          border-top: 1px solid var(--rule);
-          border-bottom: 1px solid var(--rule);
-        }
-
-        .canary3 .canary3-check > div {
-          display: flex;
-          justify-content: space-between;
-          gap: 1rem;
-        }
-
-        .canary3 .canary3-check strong {
-          color: var(--canary-danger);
-          font-family: var(--font-display);
-          font-size: 0.46rem;
-        }
-
-        .canary3 .canary3-check code {
-          color: var(--klein-blue);
-          font-size: 0.66rem;
-        }
-
-        .canary3 .canary3-check small {
-          color: var(--muted);
-          font-size: 0.72rem;
-          line-height: 1.25;
-        }
-
-        .canary3 .canary3-thesis {
-          display: grid;
-          grid-template-columns: 105px minmax(0, 1fr);
-          gap: 1rem;
-          margin-top: 0.85rem;
-        }
-
-        .canary3 .canary3-thesis span {
-          color: var(--klein-blue);
-          font-family: var(--font-display);
-          font-size: 0.29rem;
-          font-weight: 700;
-          letter-spacing: 0.06em;
-        }
-
-        .canary3 .canary3-thesis strong {
-          max-width: 720px;
-          font-size: 0.94rem;
-          line-height: 1.35;
-        }
-
-        .canary3 .canary3-validation__summary {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          margin-top: 1.2rem;
-          border-top: 1px solid var(--rule-strong);
-          border-bottom: 1px solid var(--rule);
-        }
-
-        .canary3 .canary3-validation__summary article {
-          min-width: 0;
-          padding: 0.9rem 0.9rem 0.9rem 0;
-        }
-
-        .canary3 .canary3-validation__summary article + article {
-          padding-left: 0.9rem;
-          border-left: 1px solid var(--rule);
-        }
-
-        .canary3 .canary3-validation__summary span,
-        .canary3 .canary3-validation__matrix span,
-        .canary3 .canary3-validation__foot span {
-          display: block;
-          color: var(--klein-blue);
-          font-family: var(--font-display);
-          font-size: 0.29rem;
-          font-weight: 700;
-          letter-spacing: 0.065em;
-        }
-
-        .canary3 .canary3-validation__summary strong {
-          display: block;
-          margin-top: 0.45rem;
-          font-family: var(--font-display);
-          font-size: 0.58rem;
-          line-height: 1.08;
-        }
-
-        .canary3 .canary3-validation__summary p {
-          margin-top: 0.4rem;
-          color: var(--muted);
-          font-size: 0.76rem;
-          line-height: 1.3;
-        }
-
-        .canary3 .canary3-validation__matrix {
-          margin-top: 1rem;
-          border: 1px solid var(--rule-strong);
-          background: var(--surface);
-        }
-
-        .canary3 .canary3-validation__matrix-head,
-        .canary3 .canary3-validation__case {
-          display: grid;
-          grid-template-columns:
-            minmax(190px, 0.8fr)
-            95px
-            minmax(0, 1.4fr);
-          gap: 1rem;
-          align-items: center;
-          padding: 0.72rem 0.8rem;
-        }
-
-        .canary3 .canary3-validation__matrix-head {
-          border-bottom: 1px solid var(--rule-strong);
-        }
-
-        .canary3 .canary3-validation__matrix-head span {
-          color: var(--muted);
-          font-size: 0.27rem;
-        }
-
-        .canary3 .canary3-validation__case + .canary3-validation__case {
-          border-top: 1px solid var(--rule);
-        }
-
-        .canary3 .canary3-validation__case code {
-          color: var(--text);
-          font-size: 0.68rem;
-        }
-
-        .canary3 .canary3-validation__case strong {
-          color: var(--canary-danger);
-          font-family: var(--font-display);
-          font-size: 0.42rem;
-          letter-spacing: 0.035em;
-        }
-
-        .canary3 .canary3-validation__case strong.is-unknown {
-          color: var(--klein-blue);
-        }
-
-        .canary3 .canary3-validation__case p {
-          color: var(--muted);
-          font-size: 0.76rem;
-          line-height: 1.28;
-        }
-
-        .canary3 .canary3-validation__foot {
-          display: grid;
-          grid-template-columns: 120px minmax(0, 1fr);
-          gap: 1rem;
-          margin-top: 0.85rem;
-          padding-top: 0.8rem;
-          border-top: 1px solid var(--rule);
-        }
-
-        .canary3 .canary3-validation__foot strong {
-          max-width: 700px;
-          font-size: 0.9rem;
-          line-height: 1.35;
-        }
-
-        .canary3 .canary3-footer {
-          display: flex;
-          justify-content: space-between;
-          gap: 1rem;
-          margin-top: 2rem;
-          padding-top: 1.1rem;
-          font-family: var(--font-display);
-          font-size: 0.36rem;
-          font-weight: 700;
-        }
-
-        @media (max-width: 800px) {
-          .canary3 {
-            width: min(calc(100% - 1.25rem), 1040px);
-          }
-
-          .canary3 .canary3-section {
-            grid-template-columns: 1fr;
-            gap: 0.9rem;
-          }
-
-          .canary3 .canary3-regression__row,
-          .canary3 .canary3-signal,
-          .canary3 .canary3-check,
-          .canary3 .canary3-validation__summary {
-            grid-template-columns: 1fr;
-          }
-
-          .canary3 .canary3-validation__summary article + article {
-            padding-left: 0;
-            border-top: 1px solid var(--rule);
-            border-left: 0;
-          }
-
-          .canary3 .canary3-validation__matrix-head {
-            display: none;
-          }
-
-          .canary3 .canary3-validation__case {
-            grid-template-columns: 1fr;
-            gap: 0.38rem;
-          }
-
-          .canary3 .canary3-trace {
-            min-height: 36px;
-          }
-
-          .canary3 .canary3-trace i {
-            width: 70px;
-          }
-
-          .canary3 .canary3-signal article + article {
-            padding-left: 0;
-            border-top: 1px solid var(--rule);
-            border-left: 0;
-          }
-
-          .canary3 .canary3-flow {
-            overflow-x: auto;
-          }
-
-          .canary3 .canary3-flow {
-            min-width: 720px;
-          }
-
-          .canary3 .canary3-decisions {
-            grid-template-columns: 1fr;
-          }
-
-          .canary3 .canary3-decisions article {
-            border-right: 0;
-            border-bottom: 1px solid var(--rule);
-          }
-
-          .canary3 .canary3-decisions article:nth-last-child(-n + 2) {
-            border-bottom: 1px solid var(--rule);
-          }
-
-          .canary3 .canary3-decisions article:last-child {
-            border-bottom: 0;
-          }
-
-          .canary3 .canary3-footer {
-            flex-direction: column;
-          }
-        }
-
-        @media (max-width: 560px) {
-          .canary3 .canary3-hero__meta {
-            flex-direction: column;
-          }
-
-          .canary3 .canary3-thesis,
-          .canary3 .canary3-regression__result,
-          .canary3 .canary3-validation__foot {
-            grid-template-columns: 1fr;
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .canary3 [data-reveal] {
-            opacity: 1 !important;
-            transform: none !important;
-            filter: none !important;
-            transition: none !important;
-          }
-
-          .canary3 .canary3-section.is-visible .canary3-section__body > * {
-            animation: none !important;
-          }
-        }
-      `}</style>
     </article>
   );
 }
+
+const CASE_STUDY_CSS = `
+  .pcs {
+    --blue: #002fa7;
+    --text: #090909;
+    --muted: #676767;
+    --line: rgba(9, 9, 9, 0.18);
+    --soft: rgba(0, 47, 167, 0.055);
+
+    width: min(calc(100% - 2rem), 1280px);
+    margin-inline: auto;
+    padding: 2.5rem 0 6rem;
+    color: var(--text);
+  }
+
+  body:has(.pcs) .site-rule {
+    display: none !important;
+  }
+
+  .pcs__back {
+    display: inline-block;
+    margin-bottom: 1.25rem;
+    color: var(--muted);
+    font-size: 0.72rem;
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+
+  .pcs__back:hover,
+  .pcs__back:focus-visible {
+    color: var(--blue);
+  }
+
+  .pcs__panel {
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    background: #fff;
+  }
+
+  .pcs__hero {
+    padding: clamp(2rem, 5vw, 4.6rem);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pcs__eyebrow,
+  .pcs__label span {
+    color: var(--blue);
+    font-family: var(--font-display);
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .pcs__hero h1 {
+    margin-top: 0.75rem;
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 7.5vw, 6.5rem);
+    font-weight: 700;
+    line-height: 0.87;
+    letter-spacing: -0.07em;
+  }
+
+  .pcs__statement {
+    max-width: 900px;
+    margin-top: 1.45rem;
+    color: var(--blue);
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 2.15vw, 1.85rem);
+    font-weight: 700;
+    line-height: 1.07;
+    letter-spacing: -0.035em;
+  }
+
+  .pcs__deck {
+    max-width: 820px;
+    margin-top: 1rem;
+    color: #292929;
+    font-size: 0.94rem;
+    line-height: 1.6;
+  }
+
+  .pcs__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.6rem;
+  }
+
+  .pcs__action {
+    display: inline-flex;
+    align-items: center;
+    min-height: 39px;
+    padding: 0.62rem 0.88rem;
+    border: 1px solid var(--blue);
+    border-radius: 999px;
+    color: var(--blue);
+    font-family: var(--font-display);
+    font-size: 0.59rem;
+    font-weight: 700;
+    letter-spacing: 0.045em;
+    text-decoration: none;
+    text-transform: uppercase;
+
+    transition:
+      background 180ms ease,
+      color 180ms ease,
+      transform 180ms ease;
+  }
+
+  .pcs__action:hover,
+  .pcs__action:focus-visible {
+    background: var(--blue);
+    color: #fff;
+    transform: translateY(-2px);
+  }
+
+  .pcs__metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pcs__metric {
+    min-width: 0;
+    min-height: 132px;
+    padding: 1.4rem;
+    border-right: 1px solid var(--line);
+    background: var(--soft);
+  }
+
+  .pcs__metric:last-child {
+    border-right: 0;
+  }
+
+  .pcs__metric strong {
+    display: block;
+    color: var(--blue);
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.7vw, 2.45rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+  }
+
+  .pcs__metric span {
+    display: block;
+    max-width: 200px;
+    margin-top: 0.6rem;
+    color: var(--muted);
+    font-family: var(--font-display);
+    font-size: 0.54rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .pcs__body {
+    padding: clamp(2rem, 5vw, 4.6rem);
+  }
+
+  .pcs__section {
+    display: grid;
+    grid-template-columns: 145px minmax(0, 1fr);
+    gap: clamp(1.8rem, 5vw, 5rem);
+    padding: 2.6rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pcs__section:first-child {
+    padding-top: 0;
+  }
+
+  .pcs__section:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .pcs__label h2 {
+    margin-top: 0.4rem;
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.05;
+    text-transform: uppercase;
+  }
+
+  .pcs__copy h3 {
+    max-width: 860px;
+    font-family: var(--font-display);
+    font-size: clamp(1.55rem, 2.9vw, 2.45rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  .pcs__copy p,
+  .pcs__copy li {
+    max-width: 850px;
+    font-size: 0.91rem;
+    line-height: 1.66;
+  }
+
+  .pcs__copy p {
+    margin-top: 0.95rem;
+  }
+
+  .pcs__copy ul {
+    max-width: 850px;
+    margin-top: 0.95rem;
+    padding-left: 1.15rem;
+  }
+
+  .pcs__copy li + li {
+    margin-top: 0.35rem;
+  }
+
+  .pcs__highlight {
+    max-width: 850px;
+    margin-top: 1.25rem;
+    padding: 0.95rem 1.05rem;
+    border-left: 3px solid var(--blue);
+    background: var(--soft);
+    font-size: 0.9rem;
+    line-height: 1.58;
+  }
+
+  .pcs__decision-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 950px;
+    margin-top: 1.3rem;
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+
+  .pcs__decision {
+    min-width: 0;
+    padding: 0.95rem;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pcs__decision span {
+    color: var(--blue);
+    font-family: var(--font-display);
+    font-size: 0.53rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+  }
+
+  .pcs__decision strong {
+    display: block;
+    margin-top: 0.45rem;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    line-height: 1.08;
+  }
+
+  .pcs__decision p {
+    margin-top: 0.45rem;
+    color: var(--muted);
+    font-size: 0.76rem;
+    line-height: 1.44;
+  }
+
+  .pcs__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.1rem;
+  }
+
+  .pcs__stack span {
+    padding: 0.44rem 0.63rem;
+    border: 1px solid rgba(0, 47, 167, 0.35);
+    border-radius: 999px;
+    color: var(--blue);
+    font-family: var(--font-display);
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+  }
+
+  .pcs__note {
+    color: var(--muted);
+    font-size: 0.81rem !important;
+  }
+
+  .pcs__footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.3rem;
+    color: var(--muted);
+    font-family: var(--font-display);
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .pcs__footer a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+
+  @media (max-width: 850px) {
+    .pcs__metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pcs__metric:nth-child(2) {
+      border-right: 0;
+    }
+
+    .pcs__metric:nth-child(-n + 2) {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .pcs__section {
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+    }
+
+    .pcs__decision-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .pcs {
+      width: min(calc(100% - 1rem), 1280px);
+    }
+
+    .pcs__panel {
+      border-radius: 18px;
+    }
+
+    .pcs__metrics {
+      grid-template-columns: 1fr;
+    }
+
+    .pcs__metric {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .pcs__metric:last-child {
+      border-bottom: 0;
+    }
+  }
+`;
