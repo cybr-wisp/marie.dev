@@ -18,21 +18,13 @@ export function Header() {
           (projects)
         </Link>
 
-        <Link href="/notes">
-          (writing)
-        </Link>
-
-        <Link href="/projects?category=research">
-          (research)
-        </Link>
-
         <Link href="/about">
           <span className="copy-en">
             (about me)
           </span>
 
           <span className="copy-fr">
-            ({"\u00e0"} propos)
+            ({"à"} propos)
           </span>
         </Link>
       </nav>
@@ -55,4 +47,3 @@ export function Header() {
     </header>
   );
 }
-
