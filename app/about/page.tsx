@@ -1,148 +1,231 @@
-import type { Metadata } from "next";
+﻿export default function AboutPage() {
+  const stack = [
+    "PYTHON",
+    "JAVA",
+    "C++",
+    "PYTORCH",
+    "TYPESCRIPT",
+    "REACT",
+    "KAFKA",
+    "REDIS",
+    "POSTGRESQL",
+    "DOCKER",
+    "LINUX",
+    "AWS",
+  ];
 
-import { siteConfig } from "@/lib/site";
+  const experience = [
+    {
+      date: "2026 - NOW",
+      company: "NOKIA",
+      role: "software engineering · verification",
+      detail: "50g pon · instrumentation · automation · system validation",
+    },
+    {
+      date: "WINTER 2027",
+      company: "KINAXIS",
+      role: "incoming · ai innovation",
+      detail: "ai quality · evaluation · reliability · security",
+    },
+    {
+      date: "2025",
+      company: "INOVEDIA",
+      role: "machine learning engineering",
+      detail: "pytorch · model evaluation · inference systems · data pipelines",
+    },
+    {
+      date: "2024",
+      company: "INOVEDIA",
+      role: "software engineering",
+      detail: "backend systems · cloud infrastructure · docker · linux",
+    },
+  ];
 
-export const metadata: Metadata = {
-  title: "About",
-  description: "About Marie Sindhu and marie.dev.",
-};
-
-const linkedinUrl =
-  "https://www.linkedin.com/in/ACoAAFCaDngBeiBq3ohp7D5FYLxryNlIygc9FiA";
-
-const technologies = [
-  "PYTHON",
-  "C++",
-  "TYPESCRIPT",
-  "SQL",
-  "FASTAPI",
-  "REACT",
-  "DOCKER",
-  "LINUX",
-  "PYTORCH",
-] as const;
-
-const experience = [
-  {
-    period: "SEP — DEC 2026",
-    role: "Incoming · Optical Software Engineering Intern",
-    organization: "Nokia",
-    description:
-      "Joining Nokia in Ottawa to work around optical systems, test automation, data analysis, and software for lab instrumentation.",
-  },
-  {
-    period: "JAN 2026 — PRESENT",
-    role: "Tutor",
-    organization: "Tutorax",
-    description:
-      "Teaching mathematics and computer science, from pre-algebra through data structures and algorithms.",
-  },
-  {
-    period: "2024 — 2025",
-    role: "Software Engineering + Machine Learning Intern",
-    organization: "Inovedia Technologies",
-    description:
-      "Worked across backend systems, Python evaluation tooling, SQL, cloud infrastructure, testing, and deployment automation.",
-  },
-] as const;
-
-export default function AboutPage() {
   return (
-    <main id="main-content" className="editorial-page editorial-about">
-      <section className="about-shell" aria-labelledby="about-title">
-        <header className="section-heading about-heading">
-          <span className="section-kicker copy-en">03 · ABOUT</span>
-          <span className="section-kicker copy-fr">03 · À PROPOS</span>
+    <main id="main-content" className="about-page">
+    <section className="about-contact">
+      <p className="about-contact__text">
+        think we&apos;d have an interesting conversation? say hi.
+      </p>
 
-          <h1 id="about-title">
-            <span className="copy-en">about me</span>
-            <span className="copy-fr">à propos</span>
-          </h1>
-        </header>
+      <div className="about-contact__links">
+        <a
+          href="https://github.com/cybr-wisp"
+          target="_blank"
+          rel="noreferrer"
+        >
+          github ↗
+        </a>
 
-        <div className="about-intro-grid">
-          <div className="about-copy">
-            <p className="copy-en">
-              i’m an honours cs + math undergrad @uottawa, building a
-              real-time geospatial system in java and researching how LLM
-              rewriting affects linguistic biomarkers.
-            </p>
+        <a
+          href="https://www.linkedin.com/in/maryamsindhu/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          linkedin ↗
+        </a>
+      </div>
+    </section>
 
-            <p className="copy-en">
-              this fall, i’m joining nokia as an optical swe. i like people
-              with unconventional opinions who think critically and challenge
-              assumptions. if that sounds like you, let’s talk. i’m always up
-              to collaborate on an idea, product, research question, or project.
-            </p>
+      <header className="about-hero">
+        <p className="about-hero__eyebrow">
+          05 · ABOUT
+        </p>
 
-            <p className="copy-fr">
-              je suis étudiante en informatique + maths @uottawa. je construis
-              un système géospatial temps réel en java et j’étudie comment la
-              réécriture par LLM modifie les biomarqueurs linguistiques.
-            </p>
+        <h1>about</h1>
+      </header>
 
-            <p className="copy-fr">
-              cet automne, je rejoins nokia en génie logiciel optique. j’aime
-              les personnes qui pensent de façon indépendante, remettent les
-              hypothèses en question et aiment construire. je suis toujours
-              partante pour collaborer sur une idée, un produit ou un projet.
-            </p>
-          </div>
+      <section
+        className="about-profile"
+        aria-labelledby="about-profile-title"
+      >
+        <div className="about-profile__bio">
+          <p className="about-section-label">
+            about me
+          </p>
 
-          <aside className="about-meta" aria-label="About details">
-            <section>
-              <span className="about-label">STACK</span>
-              <div className="about-stack">
-                {technologies.map((technology) => (
-                  <span key={technology}>{technology}</span>
-                ))}
-              </div>
-            </section>
+          <h2 id="about-profile-title">
+            hi, i&apos;m marie. i study computer science
+            + mathematics at uottawa.
+          </h2>
 
-            <section>
-              <span className="about-label">CURRENT</span>
-              <p>
-                OTTAWA · CANADA
-                <br />
-                2026
-              </p>
-            </section>
+          <p>
+            i like understanding how things work,
+            especially when the answer is not obvious
+            right away.
+          </p>
 
-            <section>
-              <span className="about-label">LINKS</span>
-              <div className="about-links">
-                <a href={siteConfig.github} target="_blank" rel="noreferrer">
-                  github
-                </a>
-                <a href={linkedinUrl} target="_blank" rel="noreferrer">
-                  linkedin
-                </a>
-              </div>
-            </section>
-          </aside>
+          <p>
+            that&apos;s what pulled me toward software,
+            machine learning, math, and research.
+            i&apos;m happiest when i&apos;m building
+            something, debugging something confusing,
+            or trying to turn a vague question into an
+            experiment i can actually test.
+          </p>
+
+          <p>
+            a lot of my work ends up around reliability
+            and uncertainty: noisy sensor data,
+            distributed systems, changing APIs, model
+            evaluation, and figuring out what happens
+            when the assumptions stop holding.
+          </p>
         </div>
+      </section>
 
-        <section className="experience-section" aria-labelledby="experience-title">
-          <div className="experience-label">
-            <span>01</span>
-            <h2 id="experience-title">EXPERIENCE</h2>
-          </div>
+      <section
+        className="about-tools"
+        aria-label="Technical stack and current work"
+      >
+        <div className="about-stack">
+          <p className="about-section-label">
+            tech stack
+          </p>
 
-          <div className="experience-timeline">
-            {experience.map((item) => (
-              <article className="experience-item" key={`${item.period}-${item.role}`}>
-                <span className="experience-node" aria-hidden="true" />
-                <time>{item.period}</time>
-                <div className="experience-copy">
-                  <h3>{item.role}</h3>
-                  <span>{item.organization}</span>
-                  <p>{item.description}</p>
-                </div>
-              </article>
+          <div className="about-stack__list">
+            {stack.map((technology) => (
+              <span key={technology}>
+                {technology}
+              </span>
             ))}
           </div>
-        </section>
+        </div>
+
+        <aside className="about-current">
+          <p className="about-section-label">
+            current
+          </p>
+
+          <dl>
+            <div>
+              <dt>location</dt>
+              <dd>ottawa, canada</dd>
+            </div>
+
+            <div>
+              <dt>studying</dt>
+              <dd>
+                computer science + mathematics
+                <span>university of ottawa</span>
+              </dd>
+            </div>
+
+            <div>
+              <dt>working</dt>
+              <dd>
+                software engineering
+                <span>nokia · 50g pon</span>
+              </dd>
+            </div>
+
+            <div>
+              <dt>next</dt>
+              <dd>
+                ai innovation
+                <span>kinaxis · winter 2027</span>
+              </dd>
+            </div>
+
+            <div>
+              <dt>researching</dt>
+              <dd>
+                ai reliability
+                <span>
+                  tool failure · recovery · evaluation
+                </span>
+              </dd>
+            </div>
+          </dl>
+        </aside>
       </section>
+
+      <section
+        className="about-experience"
+        aria-labelledby="about-experience-title"
+      >
+        <p
+          id="about-experience-title"
+          className="about-section-label"
+        >
+          experience
+        </p>
+
+        <div className="about-experience__list">
+          {experience.map((item) => (
+            <article
+              className="about-experience__row"
+              key={`${item.company}-${item.date}`}
+            >
+              <div className="about-experience__date">
+                {item.date}
+              </div>
+
+              <div className="about-experience__company">
+                {item.company}
+              </div>
+
+              <div className="about-experience__main">
+                <h2>{item.role}</h2>
+                <p>{item.detail}</p>
+              </div>
+
+              <span
+                className="about-experience__arrow"
+                aria-hidden="true"
+              >
+                ↘
+              </span>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <p className="about-closing">
+        interested in systems, uncertainty,
+        reliability, and good questions.
+      </p>
     </main>
   );
 }
+
