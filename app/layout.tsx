@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { Atkinson_Hyperlegible } from "next/font/google";
 import type { ReactNode } from "react";
 
@@ -10,7 +10,9 @@ import { siteConfig } from "@/lib/site";
 import "./globals.css";
 import "./editorial.css";
 import "./homepage.css";
-
+import "./about.css";
+
+import "./inner-pages.css";
 const atkinson = Atkinson_Hyperlegible({
   subsets: ["latin"],
   weight: ["400", "700"],
@@ -65,3 +67,9 @@ export default function RootLayout({
     </html>
   );
 }
+
+
+
+
+
+

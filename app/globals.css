@@ -1,4 +1,4 @@
-/* ==========================================================
+﻿/* ==========================================================
    MARIE.DEV
    compact archival portfolio
    ========================================================== */
@@ -580,7 +580,7 @@ html[data-language="fr"] .language-switch-to-en {
 
 /* ==========================================================
    ARCHIVE INNER PAGES
-   projects · notes · about
+   projects Â· notes Â· about
    ========================================================== */
 
 .archive-page {
@@ -1610,7 +1610,7 @@ html[data-language="fr"] .language-switch-to-en {
 
 
 /* ----------------------------------------------------------
-   NOTES MAP — MOBILE
+   NOTES MAP â€” MOBILE
    ---------------------------------------------------------- */
 
 @media (max-width: 900px) {
@@ -2519,7 +2519,7 @@ html[data-language="fr"] .language-switch-to-en {
 }
 
 /* ==========================================================
-   SHARED FIXED CHROME — RESPONSIVE
+   SHARED FIXED CHROME â€” RESPONSIVE
    ========================================================== */
 
 @media (max-width: 980px) {
@@ -7441,7 +7441,7 @@ html[data-language="fr"] .language-switch-to-en {
 }
 
 /* ==========================================================
-   CASE STUDY V2 — shared technical stack
+   CASE STUDY V2 â€” shared technical stack
    ========================================================== */
 
 .case-tech-stack {
@@ -8963,7 +8963,7 @@ html[data-theme="dark"] .case-tech-badge__icon img {
 
 
 /* ==========================================================
-   PARATRACE V2 — PROBLEM / RESEARCH QUESTION
+   PARATRACE V2 â€” PROBLEM / RESEARCH QUESTION
    ========================================================== */
 
 .ptv2-problem {
@@ -9072,7 +9072,7 @@ html[data-theme="dark"] .case-tech-badge__icon img {
 
 
 /* ==========================================================
-   PARATRACE V2 — CROSS-MODEL TEST
+   PARATRACE V2 â€” CROSS-MODEL TEST
    ========================================================== */
 
 .ptv2-model-grid {
@@ -9251,7 +9251,7 @@ html[data-theme="dark"] .case-tech-badge__icon img {
 
 
 /* ==========================================================
-   PARATRACE V2 — CROSS-MODEL RESULTS
+   PARATRACE V2 â€” CROSS-MODEL RESULTS
    ========================================================== */
 
 .ptv2-model-table {
@@ -9302,7 +9302,7 @@ html[data-theme="dark"] .case-tech-badge__icon img {
 
 
 /* ==========================================================
-   PARATRACE V2 — CHART LEGEND
+   PARATRACE V2 â€” CHART LEGEND
    ========================================================== */
 
 .ptv2-chart__legend {
@@ -9363,7 +9363,7 @@ html[data-theme="dark"] .case-tech-badge__icon img {
 
 
 /* ==========================================================
-   PARATRACE V2 — REVEAL ANIMATION
+   PARATRACE V2 â€” REVEAL ANIMATION
    ========================================================== */
 
 .ptv2 [data-reveal] {
@@ -9419,7 +9419,7 @@ html[data-theme="dark"] .case-tech-badge__icon img {
 
 
 /* ==========================================================
-   PARATRACE V2 — NEW BLOCKS RESPONSIVE
+   PARATRACE V2 â€” NEW BLOCKS RESPONSIVE
    ========================================================== */
 
 @media (max-width: 980px) {
@@ -9499,7 +9499,7 @@ html[data-theme="dark"] .case-tech-badge__icon img {
 }
 
 /* ==========================================================
-   CASE STUDY V2 — responsive
+   CASE STUDY V2 â€” responsive
    ========================================================== */
 
 @media (max-width: 980px) {
@@ -10223,7 +10223,7 @@ body:has(.index-page) .mode-button {
 
 .landing-project__tags
 span:not(:last-child)::after {
-  content: " ·";
+  content: " Â·";
   color: var(--klein-blue);
 }
 
@@ -10474,3 +10474,37 @@ span:not(:last-child)::after {
     transform: none !important;
   }
 }
+
+/* ==========================================================
+   MARIE.DEV â€” GLOBAL TYPOGRAPHY SYSTEM
+   ========================================================== */
+
+:root {
+  /* Display */
+  --type-page-title: clamp(3rem, 4.6vw, 4.6rem);
+  --type-hero-statement: clamp(1.25rem, 1.8vw, 1.8rem);
+
+  /* Content */
+  --type-card-title: clamp(1.35rem, 1.6vw, 1.65rem);
+  --type-note-title: clamp(1.05rem, 1.35vw, 1.45rem);
+  --type-body: 0.85rem;
+
+  /* UI / metadata */
+  --type-label: 0.65rem;
+  --type-meta: 0.58rem;
+  --type-tag: 0.5rem;
+  --type-action: 0.6rem;
+
+  /* Shared line heights */
+  --leading-display: 0.9;
+  --leading-title: 1;
+  --leading-body: 1.45;
+
+  /* Shared tracking */
+  --tracking-display: -0.065em;
+  --tracking-title: -0.045em;
+  --tracking-meta: 0.045em;
+}
+
+/* END GLOBAL TYPOGRAPHY SYSTEM */
+
