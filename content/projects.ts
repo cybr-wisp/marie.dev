@@ -1,4 +1,4 @@
-import type { Project } from "@/types/content";
+﻿import type { Project } from "@/types/content";
 
 export const projects: readonly Project[] = [
   {
@@ -17,8 +17,10 @@ export const projects: readonly Project[] = [
     },
     tags: ["PYTHON", "NLP", "LLM EVAL", "SCIKIT-LEARN"],
     sections: [],
-    repository: "https://github.com/cybr-wisp/paratrace-cym2026",
+    repository:
+      "https://github.com/cybr-wisp/paratrace-cym2026",
   },
+
   {
     number: "02",
     slug: "vanguard-x",
@@ -35,7 +37,10 @@ export const projects: readonly Project[] = [
     },
     tags: ["JAVA", "KAFKA", "REDIS", "PROTOBUF"],
     sections: [],
+    repository:
+      "https://github.com/cybr-wisp/vanguard-x",
   },
+
   {
     number: "03",
     slug: "aurora-borealis",
@@ -52,7 +57,10 @@ export const projects: readonly Project[] = [
     },
     tags: ["PYTHON", "C++", "EKF", "UKF"],
     sections: [],
+    repository:
+      "https://github.com/cybr-wisp/aurora-borealis",
   },
+
   {
     number: "04",
     slug: "canary",
@@ -69,8 +77,10 @@ export const projects: readonly Project[] = [
     },
     tags: ["PYTHON", "AST", "FASTAPI", "GITHUB"],
     sections: [],
-    repository: "https://github.com/cybr-wisp/canary",
+    repository:
+      "https://github.com/cybr-wisp/canary",
   },
+
   {
     number: "05",
     slug: "microgrid-ml",
@@ -87,8 +97,10 @@ export const projects: readonly Project[] = [
     },
     tags: ["PYTORCH", "LSTM", "FASTAPI", "TIME SERIES"],
     sections: [],
-    repository: "https://github.com/cybr-wisp/microgrid-ml-cym2025",
+    repository:
+      "https://github.com/cybr-wisp/microgrid-ml-cym2025",
   },
+
   {
     number: "06",
     slug: "helios",
@@ -106,5 +118,22 @@ export const projects: readonly Project[] = [
     tags: ["PYTHON", "PYTORCH", "GEOSPATIAL", "EO"],
     sections: [],
   },
-];
 
+  {
+    number: "07",
+    slug: "tracellm",
+    title: "TraceLLM",
+    year: "2026",
+    categories: ["RESEARCH", "AI / ML", "AI SAFETY"],
+    summary: {
+      en: "Studying how tool-using language-model agents propagate and recover from silently corrupted observations.",
+      fr: "Étude de la propagation et de la récupération des erreurs chez les agents de langage utilisant des outils face à des observations silencieusement corrompues.",
+    },
+    intro: {
+      en: "A reliability benchmark for measuring whether tool-using agents truly recover after incorporating plausible but incorrect tool observations.",
+      fr: "Un benchmark de fiabilité visant à mesurer si les agents utilisant des outils récupèrent réellement après avoir intégré des observations plausibles mais incorrectes.",
+    },
+    tags: ["AGENTS", "RELIABILITY", "LLM EVAL", "AI SAFETY"],
+    sections: [],
+  },
+];
