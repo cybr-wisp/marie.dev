@@ -2434,3 +2434,148 @@ span:last-child {
 }
 
 /* END HOMEPAGE SCALE POLISH */
+
+/* match tight tracking used by top-left navigation */
+.portfolio-header-v2__controls a,
+.portfolio-header-v2__controls button,
+.home-v3__footer a {
+  letter-spacing: -0.085em;
+}
+
+
+/* final footer inset override */
+@media (min-width: 901px) {
+  .home-v3__footer {
+    left: clamp(6rem, 7vw, 8rem);
+    right: clamp(6rem, 7vw, 8rem);
+  }
+}
+
+
+
+/* ==========================================================
+   GLOBAL FIXED SITE CHROME
+   Same header position + behavior on every page.
+   ========================================================== */
+
+:root {
+  --site-header-height: 92px;
+  --site-header-fade: 30px;
+}
+
+
+/* ----------------------------------------------------------
+   FIXED GLOBAL HEADER
+   ---------------------------------------------------------- */
+
+.portfolio-header-v2 {
+  position: fixed !important;
+
+  z-index: 1000 !important;
+
+  top: 0 !important;
+  right: 0;
+  left: 0;
+
+  height: var(--site-header-height);
+
+  background: var(--editorial-bg);
+
+  isolation: isolate;
+}
+
+
+/* ----------------------------------------------------------
+   FADE CONTENT AS IT PASSES UNDER THE HEADER
+   ---------------------------------------------------------- */
+
+.portfolio-header-v2::after {
+  content: "";
+
+  position: absolute;
+
+  z-index: -1;
+
+  top: 100%;
+  right: 0;
+  left: 0;
+
+  height: var(--site-header-fade);
+
+  background:
+    linear-gradient(
+      to bottom,
+      var(--editorial-bg) 0%,
+      var(--editorial-bg) 18%,
+      transparent 100%
+    );
+
+  pointer-events: none;
+}
+
+
+/* ----------------------------------------------------------
+   NON-HOME PAGES
+
+   Give every other page clearance for the global fixed
+   navigation. The homepage already has its own spacing.
+   ---------------------------------------------------------- */
+
+.page-transition:not(:has(.home-v3))
+.page-transition__content {
+  padding-top: var(--site-header-height);
+}
+
+
+/* ----------------------------------------------------------
+   HEADER INTERACTION ALWAYS REMAINS ABOVE PAGE CONTENT
+   ---------------------------------------------------------- */
+
+.portfolio-header-v2 nav,
+.portfolio-header-v2 a,
+.portfolio-header-v2 button {
+  position: relative;
+
+  z-index: 2;
+}
+
+
+/* ----------------------------------------------------------
+   DARK MODE
+   Uses the same site background variable automatically.
+   ---------------------------------------------------------- */
+
+html[data-theme="dark"]
+.portfolio-header-v2 {
+  background: var(--editorial-bg);
+}
+
+
+/* ----------------------------------------------------------
+   MOBILE
+
+   Navigation may wrap, so give it slightly more clearance
+   while keeping it fixed.
+   ---------------------------------------------------------- */
+
+@media (max-width: 650px) {
+  :root {
+    --site-header-height: 112px;
+    --site-header-fade: 24px;
+  }
+
+  .portfolio-header-v2 {
+    position: fixed !important;
+
+    min-height: var(--site-header-height);
+    height: auto;
+  }
+
+  .page-transition:not(:has(.home-v3))
+  .page-transition__content {
+    padding-top: var(--site-header-height);
+  }
+}
+
+
+/* END GLOBAL FIXED SITE CHROME */
