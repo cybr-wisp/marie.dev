@@ -2614,3 +2614,35 @@ html[data-theme="dark"]
   }
 }
 
+
+/* =========================================================
+   MOBILE HERO FIX — REAL TYPING HERO CLASSES
+   ========================================================= */
+
+@media (max-width: 600px) {
+  .hero-typing {
+    width: 100%;
+    max-width: 100%;
+
+    font-size: clamp(3rem, 12.5vw, 4.1rem);
+    line-height: 0.9;
+    letter-spacing: -0.055em;
+
+    overflow: hidden;
+  }
+
+  .hero-typing__line {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .hero-typing__cursor {
+    display: inline;
+  }
+}
+
