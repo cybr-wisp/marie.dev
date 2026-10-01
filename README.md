@@ -1,5 +1,7 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+inspired by jay ghosh's portfolio, i built mine around a simple idea: keep it minimal, personal, and focused on the work. yves klein blue, black, and white felt like the right place to start. 
+
 ## Getting Started
 
 First, run the development server:

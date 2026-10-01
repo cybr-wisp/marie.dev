@@ -4,30 +4,35 @@ import Link from "next/link";
 
 import type { Project } from "@/types/content";
 
-type CanaryCaseStudyProps = Readonly<{
+type AuroraBorealisCaseStudyProps = Readonly<{
   project: Project;
 }>;
 
 const technologies = [
-  "Python 3.11+",
-  "AST",
-  "FastAPI",
-  "GitHub Apps",
-  "Checks API",
-  "Typer",
-  "Rich",
-  "Pydantic",
-  "HTTPX",
+  "Python",
+  "C++20",
+  "EKF",
+  "UKF",
+  "IMM",
+  "Eigen",
+  "NumPy",
+  "Protobuf",
+  "FreeRTOS",
+  "ESP32-S3",
+  "Next.js",
+  "D3",
+  "WebSocket",
   "pytest",
+  "GoogleTest",
   "GitHub Actions",
 ] as const;
 
-export function CanaryCaseStudy({
+export function AuroraBorealisCaseStudy({
   project,
-}: CanaryCaseStudyProps) {
+}: AuroraBorealisCaseStudyProps) {
   const repository =
     project.repository ??
-    "https://github.com/cybr-wisp/canary";
+    "https://github.com/cybr-wisp/aurora-borealis";
 
   return (
     <article className="pcs">
@@ -43,22 +48,22 @@ export function CanaryCaseStudy({
       <div className="pcs__panel">
         <header className="pcs__hero">
           <p className="pcs__eyebrow">
-            Developer tools · static analysis · 2026
+            Research · sensor fusion · state estimation · 2026
           </p>
 
-          <h1>Canary</h1>
+          <h1>Aurora Borealis</h1>
 
           <p className="pcs__statement">
-            What existing code could this change break?
+            Accuracy is not enough. The uncertainty has to be
+            credible too.
           </p>
 
           <p className="pcs__deck">
-            Canary is a deterministic, repository-aware
-            compatibility analyzer for Python pull requests.
-            It compares API contracts across BASE and HEAD,
-            traces changed symbols into real call sites, and
-            proves which existing calls no longer satisfy the
-            new contract.
+            Aurora Borealis is a multi-sensor tracking
+            research system for studying estimator behavior
+            under missed detections, packet loss, nonlinear
+            radar measurements, target maneuvers, and
+            real-time ingestion constraints.
           </p>
 
           <div className="pcs__actions">
@@ -75,26 +80,26 @@ export function CanaryCaseStudy({
 
         <section
           className="pcs__metrics"
-          aria-label="Canary benchmark highlights"
+          aria-label="Aurora Borealis benchmark highlights"
         >
           <article className="pcs__metric">
-            <strong>64.45 ms</strong>
-            <span>median analysis latency</span>
+            <strong>98 / 100</strong>
+            <span>held-out runs below 5 m RMSE</span>
           </article>
 
           <article className="pcs__metric">
-            <strong>118,549</strong>
-            <span>lines analyzed / second</span>
+            <strong>4.411 m</strong>
+            <span>mean coordinated-turn RMSE</span>
           </article>
 
           <article className="pcs__metric">
-            <strong>100 / 100</strong>
-            <span>semantic mutation cases</span>
+            <strong>7.89M</strong>
+            <span>in-process messages / second</span>
           </article>
 
           <article className="pcs__metric">
-            <strong>50 / 50</strong>
-            <span>identical repeated executions</span>
+            <strong>38.573 μs</strong>
+            <span>p99 association · 100 tracks</span>
           </article>
         </section>
 
@@ -107,39 +112,30 @@ export function CanaryCaseStudy({
 
             <div className="pcs__copy">
               <h3>
-                Valid Python can still introduce a
-                repository-level breaking change.
+                A tracker can achieve low position error and
+                still be dangerously overconfident.
               </h3>
 
               <p>
-                A pull request can modify a function
-                signature, pass syntax checks, satisfy the
-                project&apos;s current tests, and still break
-                an existing caller that the test suite never
-                exercises.
+                Aurora studies tracking when sensors miss
+                detections, packets disappear, observations
+                are noisy, radar measurements are nonlinear,
+                and targets abruptly change motion.
               </p>
 
               <p>
-                Consider a function changing from:
+                In that environment, RMSE alone is
+                insufficient. An estimator may produce a
+                visually accurate trajectory while reporting
+                covariance that is far too small.
               </p>
 
               <div className="pcs__highlight">
-                authenticate(token) → authenticate(token,
-                strict)
+                RMSE answers “how far was the estimate from
+                truth?” NEES and NIS ask whether the
+                estimator&apos;s own uncertainty was
+                statistically believable.
               </div>
-
-              <p>
-                The new function definition is valid Python.
-                The existing caller is also valid Python.
-                The incompatibility only becomes visible when
-                those two pieces of code are analyzed together.
-              </p>
-
-              <p>
-                That makes semantic compatibility a
-                repository-level problem rather than a
-                file-level diff problem.
-              </p>
             </div>
           </section>
 
@@ -151,118 +147,82 @@ export function CanaryCaseStudy({
 
             <div className="pcs__copy">
               <h3>
-                Python&apos;s flexibility makes false certainty
-                dangerous.
+                Estimator comparisons are meaningless if the
+                stochastic experiment changes underneath
+                them.
               </h3>
-
-              <p>
-                Static analysis has to reason about more than
-                simple positional function calls.
-              </p>
 
               <ul>
                 <li>
-                  imports can be aliased or relative;
+                  Sensor noise must remain reproducible across
+                  repeated experiments.
                 </li>
 
                 <li>
-                  parameters can be positional-only or
-                  keyword-only;
+                  Adding one sensor cannot accidentally change
+                  another sensor&apos;s random sequence.
                 </li>
 
                 <li>
-                  calls may contain <code>*args</code> and{" "}
-                  <code>**kwargs</code>;
+                  Measurements should remain in native
+                  range / azimuth / elevation form until the
+                  nonlinear update.
                 </li>
 
                 <li>
-                  defaults can disappear between BASE and
-                  HEAD;
+                  Maneuver recovery cannot be solved simply by
+                  inflating process noise everywhere.
                 </li>
 
                 <li>
-                  sync functions can become async;
+                  Development seeds and final Monte Carlo
+                  seeds must remain separated.
                 </li>
 
                 <li>
-                  public functions can disappear entirely;
-                </li>
-
-                <li>
-                  dynamic dispatch and reflection cannot
-                  always be resolved safely.
+                  Native ingestion performance should be
+                  evaluated separately from estimator quality.
                 </li>
               </ul>
-
-              <p>
-                A useful analyzer therefore cannot simply
-                label every unresolved case safe or broken.
-              </p>
             </div>
           </section>
 
           <section className="pcs__section">
             <header className="pcs__label">
               <span>03</span>
-              <h2>Design</h2>
+              <h2>Reproducibility</h2>
             </header>
 
             <div className="pcs__copy">
               <h3>
-                Separate API change detection from caller
-                impact analysis.
+                Make stochastic reproducibility a systems
+                property, not an afterthought.
               </h3>
 
-              <div className="pcs__decision-grid">
-                <article className="pcs__decision">
-                  <span>01</span>
-
-                  <strong>EXTRACT CONTRACTS</strong>
-
-                  <p>
-                    Parse BASE and HEAD Python APIs into
-                    structured AST-derived callable
-                    contracts.
-                  </p>
-                </article>
-
-                <article className="pcs__decision">
-                  <span>02</span>
-
-                  <strong>INDEX CALL SITES</strong>
-
-                  <p>
-                    Build a repository-wide index of imports,
-                    aliases, symbols, and candidate calls.
-                  </p>
-                </article>
-
-                <article className="pcs__decision">
-                  <span>03</span>
-
-                  <strong>RE-BIND ARGUMENTS</strong>
-
-                  <p>
-                    Apply existing positional and keyword
-                    arguments against the changed signature.
-                  </p>
-                </article>
-              </div>
+              <p>
+                Each simulated radar owns an independent
+                pseudo-random stream derived from the scenario
+                seed and sensor identity.
+              </p>
 
               <p>
-                This separates the question:
+                That prevents a common simulation problem:
+                changing the number or order of sensors should
+                not silently alter the noise sequence seen by
+                every other sensor.
               </p>
 
               <div className="pcs__highlight">
-                “Did an API change?” from “Which existing
-                callers are actually incompatible with that
-                change?”
+                With independent random streams, estimator A
+                and estimator B can be compared against the
+                same underlying sensing realization.
               </div>
 
               <p>
-                That distinction is what prevents Canary from
-                turning every signature change into a noisy
-                pull-request warning.
+                This made debugging much easier because a
+                failed run could be reconstructed exactly
+                rather than approximated with another random
+                sample.
               </p>
             </div>
           </section>
@@ -270,43 +230,40 @@ export function CanaryCaseStudy({
           <section className="pcs__section">
             <header className="pcs__label">
               <span>04</span>
-              <h2>Static binding</h2>
+              <h2>Measurement model</h2>
             </header>
 
             <div className="pcs__copy">
               <h3>
-                Reconstruct Python argument binding instead
-                of relying on text matching.
+                Keep radar observations nonlinear instead of
+                hiding geometry error in preprocessing.
               </h3>
 
               <p>
-                Canary validates calls using the structure of
-                the new function signature. It checks whether
-                existing arguments still satisfy the changed
-                contract.
+                Radar sensors observe targets in spherical
+                coordinates rather than directly in Cartesian
+                position.
               </p>
 
               <p>
-                This includes:
+                Converting noisy spherical observations to
+                Cartesian coordinates before filtering can
+                distort the noise model.
               </p>
 
-              <ul>
-                <li>missing required arguments;</li>
-                <li>removed keyword parameters;</li>
-                <li>duplicate argument bindings;</li>
-                <li>positional-only violations;</li>
-                <li>keyword-only violations;</li>
-                <li>removed defaults;</li>
-                <li>argument ordering changes;</li>
-                <li>await / non-await mismatches.</li>
-              </ul>
+              <p>
+                Aurora therefore keeps measurements in native
+                range, azimuth, and elevation form through the
+                nonlinear update and evaluates the observation
+                using the appropriate measurement function and
+                Jacobian.
+              </p>
 
               <p>
-                Because the analysis understands argument
-                semantics, two identical-looking signature
-                diffs can produce different results depending
-                on how the repository actually calls the
-                function.
+                That preserves the geometry of the sensor
+                model inside the estimator instead of treating
+                transformed measurements as if they had
+                simple Gaussian Cartesian noise.
               </p>
             </div>
           </section>
@@ -314,84 +271,100 @@ export function CanaryCaseStudy({
           <section className="pcs__section">
             <header className="pcs__label">
               <span>05</span>
-              <h2>Abstention</h2>
+              <h2>Estimator design</h2>
             </header>
 
             <div className="pcs__copy">
               <h3>
-                UNKNOWN is a valid result when the evidence
-                is insufficient.
+                One motion model could not handle both steady
+                tracking and abrupt maneuvers well.
               </h3>
 
-              <p>
-                Canary produces three outcomes rather than
-                forcing a binary safe/broken decision.
-              </p>
+              <div className="pcs__decision-grid">
+                <article className="pcs__decision">
+                  <span>01</span>
 
-              <ul>
-                <li>
-                  <strong>BREAKS</strong> — incompatibility can
-                  be proven from static evidence.
-                </li>
+                  <strong>EKF</strong>
 
-                <li>
-                  <strong>UNAFFECTED</strong> — the existing
-                  call continues to satisfy the new contract.
-                </li>
+                  <p>
+                    Nonlinear measurement updates with an
+                    explicit covariance estimate.
+                  </p>
+                </article>
 
-                <li>
-                  <strong>UNKNOWN</strong> — static analysis
-                  cannot safely prove either conclusion.
-                </li>
-              </ul>
+                <article className="pcs__decision">
+                  <span>02</span>
 
-              <p>
-                This matters for dynamic Python behavior.
-                Reflection, runtime-created arguments, or
-                unresolved dispatch should not silently become
-                false confidence.
-              </p>
+                  <strong>UKF COMPARISON</strong>
 
-              <div className="pcs__highlight">
-                Canary would rather explicitly abstain than
-                manufacture certainty it cannot justify.
+                  <p>
+                    Evaluate sigma-point propagation as an
+                    alternative nonlinear estimator.
+                  </p>
+                </article>
+
+                <article className="pcs__decision">
+                  <span>03</span>
+
+                  <strong>IMM</strong>
+
+                  <p>
+                    Allow smooth-motion and maneuver models to
+                    coexist rather than forcing one process
+                    model everywhere.
+                  </p>
+                </article>
               </div>
+
+              <p>
+                The interacting multiple-model approach lets
+                the tracker maintain probability over several
+                motion hypotheses and shift weight toward a
+                maneuver model when observations stop matching
+                constant-velocity assumptions.
+              </p>
+
+              <p>
+                That is preferable to globally increasing
+                process noise, which may improve maneuver
+                recovery but unnecessarily degrade covariance
+                quality during ordinary motion.
+              </p>
             </div>
           </section>
 
           <section className="pcs__section">
             <header className="pcs__label">
               <span>06</span>
-              <h2>Rules</h2>
+              <h2>Association</h2>
             </header>
 
             <div className="pcs__copy">
               <h3>
-                Compatibility rules represent different
-                classes of semantic breakage.
+                Measurement association had to scale without
+                turning uncertainty into a fixed-distance
+                heuristic.
               </h3>
 
               <p>
-                The rule engine covers seven primary change
-                classes:
+                Candidate observations are compared to
+                predicted tracks using uncertainty-aware
+                gating rather than a single Cartesian radius.
               </p>
 
-              <ul>
-                <li>required parameter added;</li>
-                <li>parameter removed;</li>
-                <li>parameter reordered;</li>
-                <li>default removed;</li>
-                <li>return annotation changed;</li>
-                <li>sync / async behavior changed;</li>
-                <li>public API removed.</li>
-              </ul>
+              <p>
+                This allows a track with larger covariance to
+                admit a wider plausible measurement region,
+                while a highly certain track rejects
+                observations that would be implausible
+                relative to its predicted uncertainty.
+              </p>
 
               <p>
-                Not every change produces the same confidence
-                level. A removed required keyword may be a
-                provable break, while a return-type annotation
-                change may require downstream type information
-                that is unavailable statically.
+                Association performance was benchmarked
+                independently from estimator accuracy so
+                scaling behavior could be measured as track
+                count increased.
               </p>
             </div>
           </section>
@@ -399,82 +372,79 @@ export function CanaryCaseStudy({
           <section className="pcs__section">
             <header className="pcs__label">
               <span>07</span>
-              <h2>Integration</h2>
+              <h2>Validation</h2>
             </header>
 
             <div className="pcs__copy">
               <h3>
-                One deterministic engine powers both local
-                analysis and pull-request review.
+                Freeze the estimator before evaluating on
+                untouched Monte Carlo seeds.
               </h3>
 
               <p>
-                The core analysis engine is shared between the
-                Typer CLI and the GitHub App.
+                Development and tuning used one seed range.
+                Final evaluation used 50 previously unseen
+                seeds for each trajectory regime.
               </p>
 
               <p>
-                FastAPI handles webhook delivery while GitHub
-                App authentication and Checks API integration
-                live behind dedicated boundaries.
+                The estimator configuration was frozen before
+                those final runs.
               </p>
 
               <p>
-                Pull-request findings can include:
+                The final campaign evaluated both position
+                error and statistical consistency rather than
+                selecting configurations only by RMSE.
               </p>
-
-              <ul>
-                <li>changed symbol;</li>
-                <li>semantic change category;</li>
-                <li>affected caller;</li>
-                <li>source file and line;</li>
-                <li>confirmed incompatibility reason;</li>
-                <li>unresolved / UNKNOWN callers.</li>
-              </ul>
 
               <p>
-                The same deterministic result can therefore be
-                inspected locally or surfaced directly in the
-                code-review workflow.
+                One result deliberately remained imperfect:
+                abrupt-maneuver empirical NEES coverage
+                reached <strong>91.25%</strong>, below the
+                nominal 95% target.
               </p>
+
+              <div className="pcs__highlight">
+                I kept the miss rather than retuning on the
+                final seeds. Once final evaluation becomes
+                another tuning set, the held-out result stops
+                being meaningful.
+              </div>
             </div>
           </section>
 
           <section className="pcs__section">
             <header className="pcs__label">
               <span>08</span>
-              <h2>Validation</h2>
+              <h2>Native system</h2>
             </header>
 
             <div className="pcs__copy">
               <h3>
-                Test semantic behavior, determinism, and
-                scaling independently.
+                Separate estimator research from the
+                performance-sensitive ingestion path.
               </h3>
 
               <p>
-                Canary&apos;s benchmark suite exercises seeded
-                semantic mutations, deliberately ambiguous
-                cases, repeated execution, and generated
-                repositories.
+                The simulation and analysis environment uses
+                Python for rapid experimentation and Monte
+                Carlo evaluation.
               </p>
 
               <p>
-                The seeded semantic benchmark reported{" "}
-                <strong>100 / 100</strong> cases with precision,
-                recall, and F1 of{" "}
-                <strong>100% / 100% / 1.0</strong>.
+                The native system uses C++20, Protobuf, and a
+                low-overhead ingestion path to measure parsing,
+                enqueueing, and association independently from
+                Python research tooling.
               </p>
 
               <p>
-                All <strong>10 / 10</strong> deliberately
-                ambiguous cases were preserved as abstentions.
-              </p>
-
-              <p>
-                Repeating the same analysis{" "}
-                <strong>50 times</strong> produced identical
-                results in all 50 runs.
+                The architecture also includes embedded and
+                visualization layers so the same observation
+                contract can move between simulated sensors,
+                embedded devices, the native engine, and the
+                browser-facing visualization.
               </p>
             </div>
           </section>
@@ -487,39 +457,45 @@ export function CanaryCaseStudy({
 
             <div className="pcs__copy">
               <h3>
-                Repository-wide analysis remained fast enough
-                to fit naturally into code review.
+                Held-out tracking remained accurate while the
+                native pipeline stayed extremely fast.
               </h3>
 
               <p>
-                Median analysis latency measured{" "}
-                <strong>64.45 ms</strong>.
+                <strong>98 of 100</strong> held-out
+                scenario-runs remained below{" "}
+                <strong>5 m RMSE</strong>.
               </p>
 
               <p>
-                Source-analysis throughput reached{" "}
-                <strong>118,549 LOC/s</strong> under the
-                repository benchmark.
+                Mean held-out RMSE measured{" "}
+                <strong>4.411 m</strong> for coordinated-turn
+                trajectories and <strong>4.490 m</strong> for
+                abrupt-maneuver trajectories.
               </p>
 
               <p>
-                A generated <strong>1,000-file</strong>{" "}
-                repository completed in{" "}
-                <strong>210.36 ms</strong>.
+                In the native Linux Release benchmark,
+                in-process Protobuf parse + enqueue reached{" "}
+                <strong>7,891,090 messages/s</strong>.
+              </p>
+
+              <p>
+                At <strong>100 tracks</strong>, association
+                p99 measured <strong>38.573 μs</strong>.
               </p>
 
               <div className="pcs__highlight">
-                The key result was not just detection accuracy.
-                Canary could remain deterministic, explainable,
-                and repository-aware without turning pull
-                requests into multi-second analysis jobs.
+                Aurora treats estimator accuracy, statistical
+                consistency, and systems performance as
+                separate questions. Improving one does not
+                automatically prove the others.
               </div>
 
               <p className="pcs__note">
-                These numbers describe controlled repository
-                benchmarks and should not be interpreted as
-                universal performance across arbitrary Python
-                codebases.
+                The 7.89M messages/s result is an in-process
+                parsing + enqueue benchmark, not end-to-end
+                UDP network throughput.
               </p>
             </div>
           </section>
@@ -532,27 +508,35 @@ export function CanaryCaseStudy({
 
             <div className="pcs__copy">
               <h3>
-                Developer tools become useful when they model
-                uncertainty instead of hiding it.
+                A good estimator has to explain its
+                uncertainty, not just produce a plausible
+                trajectory.
               </h3>
 
               <p>
-                The most important design choice in Canary was
-                not a parser or framework. It was deciding
-                that UNKNOWN should be a first-class result.
+                Aurora changed the way I evaluate tracking
+                algorithms.
               </p>
 
               <p>
-                Static analysis is strongest when it clearly
-                distinguishes what it can prove from what it
-                cannot.
+                Optimizing only for RMSE makes it easy to
+                produce a model that appears accurate while
+                systematically understating uncertainty.
               </p>
 
               <p>
-                That same principle applies to code-review
-                tooling more broadly: a smaller number of
-                defensible findings is often more useful than
-                a larger number of speculative warnings.
+                Once uncertainty becomes part of the
+                requirement, design decisions around motion
+                models, association gates, dropout handling,
+                and final validation become much more
+                disciplined.
+              </p>
+
+              <p>
+                The same lesson extends beyond tracking:
+                confidence is part of the output of a
+                probabilistic system and should be evaluated
+                like any other prediction.
               </p>
             </div>
           </section>
@@ -580,11 +564,11 @@ export function CanaryCaseStudy({
 
       <footer className="pcs__footer">
         <span>
-          Canary / static analysis / 2026
+          Aurora Borealis / state estimation / 2026
         </span>
 
-        <Link href="/projects/paratrace">
-          next · paratrace →
+        <Link href="/projects/canary">
+          next · canary →
         </Link>
       </footer>
     </article>

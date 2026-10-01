@@ -1,0 +1,609 @@
+﻿/* ==========================================================
+   MARIE.DEV — SHARED INNER PAGE FRAME
+
+   Writing is the reference layout.
+   Applies to:
+   /projects
+   /writing
+   /research
+   /about
+   ========================================================== */
+
+
+/* ----------------------------------------------------------
+   OUTER PAGE FRAME
+   Exact geometry of Writing.
+   ---------------------------------------------------------- */
+
+:is(
+  .writing-page,
+  .research-page,
+  .editorial-projects,
+  .editorial-about,
+  .about-page
+) {
+  box-sizing: border-box !important;
+
+  width: calc(100% - 8rem) !important;
+  max-width: 1380px !important;
+
+  min-height: 100svh;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+  padding:
+    3.5rem
+    2rem
+    5rem !important;
+
+  /*
+     Keep all four structural borders in the box model.
+     They are deliberately invisible.
+  */
+  border-top:
+    1px solid transparent !important;
+
+  border-right:
+    1px solid transparent !important;
+
+  border-bottom:
+    1px solid transparent !important;
+
+  border-left:
+    1px solid transparent !important;
+}
+
+
+/* ----------------------------------------------------------
+   REMOVE PAGE-SPECIFIC SHELL OFFSETS
+
+   The outer frame now owns alignment.
+   ---------------------------------------------------------- */
+
+.editorial-projects .projects-shell,
+.editorial-about .about-shell,
+.about-page .about-shell {
+  width: 100% !important;
+  max-width: none !important;
+
+  margin:
+    0 !important;
+
+  padding:
+    0 !important;
+}
+
+
+/* ----------------------------------------------------------
+   PAGE HEADER POSITION
+
+   Writing's header position is now the reference for every
+   menu page.
+
+   Outer page: 3.5rem
+   Header inset: 1.5rem
+   => eyebrow starts at the same vertical coordinate.
+   ---------------------------------------------------------- */
+
+.writing-hero,
+.research-hero,
+.editorial-projects .section-heading,
+.editorial-about .about-heading,
+.about-page .about-heading {
+  box-sizing: border-box;
+
+  width: 100%;
+
+  margin-top:
+    0 !important;
+
+  margin-bottom:
+    0 !important;
+
+  padding-top:
+    1.5rem !important;
+
+  padding-bottom:
+    2.75rem !important;
+}
+
+
+/* ----------------------------------------------------------
+   NO EXTRA PROJECTS / ABOUT / RESEARCH TOP OFFSETS
+   ---------------------------------------------------------- */
+
+.editorial-projects .projects-shell,
+.editorial-projects .projects-browser,
+.editorial-about .about-shell,
+.about-page .about-shell,
+.research-page .research-work {
+  margin-top:
+    0 !important;
+}
+
+
+/* ----------------------------------------------------------
+   TABLET
+   Matches Writing's frame.
+   ---------------------------------------------------------- */
+
+@media (max-width: 1000px) {
+  :is(
+    .writing-page,
+    .research-page,
+    .editorial-projects,
+    .editorial-about,
+    .about-page
+  ) {
+    width:
+      calc(100% - 4rem) !important;
+
+    padding-left:
+      1.5rem !important;
+
+    padding-right:
+      1.5rem !important;
+  }
+}
+
+
+/* ----------------------------------------------------------
+   MOBILE
+   Matches Writing's frame.
+   ---------------------------------------------------------- */
+
+@media (max-width: 650px) {
+  :is(
+    .writing-page,
+    .research-page,
+    .editorial-projects,
+    .editorial-about,
+    .about-page
+  ) {
+    width:
+      calc(100% - 2rem) !important;
+
+    padding-left:
+      1rem !important;
+
+    padding-right:
+      1rem !important;
+
+    border:
+      0 !important;
+  }
+}
+
+/* END SHARED INNER PAGE FRAME */
+
+/* ==========================================================
+   FINAL HEADER ALIGNMENT
+   Projects + About must match Writing/Research exactly.
+   ========================================================== */
+
+/*
+   Writing/Research are already correct.
+   Kill every remaining legacy vertical offset on
+   Projects and About only.
+*/
+
+body .editorial-page.editorial-projects,
+body .editorial-page.editorial-about,
+body .about-page {
+  padding-top: 3.5rem !important;
+  margin-top: 0 !important;
+}
+
+
+/* PROJECTS — no secondary top spacing anywhere */
+body .editorial-projects > .projects-shell,
+body .editorial-projects .projects-shell {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+body .editorial-projects .section-heading {
+  margin-top: 0 !important;
+  padding-top: 1.5rem !important;
+}
+
+
+/* ABOUT — no secondary top spacing anywhere */
+body .editorial-about > .about-shell,
+body .editorial-about .about-shell,
+body .about-page > .about-shell,
+body .about-page .about-shell {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+body .editorial-about .about-heading,
+body .about-page .about-heading,
+body .editorial-about .section-heading,
+body .about-page .section-heading {
+  margin-top: 0 !important;
+  padding-top: 1.5rem !important;
+}
+
+
+/*
+   Explicitly neutralize older clamp-based page padding.
+*/
+body main.editorial-projects {
+  padding-block-start: 3.5rem !important;
+}
+
+body main.editorial-about,
+body main.about-page {
+  padding-block-start: 3.5rem !important;
+}
+
+
+/* tablet */
+@media (max-width: 1000px) {
+  body main.editorial-projects,
+  body main.editorial-about,
+  body main.about-page {
+    padding-block-start: 3.5rem !important;
+  }
+}
+
+
+/* mobile */
+@media (max-width: 650px) {
+  body main.editorial-projects,
+  body main.editorial-about,
+  body main.about-page {
+    padding-block-start: 3.5rem !important;
+  }
+}
+
+/* END FINAL HEADER ALIGNMENT */
+
+/* ==========================================================
+   PROJECTS + ABOUT — MATCH WRITING/RESEARCH SIDE FRAME
+   ========================================================== */
+
+body .editorial-projects,
+body .editorial-about,
+body .about-page {
+  box-sizing: border-box !important;
+
+  width: calc(100% - 8rem) !important;
+  max-width: 1380px !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+
+  border-left: 1px solid transparent !important;
+  border-right: 1px solid transparent !important;
+}
+
+
+/* tablet */
+@media (max-width: 1000px) {
+  body .editorial-projects,
+  body .editorial-about,
+  body .about-page {
+    width: calc(100% - 4rem) !important;
+
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+}
+
+
+/* mobile */
+@media (max-width: 650px) {
+  body .editorial-projects,
+  body .editorial-about,
+  body .about-page {
+    width: calc(100% - 2rem) !important;
+
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+
+    border-left: 0 !important;
+    border-right: 0 !important;
+  }
+}
+
+/* END PROJECTS + ABOUT SIDE FRAME */
+
+/* ==========================================================
+   PROJECTS — FULL FRAME 4-COLUMN GRID
+   ========================================================== */
+
+/* Let the project content use the entire shared inner-page width */
+body .editorial-projects .projects-shell,
+body .editorial-projects .projects-browser,
+body .editorial-projects .project-grid {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+
+/* ----------------------------------------------------------
+   LARGE DESKTOP — 4 ACROSS
+   ---------------------------------------------------------- */
+
+body .editorial-projects .project-grid {
+  display: grid !important;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr)) !important;
+
+  column-gap:
+    clamp(0.85rem, 1.25vw, 1.15rem) !important;
+
+  row-gap:
+    clamp(1.4rem, 2vw, 2rem) !important;
+}
+
+
+/*
+   Keep the cards square, but tune the typography slightly
+   for the denser 4-column layout.
+*/
+
+body .editorial-projects .project-tile {
+  min-width: 0;
+  width: 100%;
+}
+
+body .editorial-projects .project-tile__surface {
+  width: 100%;
+
+  aspect-ratio: 1 / 1;
+
+  padding:
+    clamp(0.9rem, 1.15vw, 1.1rem) !important;
+}
+
+body .editorial-projects .project-tile__main h2 {
+  font-size:
+    clamp(
+      1.45rem,
+      1.75vw,
+      2rem
+    ) !important;
+
+  line-height:
+    0.9 !important;
+}
+
+body .editorial-projects .project-tile__summary {
+  max-width: 26ch;
+
+  font-size:
+    clamp(
+      0.7rem,
+      0.72vw,
+      0.8rem
+    ) !important;
+}
+
+
+/* ----------------------------------------------------------
+   MEDIUM DESKTOP / LAPTOP — 3 ACROSS
+   ---------------------------------------------------------- */
+
+@media (max-width: 1180px) {
+  body .editorial-projects .project-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr)) !important;
+
+    column-gap:
+      1rem !important;
+  }
+
+  body .editorial-projects .project-tile__main h2 {
+    font-size:
+      clamp(
+        1.5rem,
+        2.25vw,
+        2.15rem
+      ) !important;
+  }
+}
+
+
+/* ----------------------------------------------------------
+   TABLET — 2 ACROSS
+   ---------------------------------------------------------- */
+
+@media (max-width: 820px) {
+  body .editorial-projects .project-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+
+/* ----------------------------------------------------------
+   MOBILE — 1 ACROSS
+   ---------------------------------------------------------- */
+
+@media (max-width: 560px) {
+  body .editorial-projects .project-grid {
+    grid-template-columns:
+      1fr !important;
+
+    row-gap:
+      1.5rem !important;
+  }
+
+  body .editorial-projects .project-tile__main h2 {
+    font-size:
+      clamp(
+        1.8rem,
+        9vw,
+        2.5rem
+      ) !important;
+  }
+}
+
+/* END PROJECTS FULL FRAME GRID */
+
+/* ==========================================================
+   PROJECTS — CLEAN FILTER BAR
+   ========================================================== */
+
+body .editorial-projects .project-filters {
+  width: 100% !important;
+
+  display: flex !important;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 1.35rem !important;
+
+  margin:
+    0
+    0
+    1.5rem !important;
+
+  padding:
+    0
+    0
+    0.8rem !important;
+
+  border-bottom:
+    1px solid
+    var(--editorial-line-soft);
+
+  background:
+    transparent !important;
+}
+
+
+/* remove pill treatment */
+body .editorial-projects .project-filter {
+  position: relative;
+
+  appearance: none;
+
+  padding:
+    0
+    0
+    0.28rem !important;
+
+  border:
+    0 !important;
+
+  border-radius:
+    0 !important;
+
+  background:
+    transparent !important;
+
+  color:
+    var(--editorial-muted) !important;
+
+  font-family:
+    var(--homepage-body),
+    var(--font-atkinson),
+    "Atkinson Hyperlegible",
+    Arial,
+    sans-serif;
+
+  font-size:
+    0.58rem !important;
+
+  font-weight:
+    700;
+
+  line-height:
+    1;
+
+  letter-spacing:
+    0.055em;
+
+  transition:
+    color 180ms ease;
+}
+
+
+/* subtle underline */
+body .editorial-projects .project-filter::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 1px;
+
+  background:
+    #002fa7;
+
+  transform:
+    scaleX(0);
+
+  transform-origin:
+    right;
+
+  transition:
+    transform 200ms ease;
+}
+
+
+/* hover */
+body .editorial-projects .project-filter:hover {
+  color:
+    var(--editorial-text) !important;
+}
+
+
+/* active */
+body .editorial-projects .project-filter.is-active {
+  color:
+    #002fa7 !important;
+
+  background:
+    transparent !important;
+}
+
+body .editorial-projects .project-filter.is-active::after {
+  transform:
+    scaleX(1);
+
+  transform-origin:
+    left;
+}
+
+
+/* mobile */
+@media (max-width: 650px) {
+  body .editorial-projects .project-filters {
+    gap:
+      0.85rem !important;
+
+    overflow-x:
+      auto;
+
+    flex-wrap:
+      nowrap;
+
+    scrollbar-width:
+      none;
+  }
+
+  body .editorial-projects .project-filters::-webkit-scrollbar {
+    display:
+      none;
+  }
+
+  body .editorial-projects .project-filter {
+    flex:
+      0 0 auto;
+  }
+}
+
+/* END PROJECTS CLEAN FILTER BAR */

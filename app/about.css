@@ -1,0 +1,1257 @@
+﻿/* ==========================================================
+   MARIE.DEV — ABOUT
+   ========================================================== */
+
+.about-page {
+  box-sizing: border-box;
+
+  width:
+    calc(
+      100% - 8rem
+    );
+
+  max-width:
+    1380px;
+
+  margin-inline:
+    auto;
+
+  padding:
+    3.5rem
+    2rem
+    5rem;
+
+  /*
+     Preserve the same frame geometry used by
+     Research/Writing without visible vertical rules.
+  */
+
+  border-left:
+    1px solid
+    transparent;
+
+  border-right:
+    1px solid
+    transparent;
+
+  color:
+    var(--editorial-text);
+
+  font-family:
+    var(--homepage-body),
+    var(--font-atkinson),
+    "Atkinson Hyperlegible",
+    Arial,
+    sans-serif;
+}
+
+
+/* ==========================================================
+   HERO
+   ========================================================== */
+
+.about-hero {
+  max-width:
+    760px;
+
+  padding:
+    2rem
+    0
+    clamp(
+      4rem,
+      7vh,
+      6rem
+    );
+}
+
+.about-hero__eyebrow {
+  margin:
+    0
+    0
+    0.9rem;
+
+  color:
+    #002fa7;
+
+  font-size:
+    0.61rem;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.055em;
+}
+
+.about-hero h1 {
+  margin: 0;
+
+  font-family:
+    var(--homepage-display),
+    "Akzidenz Grotesk",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  font-size:
+    clamp(
+      3rem,
+      4.9vw,
+      5rem
+    );
+
+  font-weight:
+    700;
+
+  line-height:
+    0.84;
+
+  letter-spacing:
+    -0.075em;
+}
+
+.about-hero__statement {
+  max-width:
+    650px;
+
+  margin-top:
+    1.35rem;
+
+  font-family:
+    var(--homepage-display),
+    "Akzidenz Grotesk",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  font-size:
+    clamp(
+      1.25rem,
+      1.9vw,
+      2rem
+    );
+
+  font-weight:
+    700;
+
+  line-height:
+    0.98;
+
+  letter-spacing:
+    -0.06em;
+}
+
+
+/* ==========================================================
+   GLOBAL ABOUT LABEL
+   ========================================================== */
+
+.about-section-label {
+  margin: 0;
+
+  color:
+    #002fa7;
+
+  font-size:
+    0.61rem;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.055em;
+
+  text-transform:
+    uppercase;
+}
+
+
+/* ==========================================================
+   PROFILE
+   ========================================================== */
+
+.about-profile {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.7fr)
+    minmax(260px, 0.8fr);
+
+  gap:
+    clamp(
+      4rem,
+      8vw,
+      9rem
+    );
+
+  align-items:
+    start;
+
+  padding:
+    1.4rem
+    0
+    clamp(
+      5rem,
+      9vh,
+      7rem
+    );
+}
+
+
+/* ----------------------------------------------------------
+   BIO
+   ---------------------------------------------------------- */
+
+.about-profile__bio {
+  max-width:
+    720px;
+}
+
+.about-profile__bio h2 {
+  max-width:
+    650px;
+
+  margin:
+    1.15rem
+    0
+    0;
+
+  font-family:
+    var(--homepage-display),
+    "Akzidenz Grotesk",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  font-size:
+    clamp(
+      1.45rem,
+      2.1vw,
+      2.25rem
+    );
+
+  font-weight:
+    700;
+
+  line-height:
+    0.98;
+
+  letter-spacing:
+    -0.055em;
+}
+
+.about-profile__bio > p:last-child {
+  max-width:
+    610px;
+
+  margin-top:
+    1.25rem;
+
+  color:
+    color-mix(
+      in srgb,
+      var(--editorial-text) 67%,
+      transparent
+    );
+
+  font-size:
+    clamp(
+      0.76rem,
+      0.88vw,
+      0.88rem
+    );
+
+  line-height:
+    1.5;
+
+  letter-spacing:
+    -0.025em;
+}
+
+
+/* ----------------------------------------------------------
+   CURRENT
+   ---------------------------------------------------------- */
+
+.about-current {
+  position: relative;
+
+  padding-top:
+    0;
+}
+
+.about-current dl {
+  margin:
+    1.15rem
+    0
+    0;
+}
+
+.about-current dl > div {
+  display: grid;
+
+  grid-template-columns:
+    86px
+    minmax(0, 1fr);
+
+  gap:
+    1rem;
+
+  padding:
+    0.7rem
+    0;
+
+  border-bottom:
+    1px solid
+    color-mix(
+      in srgb,
+      var(--editorial-text) 10%,
+      transparent
+    );
+}
+
+.about-current dt {
+  color:
+    color-mix(
+      in srgb,
+      var(--editorial-text) 46%,
+      transparent
+    );
+
+  font-size:
+    0.52rem;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.04em;
+
+  text-transform:
+    uppercase;
+}
+
+.about-current dd {
+  margin: 0;
+
+  font-size:
+    0.7rem;
+
+  font-weight:
+    700;
+
+  line-height:
+    1.25;
+
+  letter-spacing:
+    -0.025em;
+}
+
+.about-current dd span {
+  display: block;
+
+  margin-top:
+    0.18rem;
+
+  color:
+    #002fa7;
+
+  font-size:
+    0.56rem;
+
+  font-weight:
+    700;
+}
+
+
+/* ==========================================================
+   STACK
+   ========================================================== */
+
+.about-stack {
+  padding-bottom:
+    clamp(
+      5rem,
+      9vh,
+      7rem
+    );
+}
+
+.about-stack__list {
+  display: flex;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    0.48rem;
+
+  max-width:
+    900px;
+
+  margin-top:
+    1.25rem;
+}
+
+.about-stack__list span {
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  min-height:
+    31px;
+
+  padding:
+    0.42rem
+    0.75rem
+    0.36rem;
+
+  border:
+    1px solid
+    var(--editorial-line);
+
+  border-radius:
+    999px;
+
+  color:
+    var(--editorial-text);
+
+  font-size:
+    0.42rem;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.045em;
+
+  transition:
+    color
+      180ms ease,
+    border-color
+      180ms ease,
+    background-color
+      180ms ease,
+    transform
+      220ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
+}
+
+.about-stack__list span:hover {
+  color:
+    #002fa7;
+
+  border-color:
+    #002fa7;
+
+  background:
+    rgba(
+      0,
+      47,
+      167,
+      0.035
+    );
+
+  transform:
+    translateY(-2px);
+}
+
+
+/* ==========================================================
+   EXPERIENCE
+   ========================================================== */
+
+.about-experience {
+  padding-bottom:
+    clamp(
+      5rem,
+      9vh,
+      7rem
+    );
+}
+
+.about-experience__list {
+  margin-top:
+    1.25rem;
+}
+
+.about-experience__row {
+  position:
+    relative;
+
+  display:
+    grid;
+
+  grid-template-columns:
+    130px
+    130px
+    minmax(0, 1fr)
+    40px;
+
+  gap:
+    clamp(
+      1rem,
+      2vw,
+      2rem
+    );
+
+  align-items:
+    start;
+
+  overflow:
+    hidden;
+
+  padding:
+    1.35rem
+    0
+    1.45rem;
+
+  border-top:
+    1px solid
+    color-mix(
+      in srgb,
+      var(--editorial-text) 11%,
+      transparent
+    );
+}
+
+.about-experience__row:last-child {
+  border-bottom:
+    1px solid
+    color-mix(
+      in srgb,
+      var(--editorial-text) 11%,
+      transparent
+    );
+}
+
+
+/* animated blue rule */
+
+.about-experience__row::before {
+  content: "";
+
+  position:
+    absolute;
+
+  top:
+    0;
+
+  left:
+    0;
+
+  width:
+    0;
+
+  height:
+    1px;
+
+  background:
+    #002fa7;
+
+  transition:
+    width
+    430ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    );
+}
+
+.about-experience__row:hover::before {
+  width:
+    100%;
+}
+
+
+/* date */
+
+.about-experience__date {
+  color:
+    color-mix(
+      in srgb,
+      var(--editorial-text) 50%,
+      transparent
+    );
+
+  font-size:
+    0.52rem;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.04em;
+}
+
+
+/* company */
+
+.about-experience__company {
+  color:
+    #002fa7;
+
+  font-size:
+    0.56rem;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.045em;
+}
+
+
+/* role */
+
+.about-experience__main h2 {
+  margin:
+    0;
+
+  font-family:
+    var(--homepage-display),
+    "Akzidenz Grotesk",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  font-size:
+    clamp(
+      1.25rem,
+      1.7vw,
+      1.75rem
+    );
+
+  font-weight:
+    700;
+
+  line-height:
+    0.98;
+
+  letter-spacing:
+    -0.05em;
+
+  transition:
+    color
+      200ms ease,
+    transform
+      260ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
+}
+
+.about-experience__row:hover
+.about-experience__main h2 {
+  color:
+    #002fa7;
+
+  transform:
+    translateX(
+      3px
+    );
+}
+
+.about-experience__main p {
+  margin-top:
+    0.55rem;
+
+  color:
+    color-mix(
+      in srgb,
+      var(--editorial-text) 55%,
+      transparent
+    );
+
+  font-size:
+    0.72rem;
+
+  line-height:
+    1.4;
+
+  letter-spacing:
+    -0.02em;
+}
+
+
+/* arrow */
+
+.about-experience__arrow {
+  justify-self:
+    end;
+
+  color:
+    #002fa7;
+
+  font-size:
+    1rem;
+
+  opacity:
+    0.3;
+
+  transition:
+    opacity
+      180ms ease,
+    transform
+      260ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
+}
+
+.about-experience__row:hover
+.about-experience__arrow {
+  opacity:
+    1;
+
+  transform:
+    translate(
+      2px,
+      2px
+    );
+}
+
+
+/* ==========================================================
+   OUTSIDE THE CODE
+   ========================================================== */
+
+.about-personal {
+  display:
+    grid;
+
+  grid-template-columns:
+    minmax(130px, 0.65fr)
+    minmax(0, 2.2fr);
+
+  gap:
+    clamp(
+      2rem,
+      5vw,
+      6rem
+    );
+
+  align-items:
+    start;
+
+  padding-bottom:
+    clamp(
+      4rem,
+      8vh,
+      6rem
+    );
+}
+
+.about-personal__thought {
+  max-width:
+    680px;
+
+  margin:
+    0;
+
+  font-family:
+    var(--homepage-display),
+    "Akzidenz Grotesk",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  font-size:
+    clamp(
+      1.25rem,
+      1.9vw,
+      2rem
+    );
+
+  font-weight:
+    700;
+
+  line-height:
+    1;
+
+  letter-spacing:
+    -0.055em;
+
+  transition:
+    color
+      240ms ease,
+    transform
+      300ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
+}
+
+.about-personal:hover
+.about-personal__thought {
+  color:
+    #002fa7;
+
+  transform:
+    translateX(
+      4px
+    );
+}
+
+
+/* ==========================================================
+   CLOSING
+   ========================================================== */
+
+.about-closing {
+  width:
+    fit-content;
+
+  margin:
+    0
+    auto
+    1rem;
+
+  color:
+    #002fa7;
+
+  font-size:
+    clamp(
+      0.88rem,
+      1vw,
+      1rem
+    );
+
+  letter-spacing:
+    -0.04em;
+
+  text-align:
+    center;
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+@media (max-width: 900px) {
+  .about-page {
+    width:
+      calc(
+        100% - 4rem
+      );
+
+    padding-left:
+      1.5rem;
+
+    padding-right:
+      1.5rem;
+  }
+
+  .about-profile {
+    grid-template-columns:
+      1fr;
+
+    gap:
+      3rem;
+  }
+
+  .about-current {
+    max-width:
+      500px;
+  }
+
+  .about-experience__row {
+    grid-template-columns:
+      100px
+      100px
+      minmax(0, 1fr)
+      30px;
+  }
+}
+
+
+@media (max-width: 650px) {
+  .about-page {
+    width:
+      calc(
+        100% - 2rem
+      );
+
+    padding-left:
+      1rem;
+
+    padding-right:
+      1rem;
+  }
+
+  .about-hero h1 {
+    font-size:
+      clamp(
+        2.8rem,
+        15vw,
+        4rem
+      );
+  }
+
+  .about-hero__statement {
+    font-size:
+      clamp(
+        1.2rem,
+        7vw,
+        1.65rem
+      );
+  }
+
+  .about-profile__bio h2 {
+    font-size:
+      clamp(
+        1.35rem,
+        8vw,
+        1.8rem
+      );
+  }
+
+  .about-experience__row {
+    grid-template-columns:
+      1fr;
+
+    gap:
+      0.45rem;
+
+    padding:
+      1.3rem
+      0;
+  }
+
+  .about-experience__arrow {
+    position:
+      absolute;
+
+    right:
+      0;
+
+    bottom:
+      1.2rem;
+  }
+
+  .about-personal {
+    grid-template-columns:
+      1fr;
+
+    gap:
+      1.2rem;
+  }
+
+  .about-personal__thought {
+    font-size:
+      clamp(
+        1.25rem,
+        7vw,
+        1.7rem
+      );
+  }
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .about-stack__list span,
+  .about-experience__row::before,
+  .about-experience__main h2,
+  .about-experience__arrow,
+  .about-personal__thought {
+    transition:
+      none !important;
+
+    transform:
+      none !important;
+  }
+}
+
+/* ==========================================================
+   ABOUT — FORCE WRITING FRAME GEOMETRY
+   ========================================================== */
+
+.about-page,
+.editorial-about {
+  box-sizing: border-box !important;
+
+  width: calc(100% - 8rem) !important;
+  max-width: 1380px !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+}
+
+.about-page .about-shell,
+.editorial-about .about-shell {
+  width: 100% !important;
+  max-width: none !important;
+
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+@media (max-width: 1000px) {
+  .about-page,
+  .editorial-about {
+    width: calc(100% - 4rem) !important;
+
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .about-page,
+  .editorial-about {
+    width: calc(100% - 2rem) !important;
+
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
+/* END ABOUT FRAME */
+
+/* ==========================================================
+   ABOUT — WRITING FRAME FINAL OVERRIDE
+   ========================================================== */
+
+.editorial-about,
+.about-page {
+  box-sizing: border-box !important;
+
+  min-height: 100svh !important;
+
+  padding-top: 10.25rem !important;
+  padding-bottom: 5.25rem !important;
+
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+
+.editorial-about .about-shell,
+.about-page .about-shell {
+  margin-top: 0 !important;
+}
+
+@media (max-width: 1000px) {
+  .editorial-about,
+  .about-page {
+    padding-top: 9rem !important;
+    padding-bottom: 4rem !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .editorial-about,
+  .about-page {
+    padding-top: 8rem !important;
+    padding-bottom: 3rem !important;
+  }
+}
+
+/* END ABOUT WRITING FRAME */
+
+/* ABOUT — MATCH WRITING TOP OFFSET */
+
+.editorial-about,
+.about-page {
+  padding-top: 7.15rem !important;
+}
+
+.editorial-about .about-shell,
+.about-page .about-shell,
+.editorial-about .about-heading,
+.about-page .about-heading {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+@media (max-width: 1000px) {
+  .editorial-about,
+  .about-page {
+    padding-top: 7rem !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .editorial-about,
+  .about-page {
+    padding-top: 6.75rem !important;
+  }
+}
+
+
+/* =========================================================
+   ABOUT: TECH STACK + CURRENT SIDE-BY-SIDE
+   ========================================================= */
+
+.about-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.8fr);
+  gap: clamp(3rem, 7vw, 7rem);
+  align-items: start;
+
+  margin-top: clamp(4rem, 8vw, 7rem);
+}
+
+.about-tools .about-stack {
+  margin: 0;
+}
+
+.about-tools .about-current {
+  margin: 0;
+}
+
+.about-tools .about-current dl {
+  margin-top: 1.5rem;
+}
+
+.about-tools .about-current dl > div {
+  padding: 0.85rem 0;
+
+  border-top:
+    1px solid
+    rgba(9, 9, 9, 0.12);
+}
+
+.about-tools .about-current dl > div:last-child {
+  border-bottom:
+    1px solid
+    rgba(9, 9, 9, 0.12);
+}
+
+.about-tools .about-stack__list {
+  max-width: 680px;
+}
+
+/* =========================================================
+   ABOUT BIO: CLEANER WIDTH + RHYTHM
+   ========================================================= */
+
+.about-profile {
+  grid-template-columns: 1fr;
+}
+
+.about-profile__bio {
+  max-width: 940px;
+}
+
+.about-profile__bio h2 {
+  max-width: 920px;
+}
+
+.about-profile__bio > p {
+  max-width: 830px;
+}
+
+.about-profile__bio > p + p {
+  margin-top: 1rem;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .about-tools {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .about-tools .about-stack__list {
+    max-width: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-tools {
+    margin-top: 3rem;
+  }
+}
+
+
+/* =========================================================
+   ABOUT CONTACT
+   ========================================================= */
+
+.about-contact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+
+  padding: 1rem 0 1.4rem;
+  margin-bottom: clamp(2rem, 5vw, 4rem);
+
+  border-bottom:
+    1px solid
+    rgba(9, 9, 9, 0.14);
+}
+
+.about-contact__text {
+  margin: 0;
+  color: #111111;
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
+.about-contact__links {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-shrink: 0;
+}
+
+.about-contact__links a {
+  color: #002fa7;
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.about-contact__links a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 650px) {
+  .about-contact {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+}
+

@@ -4,30 +4,34 @@ import Link from "next/link";
 
 import type { Project } from "@/types/content";
 
-type CanaryCaseStudyProps = Readonly<{
+type VanguardCaseStudyProps = Readonly<{
   project: Project;
 }>;
 
 const technologies = [
-  "Python 3.11+",
-  "AST",
-  "FastAPI",
-  "GitHub Apps",
-  "Checks API",
-  "Typer",
-  "Rich",
-  "Pydantic",
-  "HTTPX",
-  "pytest",
-  "GitHub Actions",
+  "Java 21",
+  "Spring Boot",
+  "Kafka",
+  "Redis",
+  "Netty",
+  "Protobuf",
+  "EKF",
+  "JUnit",
+  "Testcontainers",
+  "React",
+  "TypeScript",
+  "MapLibre",
+  "Prometheus",
+  "Grafana",
+  "Docker",
 ] as const;
 
-export function CanaryCaseStudy({
+export function VanguardCaseStudy({
   project,
-}: CanaryCaseStudyProps) {
+}: VanguardCaseStudyProps) {
   const repository =
     project.repository ??
-    "https://github.com/cybr-wisp/canary";
+    "https://github.com/cybr-wisp/vanguard-x";
 
   return (
     <article className="pcs">
@@ -43,22 +47,22 @@ export function CanaryCaseStudy({
       <div className="pcs__panel">
         <header className="pcs__hero">
           <p className="pcs__eyebrow">
-            Developer tools · static analysis · 2026
+            Distributed systems · tracking · reliability · 2026
           </p>
 
-          <h1>Canary</h1>
+          <h1>Vanguard-X</h1>
 
           <p className="pcs__statement">
-            What existing code could this change break?
+            Turn disagreement, packet loss, and replay into one coherent track
+            picture.
           </p>
 
           <p className="pcs__deck">
-            Canary is a deterministic, repository-aware
-            compatibility analyzer for Python pull requests.
-            It compares API contracts across BASE and HEAD,
-            traces changed symbols into real call sites, and
-            proves which existing calls no longer satisfy the
-            new contract.
+            Vanguard-X is a distributed real-time tracking system that ingests
+            asynchronous sensor observations, associates measurements with
+            targets, estimates state under uncertainty, persists current track
+            state, and exercises recovery across packet loss, consumer restarts,
+            replay, and temporary missed detections.
           </p>
 
           <div className="pcs__actions">
@@ -75,26 +79,26 @@ export function CanaryCaseStudy({
 
         <section
           className="pcs__metrics"
-          aria-label="Canary benchmark highlights"
+          aria-label="Vanguard-X benchmark highlights"
         >
           <article className="pcs__metric">
-            <strong>64.45 ms</strong>
-            <span>median analysis latency</span>
+            <strong>21,348</strong>
+            <span>reports / second · 200 targets</span>
           </article>
 
           <article className="pcs__metric">
-            <strong>118,549</strong>
-            <span>lines analyzed / second</span>
+            <strong>18.45 ms</strong>
+            <span>p95 tracking latency</span>
           </article>
 
           <article className="pcs__metric">
-            <strong>100 / 100</strong>
-            <span>semantic mutation cases</span>
+            <strong>63.0%</strong>
+            <span>RMSE reduction after fusion</span>
           </article>
 
           <article className="pcs__metric">
-            <strong>50 / 50</strong>
-            <span>identical repeated executions</span>
+            <strong>100%</strong>
+            <span>association · 0 false tracks</span>
           </article>
         </section>
 
@@ -107,162 +111,135 @@ export function CanaryCaseStudy({
 
             <div className="pcs__copy">
               <h3>
-                Valid Python can still introduce a
-                repository-level breaking change.
+                Sensors disagree, arrive asynchronously, and sometimes disappear
+                entirely.
               </h3>
 
               <p>
-                A pull request can modify a function
-                signature, pass syntax checks, satisfy the
-                project&apos;s current tests, and still break
-                an existing caller that the test suite never
-                exercises.
+                Vanguard-X starts with a deliberately messy systems problem:
+                multiple sensors observe the same moving targets with different
+                noise characteristics, timestamps, transport delays, packet
+                loss, jitter, and message reordering.
               </p>
 
               <p>
-                Consider a function changing from:
+                Individual measurements are not useful tracks. The system must
+                continuously infer which reports belong to which target,
+                estimate position and velocity, maintain uncertainty, preserve
+                identity through missed detections, and prevent replayed data
+                from corrupting current state.
               </p>
 
               <div className="pcs__highlight">
-                authenticate(token) → authenticate(token,
-                strict)
+                The real engineering problem was not “implement an EKF.” It was
+                making ingestion, streaming, association, estimation, lifecycle
+                state, persistence, replay, and APIs agree on what a track means.
               </div>
-
-              <p>
-                The new function definition is valid Python.
-                The existing caller is also valid Python.
-                The incompatibility only becomes visible when
-                those two pieces of code are analyzed together.
-              </p>
-
-              <p>
-                That makes semantic compatibility a
-                repository-level problem rather than a
-                file-level diff problem.
-              </p>
             </div>
           </section>
 
           <section className="pcs__section">
             <header className="pcs__label">
               <span>02</span>
-              <h2>Constraints</h2>
+              <h2>System constraints</h2>
             </header>
 
             <div className="pcs__copy">
               <h3>
-                Python&apos;s flexibility makes false certainty
-                dangerous.
+                Real-time throughput could not come at the expense of recovery
+                semantics.
               </h3>
-
-              <p>
-                Static analysis has to reason about more than
-                simple positional function calls.
-              </p>
 
               <ul>
                 <li>
-                  imports can be aliased or relative;
+                  Reports arrive concurrently and cannot depend on one global
+                  synchronous request path.
                 </li>
 
                 <li>
-                  parameters can be positional-only or
-                  keyword-only;
+                  Packet loss must not immediately destroy an otherwise healthy
+                  track.
                 </li>
 
                 <li>
-                  calls may contain <code>*args</code> and{" "}
-                  <code>**kwargs</code>;
+                  Delayed or replayed reports cannot create duplicate tracks or
+                  duplicate spatial events.
                 </li>
 
                 <li>
-                  defaults can disappear between BASE and
-                  HEAD;
+                  Kafka consumer restarts must resume from durable stream state.
                 </li>
 
                 <li>
-                  sync functions can become async;
+                  Current track state needs to remain queryable without replaying
+                  the entire event history.
                 </li>
 
                 <li>
-                  public functions can disappear entirely;
-                </li>
-
-                <li>
-                  dynamic dispatch and reflection cannot
-                  always be resolved safely.
+                  The same synthetic scenario must be replayable deterministically
+                  for debugging and verification.
                 </li>
               </ul>
-
-              <p>
-                A useful analyzer therefore cannot simply
-                label every unresolved case safe or broken.
-              </p>
             </div>
           </section>
 
           <section className="pcs__section">
             <header className="pcs__label">
               <span>03</span>
-              <h2>Design</h2>
+              <h2>Architecture</h2>
             </header>
 
             <div className="pcs__copy">
               <h3>
-                Separate API change detection from caller
-                impact analysis.
+                Split the system at explicit boundaries so failures remain
+                understandable.
               </h3>
 
               <div className="pcs__decision-grid">
                 <article className="pcs__decision">
                   <span>01</span>
 
-                  <strong>EXTRACT CONTRACTS</strong>
+                  <strong>NETTY + PROTOBUF</strong>
 
                   <p>
-                    Parse BASE and HEAD Python APIs into
-                    structured AST-derived callable
-                    contracts.
+                    Validate and decode typed sensor telemetry at the ingestion
+                    boundary before it enters the rest of the system.
                   </p>
                 </article>
 
                 <article className="pcs__decision">
                   <span>02</span>
 
-                  <strong>INDEX CALL SITES</strong>
+                  <strong>KAFKA</strong>
 
                   <p>
-                    Build a repository-wide index of imports,
-                    aliases, symbols, and candidate calls.
+                    Create durable replayable boundaries between ingestion,
+                    tracking, and downstream event processing.
                   </p>
                 </article>
 
                 <article className="pcs__decision">
                   <span>03</span>
 
-                  <strong>RE-BIND ARGUMENTS</strong>
+                  <strong>REDIS</strong>
 
                   <p>
-                    Apply existing positional and keyword
-                    arguments against the changed signature.
+                    Maintain current track state independently from the durable
+                    event-stream history.
                   </p>
                 </article>
               </div>
 
               <p>
-                This separates the question:
+                Spring Boot exposes REST and WebSocket interfaces above the
+                tracker. That keeps visualization and API concerns outside the
+                core estimation path.
               </p>
 
-              <div className="pcs__highlight">
-                “Did an API change?” from “Which existing
-                callers are actually incompatible with that
-                change?”
-              </div>
-
               <p>
-                That distinction is what prevents Canary from
-                turning every signature change into a noisy
-                pull-request warning.
+                The resulting architecture lets transport, state estimation,
+                persistence, and presentation evolve independently while sharing
+                explicit Protobuf contracts.
               </p>
             </div>
           </section>
@@ -270,43 +247,31 @@ export function CanaryCaseStudy({
           <section className="pcs__section">
             <header className="pcs__label">
               <span>04</span>
-              <h2>Static binding</h2>
+              <h2>Association + estimation</h2>
             </header>
 
             <div className="pcs__copy">
               <h3>
-                Reconstruct Python argument binding instead
-                of relying on text matching.
+                Association has to reject implausible measurements before the
+                estimator can make a sensible update.
               </h3>
 
               <p>
-                Canary validates calls using the structure of
-                the new function signature. It checks whether
-                existing arguments still satisfy the changed
-                contract.
+                Candidate measurements are filtered using Mahalanobis gating,
+                which evaluates the innovation relative to predicted covariance
+                rather than relying on a fixed Euclidean-distance threshold.
               </p>
 
               <p>
-                This includes:
+                Accepted observations feed nonlinear range/bearing EKF updates.
+                Covariance updates use Joseph form to reduce numerical issues and
+                preserve a valid covariance matrix under repeated updates.
               </p>
 
-              <ul>
-                <li>missing required arguments;</li>
-                <li>removed keyword parameters;</li>
-                <li>duplicate argument bindings;</li>
-                <li>positional-only violations;</li>
-                <li>keyword-only violations;</li>
-                <li>removed defaults;</li>
-                <li>argument ordering changes;</li>
-                <li>await / non-await mismatches.</li>
-              </ul>
-
               <p>
-                Because the analysis understands argument
-                semantics, two identical-looking signature
-                diffs can produce different results depending
-                on how the repository actually calls the
-                function.
+                This matters because the tracker needs more than a position
+                estimate. It needs a calibrated estimate of uncertainty so that
+                future association decisions remain meaningful.
               </p>
             </div>
           </section>
@@ -314,128 +279,130 @@ export function CanaryCaseStudy({
           <section className="pcs__section">
             <header className="pcs__label">
               <span>05</span>
-              <h2>Abstention</h2>
+              <h2>Track lifecycle</h2>
             </header>
 
             <div className="pcs__copy">
               <h3>
-                UNKNOWN is a valid result when the evidence
-                is insufficient.
+                Identity is a lifecycle problem, not just a nearest-neighbour
+                problem.
               </h3>
 
               <p>
-                Canary produces three outcomes rather than
-                forcing a binary safe/broken decision.
+                Tracks move explicitly through:
               </p>
 
               <ul>
                 <li>
-                  <strong>BREAKS</strong> — incompatibility can
-                  be proven from static evidence.
+                  <strong>TENTATIVE</strong> — insufficient evidence to commit
+                  to a persistent track.
                 </li>
 
                 <li>
-                  <strong>UNAFFECTED</strong> — the existing
-                  call continues to satisfy the new contract.
+                  <strong>CONFIRMED</strong> — enough consistent observations
+                  exist to promote the identity.
                 </li>
 
                 <li>
-                  <strong>UNKNOWN</strong> — static analysis
-                  cannot safely prove either conclusion.
+                  <strong>COASTING</strong> — observations are temporarily
+                  missing, so uncertainty expands while identity remains alive.
+                </li>
+
+                <li>
+                  <strong>DROPPED</strong> — the track exceeded the allowed
+                  absence window and is retired.
                 </li>
               </ul>
 
               <p>
-                This matters for dynamic Python behavior.
-                Reflection, runtime-created arguments, or
-                unresolved dispatch should not silently become
-                false confidence.
+                Coasting prevents a brief outage from immediately destroying
+                identity. If a compatible measurement returns while the track is
+                still recoverable, the system reacquires the same canonical
+                identity rather than spawning a replacement.
               </p>
-
-              <div className="pcs__highlight">
-                Canary would rather explicitly abstain than
-                manufacture certainty it cannot justify.
-              </div>
             </div>
           </section>
 
           <section className="pcs__section">
             <header className="pcs__label">
               <span>06</span>
-              <h2>Rules</h2>
+              <h2>Failure recovery</h2>
             </header>
 
             <div className="pcs__copy">
               <h3>
-                Compatibility rules represent different
-                classes of semantic breakage.
+                Reliability had to be demonstrated with executable failure
+                paths, not architectural diagrams.
               </h3>
 
               <p>
-                The rule engine covers seven primary change
-                classes:
+                I added integration tests around scenarios that could corrupt or
+                fragment distributed state:
               </p>
 
               <ul>
-                <li>required parameter added;</li>
-                <li>parameter removed;</li>
-                <li>parameter reordered;</li>
-                <li>default removed;</li>
-                <li>return annotation changed;</li>
-                <li>sync / async behavior changed;</li>
-                <li>public API removed.</li>
+                <li>Kafka consumer restart and committed-offset recovery;</li>
+                <li>packet loss and temporary missed detections;</li>
+                <li>covariance growth while tracks coast;</li>
+                <li>identity-preserving reacquisition;</li>
+                <li>Redis persistence and state reconstruction;</li>
+                <li>duplicate event suppression;</li>
+                <li>deterministic replay from seeded simulations.</li>
               </ul>
 
               <p>
-                Not every change produces the same confidence
-                level. A removed required keyword may be a
-                provable break, while a return-type annotation
-                change may require downstream type information
-                that is unavailable statically.
+                A useful recovery test has to verify more than “the service came
+                back.” It must verify that the recovered system state is
+                consistent with what would have happened without the failure.
               </p>
+
+              <div className="pcs__highlight">
+                Deterministic replay turned failure investigation from “can I
+                reproduce this?” into “which state transition first diverged?”
+              </div>
             </div>
           </section>
 
           <section className="pcs__section">
             <header className="pcs__label">
               <span>07</span>
-              <h2>Integration</h2>
+              <h2>Result</h2>
             </header>
 
             <div className="pcs__copy">
               <h3>
-                One deterministic engine powers both local
-                analysis and pull-request review.
+                Fusion improved accuracy while the tracker remained fast enough
+                for live state updates.
               </h3>
 
               <p>
-                The core analysis engine is shared between the
-                Typer CLI and the GitHub App.
+                Raw observation RMSE was <strong>29.24 m</strong>. After
+                association and fusion, position RMSE was{" "}
+                <strong>10.82 m</strong>, a{" "}
+                <strong>63.0% reduction</strong>.
               </p>
 
               <p>
-                FastAPI handles webhook delivery while GitHub
-                App authentication and Checks API integration
-                live behind dedicated boundaries.
+                At 200 concurrent targets, the frozen benchmark sustained{" "}
+                <strong>21,348 reports/s</strong> with{" "}
+                <strong>18.45 ms p95</strong> in-process tracking latency.
               </p>
 
               <p>
-                Pull-request findings can include:
+                Association accuracy was <strong>100%</strong> with{" "}
+                <strong>0 false tracks</strong> on that benchmark workload.
               </p>
 
-              <ul>
-                <li>changed symbol;</li>
-                <li>semantic change category;</li>
-                <li>affected caller;</li>
-                <li>source file and line;</li>
-                <li>confirmed incompatibility reason;</li>
-                <li>unresolved / UNKNOWN callers.</li>
-              </ul>
-
               <p>
-                The same deterministic result can therefore be
-                inspected locally or surfaced directly in the
-                code-review workflow.
+                Deterministic replay produced no estimator divergence on the
+                committed replay test, and repeated BREACH inputs were
+                de-duplicated rather than emitted as repeated spatial events.
+              </p>
+
+              <p className="pcs__note">
+                These numbers describe the repository&apos;s controlled
+                synthetic benchmark campaign. They are engineering benchmarks,
+                not claims about certified real-world radar performance.
               </p>
             </div>
           </section>
@@ -443,38 +410,44 @@ export function CanaryCaseStudy({
           <section className="pcs__section">
             <header className="pcs__label">
               <span>08</span>
-              <h2>Validation</h2>
+              <h2>What I learned</h2>
             </header>
 
             <div className="pcs__copy">
               <h3>
-                Test semantic behavior, determinism, and
-                scaling independently.
+                Distributed correctness is mostly about defining what must remain
+                true across boundaries.
               </h3>
 
               <p>
-                Canary&apos;s benchmark suite exercises seeded
-                semantic mutations, deliberately ambiguous
-                cases, repeated execution, and generated
-                repositories.
+                The project started as a tracking system, but the hardest
+                engineering questions ended up being about invariants:
               </p>
 
-              <p>
-                The seeded semantic benchmark reported{" "}
-                <strong>100 / 100</strong> cases with precision,
-                recall, and F1 of{" "}
-                <strong>100% / 100% / 1.0</strong>.
-              </p>
+              <ul>
+                <li>
+                  one physical target should not silently become several track
+                  identities;
+                </li>
+
+                <li>
+                  replay should reproduce history rather than create new
+                  history;
+                </li>
+
+                <li>
+                  temporary sensor failure should increase uncertainty instead
+                  of manufacturing certainty;
+                </li>
+
+                <li>
+                  recovery should restore state, not merely restart processes.
+                </li>
+              </ul>
 
               <p>
-                All <strong>10 / 10</strong> deliberately
-                ambiguous cases were preserved as abstentions.
-              </p>
-
-              <p>
-                Repeating the same analysis{" "}
-                <strong>50 times</strong> produced identical
-                results in all 50 runs.
+                Those constraints shaped the architecture more than any
+                individual framework choice.
               </p>
             </div>
           </section>
@@ -482,84 +455,6 @@ export function CanaryCaseStudy({
           <section className="pcs__section">
             <header className="pcs__label">
               <span>09</span>
-              <h2>Result</h2>
-            </header>
-
-            <div className="pcs__copy">
-              <h3>
-                Repository-wide analysis remained fast enough
-                to fit naturally into code review.
-              </h3>
-
-              <p>
-                Median analysis latency measured{" "}
-                <strong>64.45 ms</strong>.
-              </p>
-
-              <p>
-                Source-analysis throughput reached{" "}
-                <strong>118,549 LOC/s</strong> under the
-                repository benchmark.
-              </p>
-
-              <p>
-                A generated <strong>1,000-file</strong>{" "}
-                repository completed in{" "}
-                <strong>210.36 ms</strong>.
-              </p>
-
-              <div className="pcs__highlight">
-                The key result was not just detection accuracy.
-                Canary could remain deterministic, explainable,
-                and repository-aware without turning pull
-                requests into multi-second analysis jobs.
-              </div>
-
-              <p className="pcs__note">
-                These numbers describe controlled repository
-                benchmarks and should not be interpreted as
-                universal performance across arbitrary Python
-                codebases.
-              </p>
-            </div>
-          </section>
-
-          <section className="pcs__section">
-            <header className="pcs__label">
-              <span>10</span>
-              <h2>What I learned</h2>
-            </header>
-
-            <div className="pcs__copy">
-              <h3>
-                Developer tools become useful when they model
-                uncertainty instead of hiding it.
-              </h3>
-
-              <p>
-                The most important design choice in Canary was
-                not a parser or framework. It was deciding
-                that UNKNOWN should be a first-class result.
-              </p>
-
-              <p>
-                Static analysis is strongest when it clearly
-                distinguishes what it can prove from what it
-                cannot.
-              </p>
-
-              <p>
-                That same principle applies to code-review
-                tooling more broadly: a smaller number of
-                defensible findings is often more useful than
-                a larger number of speculative warnings.
-              </p>
-            </div>
-          </section>
-
-          <section className="pcs__section">
-            <header className="pcs__label">
-              <span>11</span>
               <h2>Built with</h2>
             </header>
 
@@ -580,11 +475,11 @@ export function CanaryCaseStudy({
 
       <footer className="pcs__footer">
         <span>
-          Canary / static analysis / 2026
+          Vanguard-X / distributed systems / 2026
         </span>
 
-        <Link href="/projects/paratrace">
-          next · paratrace →
+        <Link href="/projects/aurora-borealis">
+          next · aurora borealis →
         </Link>
       </footer>
     </article>
